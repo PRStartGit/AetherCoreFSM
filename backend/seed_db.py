@@ -34,12 +34,12 @@ def seed_database():
             print("Database already seeded. Skipping...")
             return
 
-        print("\n🌱 Seeding database...")
+        print("\n[*] Seeding database...")
 
         # 1. Create Super Admin
-        print("\n1️⃣  Creating Super Admin...")
+        print("\n1.  Creating Super Admin...")
         super_admin = User(
-            email="admin@riskproof.com",
+            email="admin@aethercore.com",
             hashed_password=get_password_hash("admin123"),
             first_name="Super",
             last_name="Admin",
@@ -49,10 +49,10 @@ def seed_database():
         )
         db.add(super_admin)
         db.flush()
-        print(f"   ✅ Super Admin created: {super_admin.email} / admin123")
+        print(f"   [OK] Super Admin created: {super_admin.email} / admin123")
 
         # 2. Create Organizations
-        print("\n2️⃣  Creating Organizations...")
+        print("\n2.  Creating Organizations...")
 
         # Organization 1: Viva Italia Group
         org1 = Organization(
@@ -69,7 +69,7 @@ def seed_database():
         )
         db.add(org1)
         db.flush()
-        print(f"   ✅ {org1.name} (org_id: {org1.org_id})")
+        print(f"   [OK] {org1.name} (org_id: {org1.org_id})")
 
         # Organization 2: Best Restaurants Ltd
         org2 = Organization(
@@ -86,7 +86,7 @@ def seed_database():
         )
         db.add(org2)
         db.flush()
-        print(f"   ✅ {org2.name} (org_id: {org2.org_id})")
+        print(f"   [OK] {org2.name} (org_id: {org2.org_id})")
 
         # Organization 3: Safe Food Chain
         org3 = Organization(
@@ -104,10 +104,10 @@ def seed_database():
         )
         db.add(org3)
         db.flush()
-        print(f"   ✅ {org3.name} (org_id: {org3.org_id})")
+        print(f"   [OK] {org3.name} (org_id: {org3.org_id})")
 
         # 3. Enable Modules for Organizations
-        print("\n3️⃣  Enabling Modules...")
+        print("\n3.  Enabling Modules...")
         modules = ["monitoring", "audit", "training", "policy", "documents"]
 
         for org in [org1, org2, org3]:
@@ -119,10 +119,10 @@ def seed_database():
                 )
                 db.add(org_module)
         db.flush()
-        print("   ✅ Modules enabled for all organizations")
+        print("   [OK] Modules enabled for all organizations")
 
         # 4. Create Sites
-        print("\n4️⃣  Creating Sites...")
+        print("\n4.  Creating Sites...")
 
         # Sites for Viva Italia Group
         vig_sites = [
@@ -145,7 +145,7 @@ def seed_database():
                 daily_report_time="09:00"
             )
             db.add(site)
-            print(f"   ✅ {site.name}")
+            print(f"   [OK] {site.name}")
 
         # Sites for Best Restaurants Ltd
         brl_sites = [
@@ -164,7 +164,7 @@ def seed_database():
                 is_active=True
             )
             db.add(site)
-            print(f"   ✅ {site.name}")
+            print(f"   [OK] {site.name}")
 
         # Sites for Safe Food Chain
         sfc_sites = [
@@ -182,12 +182,12 @@ def seed_database():
                 is_active=True
             )
             db.add(site)
-            print(f"   ✅ {site.name}")
+            print(f"   [OK] {site.name}")
 
         db.flush()
 
         # 5. Create Users
-        print("\n5️⃣  Creating Users...")
+        print("\n5.  Creating Users...")
 
         # Org Admin for VIG
         vig_admin = User(
@@ -201,7 +201,7 @@ def seed_database():
             is_active=True
         )
         db.add(vig_admin)
-        print(f"   ✅ Org Admin: {vig_admin.email} / password123")
+        print(f"   [OK] Org Admin: {vig_admin.email} / password123")
 
         # Site User for VIG
         vig_user = User(
@@ -215,7 +215,7 @@ def seed_database():
             is_active=True
         )
         db.add(vig_user)
-        print(f"   ✅ Site User: {vig_user.email} / password123")
+        print(f"   [OK] Site User: {vig_user.email} / password123")
 
         # Org Admin for BRL
         brl_admin = User(
@@ -229,7 +229,7 @@ def seed_database():
             is_active=True
         )
         db.add(brl_admin)
-        print(f"   ✅ Org Admin: {brl_admin.email} / password123")
+        print(f"   [OK] Org Admin: {brl_admin.email} / password123")
 
         # Org Admin for SFC
         sfc_admin = User(
@@ -243,7 +243,7 @@ def seed_database():
             is_active=True
         )
         db.add(sfc_admin)
-        print(f"   ✅ Org Admin: {sfc_admin.email} / password123")
+        print(f"   [OK] Org Admin: {sfc_admin.email} / password123")
 
         # Commit all changes
         db.commit()
@@ -254,14 +254,14 @@ def seed_database():
         print(f"   - 3 Organizations (vig, brl, sfc)")
         print(f"   - 10 Sites total")
         print(f"   - 5 Users (1 super admin + 4 org users)")
-        print("\n🔑 Login Credentials:")
-        print("   Super Admin: admin@riskproof.com / admin123")
+        print("\n[KEY] Login Credentials:")
+        print("   Super Admin: admin@aethercore.com / admin123")
         print("   VIG Admin: admin@vivaitaliagroup.com / password123")
         print("   BRL Admin: admin@bestrestaurants.co.uk / password123")
         print("   SFC Admin: admin@safefoodchain.com / password123")
 
     except Exception as e:
-        print(f"\n❌ Error seeding database: {e}")
+        print(f"\n[ERROR] Error seeding database: {e}")
         db.rollback()
         sys.exit(1)
     finally:

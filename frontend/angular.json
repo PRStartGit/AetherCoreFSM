@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "riskproof-frontend": {
+    "aethercore-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/riskproof-frontend",
+            "outputPath": "dist/aethercore-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -58,10 +58,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "riskproof-frontend:build:production"
+              "buildTarget": "aethercore-frontend:build:production"
             },
             "development": {
-              "buildTarget": "riskproof-frontend:build:development"
+              "buildTarget": "aethercore-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -69,7 +69,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "riskproof-frontend:build"
+            "buildTarget": "aethercore-frontend:build"
           }
         },
         "test": {

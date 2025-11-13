@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { User, LoginRequest, LoginResponse, AuthState, UserRole } from '../models';
 
@@ -10,8 +10,8 @@ import { User, LoginRequest, LoginResponse, AuthState, UserRole } from '../model
 })
 export class AuthService {
   private readonly API_URL = 'http://localhost:8000/api/v1';
-  private readonly TOKEN_KEY = 'riskproof_token';
-  private readonly USER_KEY = 'riskproof_user';
+  private readonly TOKEN_KEY = 'aethercore_token';
+  private readonly USER_KEY = 'aethercore_user';
 
   private authStateSubject = new BehaviorSubject<AuthState>({
     isAuthenticated: false,
@@ -46,22 +46,27 @@ export class AuthService {
     }
   }
 
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    const formData = new URLSearchParams();
-    formData.append('username', credentials.email);
-    formData.append('password', credentials.password);
-    formData.append('organization_id', credentials.organization_id);
-
-    return this.http.post<LoginResponse>(`${this.API_URL}/login`, formData.toString(), {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    }).pipe(
+  login(credentials: LoginRequest): Observable<any> {
+    return this.http.post<{access_token: string, token_type: string}>(`${this.API_URL}/login`, credentials).pipe(
       tap(response => {
-        this.setAuthState(response.access_token, response.user);
+        // Update auth state with token immediately so interceptor can use it
+        this.authStateSubject.next({
+          isAuthenticated: false,
+          user: null,
+          token: response.access_token
+        });
+        localStorage.setItem(this.TOKEN_KEY, response.access_token);
+      }),
+      // Fetch user data after successful login
+      switchMap(() => this.getCurrentUser()),
+      tap(user => {
+        const token = localStorage.getItem(this.TOKEN_KEY)!;
+        this.setAuthState(token, user);
       }),
       catchError(error => {
         console.error('Login error:', error);
+        localStorage.removeItem(this.TOKEN_KEY);
+        this.clearAuthState();
         return throwError(() => error);
       })
     );

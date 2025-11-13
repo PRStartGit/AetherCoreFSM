@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Category' : 'New Category' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="categoryForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" placeholder="e.g., Morning Checks">
+      <mat-error *ngIf="categoryForm.get('name')?.hasError('required')">
+        Name is required
+      </mat-error>
+      <mat-error *ngIf="categoryForm.get('name')?.hasError('maxlength')">
+        Name cannot exceed 100 characters
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3" placeholder="Description of this category"></textarea>
+    </mat-form-field>
+
+    <div class="checkbox-group">
+      <mat-checkbox formControlName="is_global" *ngIf="isSuperAdmin()">
+        Global Category (available to all organizations)
+      </mat-checkbox>
+
+      <mat-checkbox formControlName="is_active">
+        Active
+      </mat-checkbox>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="categoryForm.invalid || loading">
+    <mat-spinner *ngIf="loading" diameter="20" class="inline-spinner"></mat-spinner>
+    <span *ngIf="!loading">{{ isEditMode ? 'Update' : 'Create' }}</span>
+  </button>
+</mat-dialog-actions>

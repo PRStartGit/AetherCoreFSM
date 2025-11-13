@@ -1,0 +1,69 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Task' : 'New Task' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="taskForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" placeholder="e.g., Check fire extinguishers">
+      <mat-error *ngIf="taskForm.get('name')?.hasError('required')">
+        Name is required
+      </mat-error>
+      <mat-error *ngIf="taskForm.get('name')?.hasError('maxlength')">
+        Name cannot exceed 200 characters
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3" placeholder="Description of this task"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="category_id">
+        <mat-option *ngFor="let category of categories" [value]="category.id">
+          {{ category.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="taskForm.get('category_id')?.hasError('required')">
+        Category is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Frequency</mat-label>
+      <mat-select formControlName="frequency">
+        <mat-option *ngFor="let freq of frequencies" [value]="freq">
+          {{ freq | titlecase }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="taskForm.get('frequency')?.hasError('required')">
+        Frequency is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Assign to Sites</mat-label>
+      <mat-select formControlName="site_ids" multiple>
+        <mat-option *ngFor="let site of sites" [value]="site.id">
+          {{ site.name }}
+        </mat-option>
+      </mat-select>
+      <mat-hint>Leave empty to assign to all sites</mat-hint>
+    </mat-form-field>
+
+    <div class="checkbox-group">
+      <mat-checkbox formControlName="is_active">
+        Active
+      </mat-checkbox>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="taskForm.invalid || loading">
+    <mat-spinner *ngIf="loading" diameter="20" class="inline-spinner"></mat-spinner>
+    <span *ngIf="!loading">{{ isEditMode ? 'Update' : 'Create' }}</span>
+  </button>
+</mat-dialog-actions>

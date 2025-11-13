@@ -40,6 +40,8 @@ export class MainLayoutComponent implements OnInit {
           { label: 'Organizations', icon: 'business', route: '/super-admin/organizations' },
           { label: 'Users', icon: 'people', route: '/super-admin/users' },
           { label: 'Sites', icon: 'location_on', route: '/super-admin/sites' },
+          { label: 'Categories', icon: 'category', route: '/categories' },
+          { label: 'Tasks', icon: 'assignment', route: '/tasks' },
           { label: 'Reports', icon: 'assessment', route: '/super-admin/reports' }
         ];
         break;
@@ -48,9 +50,10 @@ export class MainLayoutComponent implements OnInit {
           { label: 'Dashboard', icon: 'dashboard', route: '/org-admin' },
           { label: 'Sites', icon: 'location_on', route: '/org-admin/sites' },
           { label: 'Users', icon: 'people', route: '/org-admin/users' },
-          { label: 'Categories', icon: 'category', route: '/org-admin/categories' },
-          { label: 'Tasks', icon: 'task', route: '/org-admin/tasks' },
-          { label: 'Defects', icon: 'bug_report', route: '/org-admin/defects' },
+          { label: 'Categories', icon: 'category', route: '/categories' },
+          { label: 'Tasks', icon: 'assignment', route: '/tasks' },
+          { label: 'Checklists', icon: 'checklist', route: '/checklists' },
+          { label: 'Defects', icon: 'bug_report', route: '/defects' },
           { label: 'Reports', icon: 'assessment', route: '/org-admin/reports' }
         ];
         break;

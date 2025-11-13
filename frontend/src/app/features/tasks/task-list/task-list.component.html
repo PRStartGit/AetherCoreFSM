@@ -1,0 +1,86 @@
+<div class="task-list-container">
+  <div class="header">
+    <h1>Tasks</h1>
+    <button mat-raised-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      New Task
+    </button>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="loading" class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+
+      <table mat-table [dataSource]="tasks" *ngIf="!loading" class="tasks-table">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let task">{{ task.name }}</td>
+        </ng-container>
+
+        <!-- Category Column -->
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <td mat-cell *matCellDef="let task">{{ getCategoryName(task.category_id) }}</td>
+        </ng-container>
+
+        <!-- Frequency Column -->
+        <ng-container matColumnDef="frequency">
+          <th mat-header-cell *matHeaderCellDef>Frequency</th>
+          <td mat-cell *matCellDef="let task">
+            <span class="frequency-badge">{{ task.frequency }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Sites Column -->
+        <ng-container matColumnDef="sites">
+          <th mat-header-cell *matHeaderCellDef>Assigned Sites</th>
+          <td mat-cell *matCellDef="let task">
+            <span class="sites-text">{{ getSiteNames(task.site_ids) }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let task">
+            <span class="status-badge" [class.active]="task.is_active">
+              {{ task.is_active ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let task">
+            <button mat-icon-button (click)="openEditDialog(task)" matTooltip="Edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="deleteTask(task)" matTooltip="Delete" color="warn">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <!-- No data row -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            <div class="no-data">
+              <mat-icon>assignment</mat-icon>
+              <p>No tasks found</p>
+              <button mat-raised-button color="primary" (click)="openCreateDialog()">
+                Create First Task
+              </button>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

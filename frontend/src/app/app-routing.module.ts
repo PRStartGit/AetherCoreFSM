@@ -5,6 +5,8 @@ import { MainLayoutComponent } from './shared/components/main-layout/main-layout
 import { SuperAdminDashboardComponent } from './features/super-admin/super-admin-dashboard/super-admin-dashboard.component';
 import { OrgAdminDashboardComponent } from './features/org-admin/org-admin-dashboard/org-admin-dashboard.component';
 import { SiteUserDashboardComponent } from './features/site-user/site-user-dashboard/site-user-dashboard.component';
+import { CategoryListComponent } from './features/categories/category-list/category-list.component';
+import { TaskListComponent } from './features/tasks/task-list/task-list.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { UserRole } from './core/models';
@@ -24,6 +26,18 @@ const routes: Routes = [
         component: SuperAdminDashboardComponent,
         canActivate: [RoleGuard],
         data: { roles: [UserRole.SUPER_ADMIN] }
+      },
+      {
+        path: 'categories',
+        component: CategoryListComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN] }
+      },
+      {
+        path: 'tasks',
+        component: TaskListComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN] }
       },
       {
         path: 'org-admin',

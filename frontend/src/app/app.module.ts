@@ -25,6 +25,8 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -36,6 +38,10 @@ import { MainLayoutComponent } from './shared/components/main-layout/main-layout
 import { SuperAdminDashboardComponent } from './features/super-admin/super-admin-dashboard/super-admin-dashboard.component';
 import { OrgAdminDashboardComponent } from './features/org-admin/org-admin-dashboard/org-admin-dashboard.component';
 import { SiteUserDashboardComponent } from './features/site-user/site-user-dashboard/site-user-dashboard.component';
+import { CategoryListComponent } from './features/categories/category-list/category-list.component';
+import { CategoryFormComponent } from './features/categories/category-form/category-form.component';
+import { TaskListComponent } from './features/tasks/task-list/task-list.component';
+import { TaskFormComponent } from './features/tasks/task-form/task-form.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +50,11 @@ import { SiteUserDashboardComponent } from './features/site-user/site-user-dashb
     MainLayoutComponent,
     SuperAdminDashboardComponent,
     OrgAdminDashboardComponent,
-    SiteUserDashboardComponent
+    SiteUserDashboardComponent,
+    CategoryListComponent,
+    CategoryFormComponent,
+    TaskListComponent,
+    TaskFormComponent
   ],
   imports: [
     BrowserModule,
@@ -73,7 +83,9 @@ import { SiteUserDashboardComponent } from './features/site-user/site-user-dashb
     MatBadgeModule,
     MatMenuModule,
     MatProgressBarModule,
-    MatDividerModule
+    MatDividerModule,
+    MatCheckboxModule,
+    MatTooltipModule
   ],
   providers: [
     {

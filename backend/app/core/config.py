@@ -6,7 +6,7 @@ import os
 class Settings(BaseSettings):
     # API Settings
     API_V1_PREFIX: str = "/api/v1"
-    PROJECT_NAME: str = "RiskProof Clone - Safety Management Platform"
+    PROJECT_NAME: str = "AetherCoreFSM - Safety Management Platform"
     VERSION: str = "1.0.0"
     DESCRIPTION: str = "Multi-tenant safety management platform"
 
@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
 
     # Database
-    DATABASE_URL: str = "sqlite:///./riskproof.db"
+    DATABASE_URL: str = "sqlite:///./aethercore.db"
 
     # CORS
     BACKEND_CORS_ORIGINS: list = [
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
 
     # Email (SendGrid)
     SENDGRID_API_KEY: Optional[str] = None
-    FROM_EMAIL: str = "noreply@riskproof.com"
+    FROM_EMAIL: str = "noreply@aethercore.com"
 
     # File Upload
     UPLOAD_DIR: str = "uploads"

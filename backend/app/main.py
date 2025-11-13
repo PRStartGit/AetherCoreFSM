@@ -28,7 +28,7 @@ Base.metadata.create_all(bind=engine)
 async def root():
     """Root endpoint."""
     return {
-        "message": "Welcome to RiskProof Clone API",
+        "message": "Welcome to AetherCoreFSM API",
         "version": settings.VERSION,
         "docs": "/docs"
     }
