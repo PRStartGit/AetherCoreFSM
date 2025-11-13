@@ -1,0 +1,57 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>RiskProof Login</mat-card-title>
+      <mat-card-subtitle>Safety Management Platform</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Organization ID</mat-label>
+          <input matInput formControlName="organization_id" placeholder="e.g., vig, brl, sfc">
+          <mat-icon matPrefix>business</mat-icon>
+          <mat-error *ngIf="loginForm.get('organization_id')?.hasError('required')">
+            Organization ID is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="your@email.com">
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+            Please enter a valid email
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit"
+                [disabled]="loginForm.invalid || loading" class="full-width">
+          <mat-spinner *ngIf="loading" diameter="20" class="inline-spinner"></mat-spinner>
+          <span *ngIf="!loading">Login</span>
+        </button>
+      </form>
+
+      <div class="test-credentials">
+        <p><strong>Test Credentials:</strong></p>
+        <p>Super Admin: vig / admin&#64;riskproof.com / admin123</p>
+        <p>Org Admin: vig / admin&#64;vivaitaliagroup.com / password123</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

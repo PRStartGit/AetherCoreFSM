@@ -1,0 +1,138 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div>
+      <h1>Organization Dashboard</h1>
+      <p *ngIf="metrics" class="org-name">{{ metrics!.organization_name }}</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="refresh()" [disabled]="loading">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="error" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-button color="primary" (click)="refresh()">Try Again</button>
+  </div>
+
+  <div *ngIf="!loading && !error && metrics" class="metrics-grid">
+    <mat-card class="metric-card">
+      <mat-card-content>
+        <div class="metric-icon" style="background-color: #667eea;">
+          <mat-icon>location_on</mat-icon>
+        </div>
+        <div class="metric-details">
+          <h3>{{ metrics.total_sites }}</h3>
+          <p>Total Sites</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <mat-card-content>
+        <div class="metric-icon" style="background-color: #fa709a;">
+          <mat-icon>checklist</mat-icon>
+        </div>
+        <div class="metric-details">
+          <h3>{{ metrics.total_checklists_today }}</h3>
+          <p>Checklists Today</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <mat-card-content>
+        <div class="metric-icon" style="background-color: #43e97b;">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="metric-details">
+          <h3>{{ metrics.completion_rate }}%</h3>
+          <p>Completion Rate</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <mat-card-content>
+        <div class="metric-icon" style="background-color: #ff6b6b;">
+          <mat-icon>bug_report</mat-icon>
+        </div>
+        <div class="metric-details">
+          <h3>{{ metrics.total_open_defects }}</h3>
+          <p>Open Defects</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!loading && !error && metrics" class="rag-summary">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Sites by RAG Status</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="rag-badges">
+          <div class="rag-badge" style="background-color: #43e97b;">
+            <h3>{{ metrics.sites_by_rag.green }}</h3>
+            <p>Green</p>
+          </div>
+          <div class="rag-badge" style="background-color: #fa709a;">
+            <h3>{{ metrics.sites_by_rag.amber }}</h3>
+            <p>Amber</p>
+          </div>
+          <div class="rag-badge" style="background-color: #ff6b6b;">
+            <h3>{{ metrics.sites_by_rag.red }}</h3>
+            <p>Red</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!loading && !error && metrics" class="sites-table">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Site Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="metrics.site_details" class="full-width-table">
+          <ng-container matColumnDef="site_name">
+            <th mat-header-cell *matHeaderCellDef>Site Name</th>
+            <td mat-cell *matCellDef="let site">{{ site.site_name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="rag_status">
+            <th mat-header-cell *matHeaderCellDef>RAG Status</th>
+            <td mat-cell *matCellDef="let site">
+              <span class="rag-chip" [style.background-color]="getRAGColor(site.rag_status)">
+                {{ site.rag_status | uppercase }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="completion_rate">
+            <th mat-header-cell *matHeaderCellDef>Completion Rate</th>
+            <td mat-cell *matCellDef="let site">{{ site.completion_rate }}%</td>
+          </ng-container>
+
+          <ng-container matColumnDef="open_defects">
+            <th mat-header-cell *matHeaderCellDef>Open Defects</th>
+            <td mat-cell *matCellDef="let site">
+              <mat-chip [class.defect-warning]="site.open_defects > 5">
+                {{ site.open_defects }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

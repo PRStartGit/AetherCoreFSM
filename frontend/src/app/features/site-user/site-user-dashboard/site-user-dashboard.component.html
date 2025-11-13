@@ -1,0 +1,121 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div>
+      <h1>Site User Dashboard</h1>
+      <p *ngIf="metrics" class="site-name">{{ metrics!.site_name }}</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="refresh()" [disabled]="loading">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="error" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-button color="primary" (click)="refresh()">Try Again</button>
+  </div>
+
+  <div *ngIf="!loading && !error && metrics" class="metrics-grid">
+    <mat-card class="metric-card">
+      <mat-card-content>
+        <div class="metric-icon" style="background-color: #fa709a;">
+          <mat-icon>pending_actions</mat-icon>
+        </div>
+        <div class="metric-details">
+          <h3>{{ metrics.pending_checklists.length }}</h3>
+          <p>Pending Checklists</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <mat-card-content>
+        <div class="metric-icon" style="background-color: #ff6b6b;">
+          <mat-icon>schedule</mat-icon>
+        </div>
+        <div class="metric-details">
+          <h3>{{ metrics.overdue_checklists }}</h3>
+          <p>Overdue Checklists</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <mat-card-content>
+        <div class="metric-icon" style="background-color: #ff6b6b;">
+          <mat-icon>bug_report</mat-icon>
+        </div>
+        <div class="metric-details">
+          <h3>{{ metrics.open_defects }}</h3>
+          <p>Open Defects</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <mat-card-content>
+        <div class="metric-icon" style="background-color: #43e97b;">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="metric-details">
+          <h3>{{ metrics.completion_rate_this_week }}%</h3>
+          <p>Weekly Completion</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!loading && !error && metrics" class="checklists-section">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Pending Checklists</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="metrics.pending_checklists.length === 0" class="no-checklists">
+          <mat-icon>check_circle_outline</mat-icon>
+          <p>All caught up! No pending checklists.</p>
+        </div>
+
+        <div *ngIf="metrics.pending_checklists.length > 0" class="checklist-list">
+          <mat-card *ngFor="let checklist of metrics.pending_checklists" class="checklist-item">
+            <div class="checklist-header">
+              <div>
+                <h3>{{ checklist.category_name }}</h3>
+                <p class="checklist-date">
+                  <mat-icon>event</mat-icon>
+                  {{ checklist.scheduled_date | date:'short' }}
+                </p>
+              </div>
+              <span class="status-chip" [style.background-color]="getStatusColor(checklist.status)">
+                {{ checklist.status }}
+              </span>
+            </div>
+
+            <div class="checklist-progress">
+              <div class="progress-info">
+                <span>{{ checklist.completed_tasks }} / {{ checklist.total_tasks }} tasks completed</span>
+                <span>{{ getProgressPercentage(checklist) }}%</span>
+              </div>
+              <mat-progress-bar mode="determinate"
+                                [value]="getProgressPercentage(checklist)"
+                                [color]="checklist.status === 'overdue' ? 'warn' : 'primary'">
+              </mat-progress-bar>
+            </div>
+
+            <div class="checklist-actions">
+              <button mat-raised-button color="primary">
+                <mat-icon>edit</mat-icon>
+                Complete Checklist
+              </button>
+            </div>
+          </mat-card>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
