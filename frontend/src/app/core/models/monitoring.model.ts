@@ -69,7 +69,7 @@ export interface ChecklistItem {
   id: number;
   checklist_id: number;
   task_id: number;
-  task_name: string;
+  item_name: string;  // Backend uses item_name, not task_name
   form_data: any;
   is_completed: boolean;
   completed_at: string | null;

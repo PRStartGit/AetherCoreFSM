@@ -1,6 +1,517 @@
-/* Custom styles for Material Design components with Tailwind */
+.dashboard-container {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  min-height: 100vh;
+}
 
-/* Ensure mat-card-content padding works with Tailwind */
-::ng-deep mat-card-content.p-5 {
-  padding: 1.25rem !important;
+.dashboard-header {
+  margin-bottom: 40px;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.dashboard-header p {
+  font-size: 16px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  gap: 16px;
+}
+
+.error-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: #fee2e2;
+  border-left: 4px solid #ef4444;
+  border-radius: 4px;
+  color: #991b1b;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.task-section,
+.defects-section {
+  margin-bottom: 32px;
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.task-section h2,
+.defects-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.task-section h2 mat-icon,
+.defects-section h2 mat-icon {
+  color: #3b82f6;
+}
+
+.task-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.task-card {
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  overflow: hidden;
+  background: white;
+  padding: 0;
+}
+
+.task-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.task-card.open {
+  border-left: 4px solid #3b82f6;
+}
+
+.task-card.missed {
+  border-left: 4px solid #ef4444;
+}
+
+.task-card.later {
+  border-left: 4px solid #9ca3af;
+}
+
+.card-compact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.card-compact-header:hover {
+  background-color: #f9fafb;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.items-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7280;
+  background-color: #e5e7eb;
+  padding: 4px 8px;
+  border-radius: 4px;
+  min-width: 45px;
+  text-align: center;
+}
+
+.items-count.overdue-count {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.checklist-title-compact {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.due-date-compact {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.due-date-compact mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.due-date-compact.overdue-date {
+  color: #dc2626;
+}
+
+.expand-icon {
+  color: #9ca3af;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.progress-bar-compact {
+  padding: 0;
+  height: 4px;
+}
+
+.progress-bar-compact mat-progress-bar {
+  height: 4px;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 100%);
+  color: #374151;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.task-info {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4b5563;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.info-item mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #6b7280;
+}
+
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-row mat-progress-bar {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.progress-text {
+  min-width: 45px;
+  text-align: right;
+  font-weight: 700;
+  color: #3b82f6;
+  font-size: 14px;
+}
+
+.due-date-row {
+  padding: 8px 12px;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.info-item.time-remaining {
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+.info-item.time-overdue {
+  color: #ef4444;
+  background-color: #fef2f2;
+  font-weight: 600;
+}
+
+.checklist-items {
+  border-top: 1px solid #e5e7eb;
+  background-color: #fafbfc;
+  padding: 16px;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+.items-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checklist-item {
+  padding: 8px 12px;
+  background-color: white;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.checklist-item:hover {
+  background-color: #f9fafb;
+}
+
+.checklist-item mat-checkbox {
+  width: 100%;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px;
+  text-align: center;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  color: #6b7280;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  color: #d1d5db;
+}
+
+.empty-state p {
+  font-size: 16px;
+  margin: 0;
+}
+
+.defects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.defect-card {
+  border-left: 4px solid #f59e0b;
+}
+
+.severity-badge,
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.bg-red-600 {
+  background-color: #dc2626;
+}
+
+.bg-orange-600 {
+  background-color: #ea580c;
+}
+
+.bg-yellow-600 {
+  background-color: #ca8a04;
+}
+
+.bg-blue-600 {
+  background-color: #2563eb;
+}
+
+.bg-gray-600 {
+  background-color: #4b5563;
+}
+
+.text-white {
+  color: white;
+}
+
+.bg-red-100 {
+  background-color: #fee2e2;
+}
+
+.text-red-800 {
+  color: #991b1b;
+}
+
+.bg-blue-100 {
+  background-color: #dbeafe;
+}
+
+.text-blue-800 {
+  color: #1e40af;
+}
+
+.bg-green-100 {
+  background-color: #dcfce7;
+}
+
+.text-green-800 {
+  color: #166534;
+}
+
+.bg-gray-100 {
+  background-color: #f3f4f6;
+}
+
+.text-gray-800 {
+  color: #1f2937;
+}
+
+mat-card-actions {
+  padding: 16px 20px;
+  margin: 0;
+  background-color: #fafbfc;
+  border-top: 1px solid #f1f5f9;
+}
+
+mat-card-actions button {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 10px 24px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+mat-card-actions button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+mat-card-header {
+  margin-bottom: 0;
+  padding: 20px;
+}
+
+mat-card-content {
+  padding: 20px !important;
+}
+
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.items-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: 0.3px;
+}
+
+.checklist-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 16px 0;
+  line-height: 1.3;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.status-chip:hover {
+  transform: scale(1.05);
+}
+
+.status-chip mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.status-due {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1e40af;
+  border: 1px solid #3b82f6;
+}
+
+.status-missed {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+.status-completed {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  color: #166534;
+  border: 1px solid #22c55e;
 }

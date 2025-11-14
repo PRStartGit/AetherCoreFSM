@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
-import { TaskService } from '../../../core/services/task.service';
+import { ChecklistService } from '../../../core/services/checklist.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { DefectService } from '../../../core/services/defect.service';
 import { User } from '../../../core/models/user.model';
-import { Task, Category, Defect, DefectStatus } from '../../../core/models/monitoring.model';
+import { Checklist, ChecklistStatus, Category, Defect, DefectStatus, ChecklistItem } from '../../../core/models/monitoring.model';
 
-interface TaskCard {
+interface ChecklistCard {
   id: number;
-  taskName: string;
   categoryName: string;
-  closesAt: string;
-  timeInfo: string;
-  status: 'open' | 'missed' | 'opening-later';
+  totalItems: number;
+  completedItems: number;
+  completionPercentage: number;
+  status: ChecklistStatus;
+  dueDate: string;
 }
 
 @Component({
@@ -26,23 +27,25 @@ export class SiteUserDashboardComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  // Task arrays
-  openTasks: TaskCard[] = [];
-  missedTasks: TaskCard[] = [];
-  openingLaterTasks: TaskCard[] = [];
+  // Checklist arrays
+  openTasks: ChecklistCard[] = [];
+  missedTasks: ChecklistCard[] = [];
+  openingLaterTasks: ChecklistCard[] = [];
 
   // Defects
   myOpenDefects: Defect[] = [];
 
-  // UI state
-  showOpeningLater = false;
-
   // Categories map
   categoriesMap: Map<number, Category> = new Map();
 
+  // Expandable checklist state
+  expandedChecklists: Set<number> = new Set();
+  checklistItems: Map<number, ChecklistItem[]> = new Map();
+  loadingItems: Set<number> = new Set();
+
   constructor(
     private authService: AuthService,
-    private taskService: TaskService,
+    private checklistService: ChecklistService,
     private categoryService: CategoryService,
     private defectService: DefectService,
     private router: Router
@@ -64,7 +67,7 @@ export class SiteUserDashboardComponent implements OnInit {
         categories.forEach(cat => {
           this.categoriesMap.set(cat.id, cat);
         });
-        this.loadTasks();
+        this.loadChecklists();
         this.loadMyDefects();
       },
       error: (err) => {
@@ -74,7 +77,7 @@ export class SiteUserDashboardComponent implements OnInit {
     });
   }
 
-  loadTasks(): void {
+  loadChecklists(): void {
     this.loading = true;
     this.error = null;
 
@@ -86,117 +89,64 @@ export class SiteUserDashboardComponent implements OnInit {
       return;
     }
 
-    // Load all tasks assigned to this site
-    this.taskService.getAll().subscribe({
-      next: (tasks) => {
-        console.log('Loaded tasks:', tasks);
-        this.processTasks(tasks, siteId);
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+
+    // Load checklists for today for this site
+    this.checklistService.getAll(siteId, undefined, undefined, today, today).subscribe({
+      next: (checklists) => {
+        console.log('Loaded checklists for today:', checklists);
+        this.processChecklists(checklists);
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error loading tasks:', err);
-        this.error = 'Failed to load tasks';
+        console.error('Error loading checklists:', err);
+        this.error = 'Failed to load checklists';
         this.loading = false;
       }
     });
   }
 
-  processTasks(tasks: Task[], siteId: number): void {
+  processChecklists(checklists: Checklist[]): void {
     this.openTasks = [];
     this.missedTasks = [];
     this.openingLaterTasks = [];
 
-    const now = new Date();
-    const currentTime = now.getHours() * 60 + now.getMinutes();
+    checklists.forEach(checklist => {
+      const category = this.categoriesMap.get(checklist.category_id);
 
-    console.log('Current time (minutes):', currentTime);
-
-    // Filter tasks assigned to this site
-    const siteTasks = tasks.filter(t => {
-      const isAssigned = t.site_ids?.includes(siteId) || t.assigned_sites?.includes(siteId);
-      console.log(`Task ${t.id} (${t.name}) assigned to site ${siteId}:`, isAssigned);
-      return isAssigned;
-    });
-
-    console.log(`Found ${siteTasks.length} tasks for site ${siteId}`);
-
-    siteTasks.forEach(task => {
-      // Get category from map
-      const category = this.categoriesMap.get(task.category_id);
-
-      if (!category || !category.closes_at) {
-        console.log(`Task ${task.id} has no category or closes_at time, skipping`);
+      if (!category) {
+        console.log(`Checklist ${checklist.id} has no category, skipping`);
         return;
       }
 
-      const closesAt = category.closes_at;
-      const timeParts = closesAt.split(':');
-      const hours = parseInt(timeParts[0], 10);
-      const minutes = parseInt(timeParts[1], 10);
-      const closeTimeMinutes = hours * 60 + minutes;
-
-      console.log(`Task ${task.id}: closes at ${closesAt} (${closeTimeMinutes} minutes), current: ${currentTime} minutes`);
-
-      const taskCard: TaskCard = {
-        id: task.id!,
-        taskName: task.name,
+      const card: ChecklistCard = {
+        id: checklist.id,
         categoryName: category.name,
-        closesAt: this.formatClosesAt(closesAt),
-        timeInfo: '',
-        status: 'open'
+        totalItems: checklist.total_items || 0,
+        completedItems: checklist.completed_items || 0,
+        completionPercentage: checklist.completion_percentage || 0,
+        status: checklist.status,
+        dueDate: checklist.checklist_date
       };
 
-      if (currentTime > closeTimeMinutes) {
-        const minutesSince = currentTime - closeTimeMinutes;
-        taskCard.timeInfo = this.calculateTimeSince(minutesSince);
-        taskCard.status = 'missed';
-        this.missedTasks.push(taskCard);
-        console.log(`Task ${task.id} is MISSED (${minutesSince} minutes past close time)`);
-      } else {
-        const minutesUntil = closeTimeMinutes - currentTime;
-        taskCard.timeInfo = this.calculateTimeUntil(minutesUntil);
-        taskCard.status = 'open';
-        this.openTasks.push(taskCard);
-        console.log(`Task ${task.id} is OPEN (${minutesUntil} minutes until close time)`);
+      switch (checklist.status) {
+        case ChecklistStatus.PENDING:
+        case ChecklistStatus.IN_PROGRESS:
+          this.openTasks.push(card);
+          break;
+        case ChecklistStatus.COMPLETED:
+          // Don't show completed for now
+          break;
+        case ChecklistStatus.OVERDUE:
+          this.missedTasks.push(card);
+          break;
       }
     });
 
-    console.log('Task categorization complete:');
-    console.log('- Open tasks:', this.openTasks.length);
-    console.log('- Missed tasks:', this.missedTasks.length);
-  }
-
-  calculateTimeUntil(minutes: number): string {
-    if (minutes < 60) {
-      return `Closes in ${minutes} minute${minutes !== 1 ? 's' : ''}`;
-    }
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (mins === 0) {
-      return `Closes in ${hours} hour${hours !== 1 ? 's' : ''}`;
-    }
-    return `Closes in ${hours}h ${mins}m`;
-  }
-
-  calculateTimeSince(minutes: number): string {
-    if (minutes < 60) {
-      return `Missed by ${minutes} minute${minutes !== 1 ? 's' : ''}`;
-    }
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (mins === 0) {
-      return `Missed by ${hours} hour${hours !== 1 ? 's' : ''}`;
-    }
-    return `Missed by ${hours}h ${mins}m`;
-  }
-
-  formatClosesAt(time: string): string {
-    const parts = time.split(':');
-    let hours = parseInt(parts[0], 10);
-    const minutes = parts[1];
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12 || 12;
-    return `${hours}:${minutes} ${ampm}`;
+    console.log('Checklist categorization complete:');
+    console.log('- Open (pending/in-progress):', this.openTasks.length);
+    console.log('- Missed (overdue):', this.missedTasks.length);
   }
 
   loadMyDefects(): void {
@@ -215,12 +165,12 @@ export class SiteUserDashboardComponent implements OnInit {
     });
   }
 
-  viewTask(taskId: number): void {
-    this.router.navigate(['/site-user/tasks', taskId]);
+  viewTask(checklistId: number): void {
+    this.router.navigate(['/checklists', checklistId, 'complete']);
   }
 
   viewDefect(defectId: number): void {
-    this.router.navigate(['/site-user/defects', defectId]);
+    this.router.navigate(['/defects', defectId, 'edit']);
   }
 
   getSeverityColor(severity: string): string {
@@ -249,5 +199,81 @@ export class SiteUserDashboardComponent implements OnInit {
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  }
+
+  formatDueDate(dueDate: string): string {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+
+    const diffTime = due.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+      return 'Today';
+    } else if (diffDays === 1) {
+      return 'Tomorrow';
+    } else if (diffDays > 0 && diffDays <= 7) {
+      return `Due in ${diffDays} days`;
+    } else if (diffDays > 7 && diffDays <= 30) {
+      return 'Due this month';
+    } else if (diffDays < 0 && diffDays >= -7) {
+      return `Overdue by ${Math.abs(diffDays)} days`;
+    } else if (diffDays < -7) {
+      return 'Overdue';
+    }
+
+    return due.toLocaleDateString();
+  }
+
+  toggleChecklist(checklistId: number): void {
+    if (this.expandedChecklists.has(checklistId)) {
+      // Collapse the checklist
+      this.expandedChecklists.delete(checklistId);
+    } else {
+      // Expand the checklist
+      this.expandedChecklists.add(checklistId);
+
+      // Load items if not already loaded
+      if (!this.checklistItems.has(checklistId)) {
+        this.loadChecklistItems(checklistId);
+      }
+    }
+  }
+
+  loadChecklistItems(checklistId: number): void {
+    this.loadingItems.add(checklistId);
+
+    this.checklistService.getById(checklistId).subscribe({
+      next: (checklist) => {
+        this.checklistItems.set(checklistId, checklist.items || []);
+        this.loadingItems.delete(checklistId);
+      },
+      error: (err) => {
+        console.error('Error loading checklist items:', err);
+        this.loadingItems.delete(checklistId);
+      }
+    });
+  }
+
+  toggleItem(checklistId: number, item: ChecklistItem): void {
+    const newCompletedState = !item.is_completed;
+
+    this.checklistService.updateItem(checklistId, item.id, {
+      is_completed: newCompletedState
+    }).subscribe({
+      next: () => {
+        // Update the item in the local state
+        item.is_completed = newCompletedState;
+
+        // Reload the checklist to update progress
+        this.loadChecklists();
+      },
+      error: (err) => {
+        console.error('Error updating checklist item:', err);
+      }
+    });
   }
 }
