@@ -31,6 +31,7 @@ export class SiteUserDashboardComponent implements OnInit {
   openTasks: ChecklistCard[] = [];
   missedTasks: ChecklistCard[] = [];
   completedTasks: ChecklistCard[] = [];
+  futureTasks: ChecklistCard[] = [];
   openingLaterTasks: ChecklistCard[] = [];
 
   // Defects
@@ -91,13 +92,20 @@ export class SiteUserDashboardComponent implements OnInit {
     }
 
     // Get today's date in YYYY-MM-DD format
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
 
-    // Load checklists for today for this site
-    this.checklistService.getAll(siteId, undefined, undefined, today, today).subscribe({
+    // Get end of current month
+    const futureDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    const futureDateStr = futureDate.toISOString().split('T')[0];
+
+    // Load checklists from today to end of current month
+    console.log('Loading checklists from', todayStr, 'to', futureDateStr);
+    this.checklistService.getAll(siteId, undefined, undefined, todayStr, futureDateStr).subscribe({
       next: (checklists) => {
-        console.log('Loaded checklists for today:', checklists);
-        this.processChecklists(checklists);
+        console.log('Loaded checklists:', checklists);
+        console.log('Number of checklists loaded:', checklists.length);
+        this.processChecklists(checklists, todayStr);
         this.loading = false;
       },
       error: (err) => {
@@ -108,11 +116,16 @@ export class SiteUserDashboardComponent implements OnInit {
     });
   }
 
-  processChecklists(checklists: Checklist[]): void {
+  processChecklists(checklists: Checklist[], todayStr: string): void {
     this.openTasks = [];
     this.missedTasks = [];
     this.completedTasks = [];
+    this.futureTasks = [];
     this.openingLaterTasks = [];
+
+    const today = new Date(todayStr);
+    today.setHours(0, 0, 0, 0);
+    console.log('Today (for comparison):', today.toISOString(), '(timestamp:', today.getTime(), ')');
 
     checklists.forEach(checklist => {
       const category = this.categoriesMap.get(checklist.category_id);
@@ -132,22 +145,52 @@ export class SiteUserDashboardComponent implements OnInit {
         dueDate: checklist.checklist_date
       };
 
+      const checklistDate = new Date(checklist.checklist_date);
+      checklistDate.setHours(0, 0, 0, 0);
+
+      console.log(`Checklist ${checklist.id} (${category.name}):`,
+                  'Date:', checklist.checklist_date,
+                  'Parsed:', checklistDate.toISOString(),
+                  'Timestamp:', checklistDate.getTime(),
+                  'Status:', checklist.status,
+                  'Frequency:', category.frequency,
+                  'Is future?', checklistDate > today);
+
       switch (checklist.status) {
         case ChecklistStatus.PENDING:
         case ChecklistStatus.IN_PROGRESS:
-          this.openTasks.push(card);
+          // Check if the due date is in the future (not today)
+          if (checklistDate > today) {
+            // Exclude daily tasks from future tasks (based on category name)
+            const dailyCategories = ['opening checks', 'closing checks', 'food safety', 'cleaning', 'morning checks', 'afternoon checks', 'evening checks'];
+            const isDailyTask = dailyCategories.some(dc => category.name.toLowerCase().includes(dc));
+
+            if (isDailyTask) {
+              console.log(`  -> Skipping FUTURE tasks (daily category: ${category.name})`);
+              // Don't add daily tasks to future section
+            } else {
+              console.log(`  -> Adding to FUTURE tasks`);
+              this.futureTasks.push(card);
+            }
+          } else {
+            console.log(`  -> Adding to OPEN tasks`);
+            this.openTasks.push(card);
+          }
           break;
         case ChecklistStatus.COMPLETED:
+          console.log(`  -> Adding to COMPLETED tasks`);
           this.completedTasks.push(card);
           break;
         case ChecklistStatus.OVERDUE:
+          console.log(`  -> Adding to MISSED tasks`);
           this.missedTasks.push(card);
           break;
       }
     });
 
     console.log('Checklist categorization complete:');
-    console.log('- Open (pending/in-progress):', this.openTasks.length);
+    console.log('- Open (pending/in-progress - due today):', this.openTasks.length);
+    console.log('- Future (pending/in-progress - due later):', this.futureTasks.length);
     console.log('- Missed (overdue):', this.missedTasks.length);
     console.log('- Completed:', this.completedTasks.length);
   }

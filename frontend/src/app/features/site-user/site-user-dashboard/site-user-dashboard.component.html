@@ -104,7 +104,7 @@
               <mat-spinner diameter="30"></mat-spinner>
               <span>Loading checklist items...</span>
             </div>
-            <div class="items-list" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id)">
+            <div class="items-list" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id) && checklistItems.get(checklist.id)!.length > 0">
               <div class="checklist-item" *ngFor="let item of checklistItems.get(checklist.id)">
                 <mat-checkbox
                   [checked]="item.is_completed"
@@ -112,6 +112,9 @@
                   {{ item.item_name }}
                 </mat-checkbox>
               </div>
+            </div>
+            <div class="empty-items" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id) && checklistItems.get(checklist.id)!.length === 0">
+              <p>No checklist items configured</p>
             </div>
           </div>
         </mat-card>
@@ -150,7 +153,7 @@
               <mat-spinner diameter="30"></mat-spinner>
               <span>Loading checklist items...</span>
             </div>
-            <div class="items-list" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id)">
+            <div class="items-list" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id) && checklistItems.get(checklist.id)!.length > 0">
               <div class="checklist-item" *ngFor="let item of checklistItems.get(checklist.id)">
                 <mat-checkbox
                   [checked]="item.is_completed"
@@ -158,6 +161,58 @@
                   {{ item.item_name }}
                 </mat-checkbox>
               </div>
+            </div>
+            <div class="empty-items" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id) && checklistItems.get(checklist.id)!.length === 0">
+              <p>No checklist items configured</p>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </section>
+
+    <!-- Future Checklists Section -->
+    <section class="task-section" *ngIf="futureTasks.length > 0">
+      <h2>
+        <mat-icon>event</mat-icon>
+        Open, but not due today ({{ futureTasks.length }})
+      </h2>
+
+      <div class="task-grid">
+        <mat-card *ngFor="let checklist of futureTasks" class="task-card future">
+          <div class="card-compact-header" (click)="toggleChecklist(checklist.id)">
+            <div class="header-left">
+              <span class="items-count future-count">{{ checklist.completedItems }}/{{ checklist.totalItems }}</span>
+              <h3 class="checklist-title-compact">{{ checklist.categoryName }}</h3>
+            </div>
+            <div class="header-right">
+              <span class="due-date-compact future-date">
+                <mat-icon>event</mat-icon>
+                {{ formatDueDate(checklist.dueDate) }}
+              </span>
+              <mat-icon class="expand-icon">{{ expandedChecklists.has(checklist.id) ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </div>
+          </div>
+
+          <div class="progress-bar-compact future-progress">
+            <mat-progress-bar mode="determinate" [value]="checklist.completionPercentage"></mat-progress-bar>
+          </div>
+
+          <div class="checklist-items" *ngIf="expandedChecklists.has(checklist.id)">
+            <div class="items-loading" *ngIf="loadingItems.has(checklist.id)">
+              <mat-spinner diameter="30"></mat-spinner>
+              <span>Loading checklist items...</span>
+            </div>
+            <div class="items-list" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id) && checklistItems.get(checklist.id)!.length > 0">
+              <div class="checklist-item" *ngFor="let item of checklistItems.get(checklist.id)">
+                <mat-checkbox
+                  [checked]="item.is_completed"
+                  (change)="toggleItem(checklist.id, item)">
+                  {{ item.item_name }}
+                </mat-checkbox>
+              </div>
+            </div>
+            <div class="empty-items" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id) && checklistItems.get(checklist.id)!.length === 0">
+              <p>No checklist items configured</p>
             </div>
           </div>
         </mat-card>
