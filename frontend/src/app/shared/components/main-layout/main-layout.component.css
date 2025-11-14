@@ -1,5 +1,10 @@
 /* Custom styles that can't be achieved with Tailwind */
 
+/* Navigation item styling */
+.nav-item {
+  position: relative;
+}
+
 /* Active nav item indicator (left border animation) */
 .nav-item::before {
   content: '';
@@ -8,14 +13,24 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background-color: #2563EB;
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  border-radius: 0 4px 4px 0;
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 200ms ease;
 }
 
+.nav-item-active {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%);
+  color: white !important;
+}
+
 .nav-item-active::before {
   transform: scaleX(1);
+}
+
+.nav-item-active i {
+  color: #60a5fa !important;
 }
 
 /* Ensure Material Design components work well */

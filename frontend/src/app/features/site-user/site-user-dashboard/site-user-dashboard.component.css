@@ -8,27 +8,199 @@
 
 .dashboard-header {
   margin-bottom: 40px;
-  padding: 24px;
+  padding: 24px 32px;
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+}
+
+.header-left-section {
+  flex: 1;
 }
 
 .dashboard-header h1 {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   letter-spacing: -0.5px;
 }
 
 .dashboard-header p {
-  font-size: 16px;
+  font-size: 14px;
   color: #6b7280;
   font-weight: 500;
+  margin: 0;
+}
+
+.header-stats {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+}
+
+/* Circular Progress */
+.circular-progress-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.circular-progress-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-background {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 8;
+}
+
+.progress-fill {
+  fill: none;
+  stroke: #3b82f6;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 283; /* 2 * PI * 45 */
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.progress-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.progress-percentage {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e40af;
+  line-height: 1;
+}
+
+.progress-text {
+  display: block;
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+/* Stat Cards */
+.stat-card {
+  padding: 16px 20px;
+  border-radius: 12px;
+  gap: 12px;
+  min-width: 120px;
+  transition: all 0.3s ease;
+}
+
+.stat-card.due-today {
+  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+  border: 2px solid #93c5fd;
+}
+
+.stat-card.due-today:hover {
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+.stat-card.missed {
+  background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+  border: 2px solid #fca5a5;
+}
+
+.stat-card.missed:hover {
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+  transform: translateY(-2px);
+}
+
+.stat-card.completed {
+  background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+  border: 2px solid #86efac;
+}
+
+.stat-card.completed:hover {
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.stat-card.due-today .stat-icon {
+  color: #2563eb;
+}
+
+.stat-card.missed .stat-icon {
+  color: #dc2626;
+}
+
+.stat-card.completed .stat-icon {
+  color: #16a34a;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-card.due-today .stat-number {
+  color: #1e40af;
+}
+
+.stat-card.missed .stat-number {
+  color: #991b1b;
+}
+
+.stat-card.completed .stat-number {
+  color: #166534;
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card.due-today .stat-label {
+  color: #1e40af;
+}
+
+.stat-card.missed .stat-label {
+  color: #991b1b;
+}
+
+.stat-card.completed .stat-label {
+  color: #166534;
 }
 
 .loading-container {
@@ -91,28 +263,39 @@
 }
 
 .task-card {
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   background: white;
   padding: 0;
+  border: 1px solid #e5e7eb;
 }
 
 .task-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
 }
 
 .task-card.open {
-  border-left: 4px solid #3b82f6;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+  border: 1px solid #bfdbfe;
 }
 
 .task-card.missed {
-  border-left: 4px solid #ef4444;
+  background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+  border: 1px solid #fecaca;
 }
 
 .task-card.later {
-  border-left: 4px solid #9ca3af;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  border: 1px solid #d1d5db;
+}
+
+.task-card.completed {
+  background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+  border: 1px solid #d1d5db;
+  opacity: 0.7;
 }
 
 .card-compact-header {
@@ -144,17 +327,28 @@
 .items-count {
   font-size: 12px;
   font-weight: 700;
-  color: #6b7280;
-  background-color: #e5e7eb;
-  padding: 4px 8px;
-  border-radius: 4px;
-  min-width: 45px;
+  color: #3b82f6;
+  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+  padding: 6px 12px;
+  border-radius: 20px;
+  min-width: 50px;
   text-align: center;
+  border: 1px solid #93c5fd;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
 }
 
 .items-count.overdue-count {
-  background-color: #fee2e2;
+  background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
   color: #dc2626;
+  border: 1px solid #fca5a5;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.1);
+}
+
+.items-count.completed-count {
+  background: linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 100%);
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 2px 4px rgba(107, 114, 128, 0.1);
 }
 
 .checklist-title-compact {
@@ -183,6 +377,10 @@
   color: #dc2626;
 }
 
+.due-date-compact.completed-date {
+  color: #6b7280;
+}
+
 .expand-icon {
   color: #9ca3af;
   cursor: pointer;
@@ -196,6 +394,14 @@
 
 .progress-bar-compact mat-progress-bar {
   height: 4px;
+}
+
+.progress-bar-compact.completed-progress ::ng-deep .mdc-linear-progress__bar-inner {
+  border-color: #22c55e !important;
+}
+
+.progress-bar-compact.completed-progress ::ng-deep .mdc-linear-progress__buffer-bar {
+  background-color: #dcfce7 !important;
 }
 
 .category-badge {

@@ -30,6 +30,7 @@ export class SiteUserDashboardComponent implements OnInit {
   // Checklist arrays
   openTasks: ChecklistCard[] = [];
   missedTasks: ChecklistCard[] = [];
+  completedTasks: ChecklistCard[] = [];
   openingLaterTasks: ChecklistCard[] = [];
 
   // Defects
@@ -110,6 +111,7 @@ export class SiteUserDashboardComponent implements OnInit {
   processChecklists(checklists: Checklist[]): void {
     this.openTasks = [];
     this.missedTasks = [];
+    this.completedTasks = [];
     this.openingLaterTasks = [];
 
     checklists.forEach(checklist => {
@@ -136,7 +138,7 @@ export class SiteUserDashboardComponent implements OnInit {
           this.openTasks.push(card);
           break;
         case ChecklistStatus.COMPLETED:
-          // Don't show completed for now
+          this.completedTasks.push(card);
           break;
         case ChecklistStatus.OVERDUE:
           this.missedTasks.push(card);
@@ -147,6 +149,7 @@ export class SiteUserDashboardComponent implements OnInit {
     console.log('Checklist categorization complete:');
     console.log('- Open (pending/in-progress):', this.openTasks.length);
     console.log('- Missed (overdue):', this.missedTasks.length);
+    console.log('- Completed:', this.completedTasks.length);
   }
 
   loadMyDefects(): void {
@@ -201,6 +204,15 @@ export class SiteUserDashboardComponent implements OnInit {
     }
   }
 
+  formatDate(dateString: string): string {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
   formatDueDate(dueDate: string): string {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -225,7 +237,7 @@ export class SiteUserDashboardComponent implements OnInit {
       return 'Overdue';
     }
 
-    return due.toLocaleDateString();
+    return this.formatDate(dueDate);
   }
 
   toggleChecklist(checklistId: number): void {
@@ -275,5 +287,21 @@ export class SiteUserDashboardComponent implements OnInit {
         console.error('Error updating checklist item:', err);
       }
     });
+  }
+
+  getOverallCompletionPercentage(): number {
+    const allTasks = [...this.openTasks, ...this.missedTasks, ...this.completedTasks];
+    if (allTasks.length === 0) return 0;
+
+    const totalItems = allTasks.reduce((sum, task) => sum + task.totalItems, 0);
+    const completedItems = allTasks.reduce((sum, task) => sum + task.completedItems, 0);
+
+    return totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+  }
+
+  getProgressDashOffset(): number {
+    const percentage = this.getOverallCompletionPercentage();
+    const circumference = 2 * Math.PI * 45; // 45 is the radius
+    return circumference - (percentage / 100) * circumference;
   }
 }

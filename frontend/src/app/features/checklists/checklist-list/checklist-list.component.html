@@ -97,7 +97,7 @@
             <!-- Due Date -->
             <td class="px-6 py-4">
               <span [ngClass]="{'text-red-600 font-semibold': isOverdue(checklist), 'text-gray-800': !isOverdue(checklist)}">
-                {{ checklist.checklist_date | date:'short' }}
+                {{ checklist.checklist_date | date:'dd/MM/yyyy' }}
               </span>
             </td>
 
