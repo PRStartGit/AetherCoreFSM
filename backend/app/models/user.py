@@ -42,5 +42,10 @@ class User(Base):
         """Get user's full name."""
         return f"{self.first_name} {self.last_name}"
 
+    @property
+    def site_ids(self):
+        """Get list of site IDs assigned to this user."""
+        return [us.site_id for us in self.user_sites]
+
     def __repr__(self):
         return f"<User {self.email} ({self.role})>"
