@@ -298,6 +298,11 @@
   opacity: 0.7;
 }
 
+.task-card.future {
+  background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
+  border: 1px solid #d8b4fe;
+}
+
 .card-compact-header {
   display: flex;
   justify-content: space-between;
@@ -351,6 +356,13 @@
   box-shadow: 0 2px 4px rgba(107, 114, 128, 0.1);
 }
 
+.items-count.future-count {
+  background: linear-gradient(135deg, #e9d5ff 0%, #f3e8ff 100%);
+  color: #7c3aed;
+  border: 1px solid #c084fc;
+  box-shadow: 0 2px 4px rgba(124, 58, 237, 0.1);
+}
+
 .checklist-title-compact {
   font-size: 16px;
   font-weight: 600;
@@ -381,6 +393,10 @@
   color: #6b7280;
 }
 
+.due-date-compact.future-date {
+  color: #7c3aed;
+}
+
 .expand-icon {
   color: #9ca3af;
   cursor: pointer;
@@ -402,6 +418,14 @@
 
 .progress-bar-compact.completed-progress ::ng-deep .mdc-linear-progress__buffer-bar {
   background-color: #dcfce7 !important;
+}
+
+.progress-bar-compact.future-progress ::ng-deep .mdc-linear-progress__bar-inner {
+  border-color: #7c3aed !important;
+}
+
+.progress-bar-compact.future-progress ::ng-deep .mdc-linear-progress__buffer-bar {
+  background-color: #f3e8ff !important;
 }
 
 .category-badge {
@@ -509,6 +533,14 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.empty-items {
+  padding: 24px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+  font-style: italic;
 }
 
 .checklist-item {
