@@ -1,5 +1,11 @@
-<!-- Simple Sidebar -->
-<div class="w-60 bg-gray-800 h-screen fixed left-0 top-0 z-50 flex flex-col">
+<!-- Mobile Overlay Backdrop -->
+<div *ngIf="isMobileMenuOpen"
+     (click)="closeMobileMenu()"
+     class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden transition-opacity"></div>
+
+<!-- Sidebar - Responsive -->
+<div [class.translate-x-0]="isMobileMenuOpen"
+     class="w-60 bg-gray-800 h-screen fixed left-0 top-0 z-50 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
   <div class="p-4 border-b border-gray-700">
     <h1 class="text-white text-xl font-bold">AetherCoreFSM</h1>
     <p class="text-gray-400 text-xs mt-1">Site Monitoring</p>
@@ -7,6 +13,7 @@
   <nav class="mt-2 px-2 flex-1 overflow-y-auto">
     <a *ngFor="let item of navigationItems"
        [routerLink]="item.route"
+       (click)="closeMobileMenu()"
        routerLinkActive="nav-item-active"
        class="nav-item flex items-center gap-4 py-3.5 px-4 text-gray-300 text-sm font-medium hover:bg-gray-700 hover:text-white cursor-pointer rounded-lg mb-2 transition-all duration-200">
       <i [class]="item.icon + ' text-lg w-5 text-center'"></i>
@@ -33,25 +40,30 @@
   </div>
 </div>
 
-<!-- Top Bar -->
-<div class="fixed top-0 left-60 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-10">
+<!-- Top Bar - Responsive -->
+<div class="fixed top-0 left-0 md:left-60 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 z-10">
   <div class="flex items-center gap-4">
-    <!-- Empty for now -->
+    <!-- Hamburger Menu Button (Mobile Only) -->
+    <button (click)="toggleMobileMenu()"
+            class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors">
+      <i class="fa-solid fa-bars text-gray-700 text-xl"></i>
+    </button>
   </div>
-  <div class="flex items-center gap-4">
+  <div class="flex items-center gap-2 md:gap-4">
     <!-- Notification Icon -->
     <button class="w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors relative flex items-center justify-center">
-      <i class="fa-solid fa-bell text-gray-700 text-xl"></i>
+      <i class="fa-solid fa-bell text-gray-700 text-lg md:text-xl"></i>
       <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
     </button>
 
-    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
+    <!-- User Avatar -->
+    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold text-sm">
       {{ user?.full_name?.charAt(0) || 'U' }}
     </div>
   </div>
 </div>
 
-<!-- Main Content -->
-<div class="ml-60 pt-16">
+<!-- Main Content - Responsive -->
+<div class="md:ml-60 pt-16">
   <router-outlet></router-outlet>
 </div>

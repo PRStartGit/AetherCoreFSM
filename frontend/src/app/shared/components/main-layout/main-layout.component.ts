@@ -12,6 +12,7 @@ export class MainLayoutComponent implements OnInit {
   user: User | null = null;
   UserRole = UserRole;
   sidenavOpened = true;
+  isMobileMenuOpen = false;
 
   navigationItems: any[] = [];
 
@@ -25,6 +26,14 @@ export class MainLayoutComponent implements OnInit {
       this.user = state.user;
       this.updateNavigation();
     });
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
   }
 
   updateNavigation(): void {
