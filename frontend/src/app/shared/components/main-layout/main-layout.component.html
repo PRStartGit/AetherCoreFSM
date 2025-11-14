@@ -23,7 +23,6 @@
         </div>
         <div class="text-white text-sm min-w-0 flex-1">
           <div class="font-semibold truncate">{{ user.full_name }}</div>
-          <div class="text-gray-400 text-xs truncate mt-0.5">{{ user.role.replace('_', ' ') | titlecase }}</div>
         </div>
       </div>
       <button (click)="logout()"
