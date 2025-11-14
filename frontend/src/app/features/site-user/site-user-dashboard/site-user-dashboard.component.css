@@ -753,3 +753,241 @@ mat-card-content {
   color: #166534;
   border: 1px solid #22c55e;
 }
+
+/* ========================================
+   RESPONSIVE DESIGN - MOBILE FIRST
+   ======================================== */
+
+/* Tablet and below (< 1024px) */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    padding: 24px 16px;
+  }
+
+  .task-grid {
+    gap: 16px;
+  }
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px 12px;
+  }
+
+  /* Dashboard Header - Stack Layout */
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px 16px;
+  }
+
+  .header-left-section {
+    width: 100%;
+  }
+
+  .dashboard-header h1 {
+    font-size: 24px;
+  }
+
+  /* Stats Section - Grid Layout on Mobile */
+  .header-stats {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Circular Progress - Span Full Width */
+  .stat-item.progress-circular {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+
+  .circular-progress-container {
+    width: 80px;
+    height: 80px;
+  }
+
+  .progress-percentage {
+    font-size: 20px;
+  }
+
+  .progress-text {
+    font-size: 10px;
+  }
+
+  /* Stat Cards - Smaller on Mobile */
+  .stat-card {
+    min-width: unset;
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .stat-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+
+  .stat-number {
+    font-size: 20px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+  }
+
+  /* Task Sections */
+  .task-section h2 {
+    font-size: 18px;
+    padding: 12px 16px;
+  }
+
+  .task-section h2 mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .task-grid {
+    gap: 12px;
+  }
+
+  /* Task Cards - More Compact */
+  .task-card {
+    padding: 14px;
+  }
+
+  .card-compact-header {
+    gap: 8px;
+  }
+
+  .items-count {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .checklist-title-compact {
+    font-size: 14px;
+  }
+
+  .due-date-compact {
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .due-date-compact mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+
+  .expand-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Checklist Items */
+  .checklist-items {
+    padding: 12px 8px;
+    gap: 8px;
+  }
+
+  .checklist-item {
+    padding: 8px;
+  }
+
+  /* Defects Section */
+  .defects-section {
+    padding: 16px 12px;
+  }
+
+  .defect-card {
+    padding: 14px;
+  }
+
+  .severity-badge,
+  .status-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  /* Loading and Error States */
+  .loading-container,
+  .error-container {
+    padding: 24px 16px;
+  }
+
+  .empty-state {
+    padding: 24px 16px;
+  }
+
+  .empty-state mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* Small Mobile (< 480px) */
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 12px 8px;
+  }
+
+  .dashboard-header {
+    padding: 16px 12px;
+    gap: 16px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 20px;
+  }
+
+  .dashboard-header p {
+    font-size: 12px;
+  }
+
+  /* Stats Grid - Full Width Stacked */
+  .header-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .circular-progress-container {
+    width: 70px;
+    height: 70px;
+  }
+
+  .progress-percentage {
+    font-size: 18px;
+  }
+
+  .stat-card {
+    padding: 10px;
+  }
+
+  .stat-number {
+    font-size: 18px;
+  }
+
+  .task-section h2 {
+    font-size: 16px;
+    padding: 10px 12px;
+  }
+
+  .task-card {
+    padding: 12px;
+  }
+
+  .checklist-title-compact {
+    font-size: 13px;
+  }
+
+  .due-date-compact {
+    font-size: 10px;
+  }
+}
