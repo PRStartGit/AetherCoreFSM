@@ -64,10 +64,21 @@ def list_defects(
     if severity_filter:
         query = query.filter(Defect.severity == severity_filter)
 
-    # Filter by organization (non-super-admins)
-    if current_user.role != UserRole.SUPER_ADMIN:
+    # Filter by organization and user sites
+    if current_user.role == UserRole.SUPER_ADMIN:
+        # Super admins see all defects
+        pass
+    elif current_user.role == UserRole.ORG_ADMIN:
+        # Org admins see all defects in their organization
         from app.models.site import Site
         query = query.join(Site).filter(Site.organization_id == current_user.organization_id)
+    elif current_user.role == UserRole.SITE_USER:
+        # Site users only see defects for their assigned sites
+        assigned_site_ids = [us.site_id for us in current_user.user_sites]
+        if not assigned_site_ids:
+            # Return empty list if user has no assigned sites
+            return []
+        query = query.filter(Defect.site_id.in_(assigned_site_ids))
 
     defects = query.order_by(Defect.created_at.desc()).offset(skip).limit(limit).all()
 
@@ -76,6 +87,7 @@ def list_defects(
     for defect in defects:
         defect_dict = {
             **defect.__dict__,
+            "reported_by": defect.reported_by_id,  # Add alias for frontend compatibility
             "reporter_name": defect.reported_by.full_name if defect.reported_by else None,
             "site_name": defect.site.name if defect.site else None
         }
@@ -109,6 +121,7 @@ def get_defect(
 
     defect_dict = {
         **defect.__dict__,
+        "reported_by": defect.reported_by_id,  # Add alias for frontend compatibility
         "reporter_name": defect.reported_by.full_name if defect.reported_by else None,
         "site_name": defect.site.name if defect.site else None
     }

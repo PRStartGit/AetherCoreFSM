@@ -5,6 +5,7 @@ from app.core.database import get_db
 from app.core.dependencies import get_current_org_admin, get_current_user
 from app.core.security import get_password_hash
 from app.models.user import User, UserRole
+from app.models.user_site import UserSite
 from app.schemas.user import UserCreate, UserUpdate, UserResponse
 
 router = APIRouter()
@@ -56,6 +57,16 @@ def create_user(
     db.commit()
     db.refresh(new_user)
 
+    # Assign sites if provided
+    if user_data.site_ids:
+        for site_id in user_data.site_ids:
+            user_site = UserSite(user_id=new_user.id, site_id=site_id)
+            db.add(user_site)
+        db.commit()
+
+    # Load site_ids for response
+    new_user.site_ids = [us.site_id for us in new_user.user_sites]
+
     return new_user
 
 
@@ -79,6 +90,11 @@ def list_users(
         query = query.filter(User.organization_id == current_user.organization_id)
 
     users = query.offset(skip).limit(limit).all()
+
+    # Load site_ids for each user
+    for user in users:
+        user.site_ids = [us.site_id for us in user.user_sites]
+
     return users
 
 
@@ -104,6 +120,9 @@ def get_user(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Not enough permissions"
             )
+
+    # Load site_ids for response
+    user.site_ids = [us.site_id for us in user.user_sites]
 
     return user
 
@@ -140,11 +159,26 @@ def update_user(
 
     # Update fields
     update_data = user_data.model_dump(exclude_unset=True)
+    site_ids = update_data.pop('site_ids', None)
+
     for field, value in update_data.items():
         setattr(user, field, value)
 
+    # Update site assignments if provided
+    if site_ids is not None:
+        # Remove existing site assignments
+        db.query(UserSite).filter(UserSite.user_id == user_id).delete()
+
+        # Add new site assignments
+        for site_id in site_ids:
+            user_site = UserSite(user_id=user_id, site_id=site_id)
+            db.add(user_site)
+
     db.commit()
     db.refresh(user)
+
+    # Load site_ids for response
+    user.site_ids = [us.site_id for us in user.user_sites]
 
     return user
 

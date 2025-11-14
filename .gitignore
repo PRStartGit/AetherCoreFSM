@@ -81,3 +81,17 @@ alembic.ini
 # Uploads
 uploads/
 media/
+
+# Windows junk files
+nul
+*.nul
+
+# Temporary/backup files
+*.tmp
+*.bak
+*.orig
+
+# Seed/utility scripts (comment out if needed)
+# backend/*seed*.py
+# backend/*test*.py
+# backend/reset_database.py

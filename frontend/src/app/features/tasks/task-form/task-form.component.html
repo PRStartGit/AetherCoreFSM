@@ -1,69 +1,117 @@
-<h2 mat-dialog-title>{{ isEditMode ? 'Edit Task' : 'New Task' }}</h2>
+<div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+  <!-- Header -->
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h2 class="text-xl font-bold text-gray-900">
+      {{ isEditMode ? 'Edit Task' : 'New Task' }}
+    </h2>
+    <p class="text-sm text-gray-600 mt-1">
+      {{ isEditMode ? 'Update task details' : 'Create a new checklist task' }}
+    </p>
+  </div>
 
-<mat-dialog-content>
-  <form [formGroup]="taskForm">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Name</mat-label>
-      <input matInput formControlName="name" placeholder="e.g., Check fire extinguishers">
-      <mat-error *ngIf="taskForm.get('name')?.hasError('required')">
-        Name is required
-      </mat-error>
-      <mat-error *ngIf="taskForm.get('name')?.hasError('maxlength')">
-        Name cannot exceed 200 characters
-      </mat-error>
-    </mat-form-field>
+  <!-- Content -->
+  <div class="px-6 py-4 overflow-y-auto flex-1">
+    <form [formGroup]="taskForm" class="flex flex-col gap-5">
+      <!-- Name -->
+      <div>
+        <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+          Name <span class="text-red-500">*</span>
+        </label>
+        <input type="text"
+               id="name"
+               formControlName="name"
+               placeholder="e.g., Check fire extinguishers"
+               class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+               [ngClass]="taskForm.get('name')?.invalid && taskForm.get('name')?.touched ? 'border-red-500' : 'border-gray-300'">
+        <p *ngIf="taskForm.get('name')?.hasError('required') && taskForm.get('name')?.touched"
+           class="mt-1 text-sm text-red-600">
+          Name is required
+        </p>
+        <p *ngIf="taskForm.get('name')?.hasError('maxlength') && taskForm.get('name')?.touched"
+           class="mt-1 text-sm text-red-600">
+          Name cannot exceed 200 characters
+        </p>
+      </div>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description" rows="3" placeholder="Description of this task"></textarea>
-    </mat-form-field>
+      <!-- Description -->
+      <div>
+        <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">
+          Description
+        </label>
+        <textarea id="description"
+                  formControlName="description"
+                  rows="3"
+                  placeholder="Description of this task"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+      </div>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Category</mat-label>
-      <mat-select formControlName="category_id">
-        <mat-option *ngFor="let category of categories" [value]="category.id">
-          {{ category.name }}
-        </mat-option>
-      </mat-select>
-      <mat-error *ngIf="taskForm.get('category_id')?.hasError('required')">
-        Category is required
-      </mat-error>
-    </mat-form-field>
+      <!-- Category -->
+      <div>
+        <label for="category_id" class="block text-sm font-semibold text-gray-700 mb-2">
+          Category <span class="text-red-500">*</span>
+        </label>
+        <select id="category_id"
+                formControlName="category_id"
+                class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="taskForm.get('category_id')?.invalid && taskForm.get('category_id')?.touched ? 'border-red-500' : 'border-gray-300'">
+          <option value="">Select category</option>
+          <option *ngFor="let category of categories" [value]="category.id">
+            {{ category.name }} ({{ category.frequency | titlecase }})
+          </option>
+        </select>
+        <p *ngIf="taskForm.get('category_id')?.hasError('required') && taskForm.get('category_id')?.touched"
+           class="mt-1 text-sm text-red-600">
+          Category is required
+        </p>
+        <p class="mt-1 text-xs text-gray-500">Frequency is inherited from the selected category</p>
+      </div>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Frequency</mat-label>
-      <mat-select formControlName="frequency">
-        <mat-option *ngFor="let freq of frequencies" [value]="freq">
-          {{ freq | titlecase }}
-        </mat-option>
-      </mat-select>
-      <mat-error *ngIf="taskForm.get('frequency')?.hasError('required')">
-        Frequency is required
-      </mat-error>
-    </mat-form-field>
+      <!-- Assign to Sites -->
+      <div>
+        <label for="site_ids" class="block text-sm font-semibold text-gray-700 mb-2">
+          Assign to Sites
+        </label>
+        <select id="site_ids"
+                formControlName="site_ids"
+                multiple
+                size="5"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <option *ngFor="let site of sites" [value]="site.id">
+            {{ site.name }}
+          </option>
+        </select>
+        <p class="mt-1 text-xs text-gray-500">Hold Ctrl/Cmd to select multiple sites. Leave empty to assign to all sites</p>
+      </div>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Assign to Sites</mat-label>
-      <mat-select formControlName="site_ids" multiple>
-        <mat-option *ngFor="let site of sites" [value]="site.id">
-          {{ site.name }}
-        </mat-option>
-      </mat-select>
-      <mat-hint>Leave empty to assign to all sites</mat-hint>
-    </mat-form-field>
+      <!-- Active Checkbox -->
+      <div class="pt-2 border-t border-gray-200">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox"
+                 formControlName="is_active"
+                 class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+          <span class="text-sm font-medium text-gray-700">Active</span>
+        </label>
+      </div>
+    </form>
+  </div>
 
-    <div class="checkbox-group">
-      <mat-checkbox formControlName="is_active">
-        Active
-      </mat-checkbox>
-    </div>
-  </form>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()" [disabled]="loading">Cancel</button>
-  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="taskForm.invalid || loading">
-    <mat-spinner *ngIf="loading" diameter="20" class="inline-spinner"></mat-spinner>
-    <span *ngIf="!loading">{{ isEditMode ? 'Update' : 'Create' }}</span>
-  </button>
-</mat-dialog-actions>
+  <!-- Footer -->
+  <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+    <button type="button"
+            (click)="onCancel()"
+            [disabled]="loading"
+            class="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+      Cancel
+    </button>
+    <button type="button"
+            (click)="onSubmit()"
+            [disabled]="taskForm.invalid || loading"
+            class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+      <svg *ngIf="loading" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span>{{ isEditMode ? 'Update' : 'Create' }}</span>
+    </button>
+  </div>
+</div>

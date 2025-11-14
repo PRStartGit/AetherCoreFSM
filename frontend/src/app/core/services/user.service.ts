@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { User } from '../models';
 
 export interface UserCreate {
@@ -10,6 +11,7 @@ export interface UserCreate {
   role: string;
   organization_id?: number;
   site_ids?: number[];
+  is_active?: boolean;
 }
 
 export interface UserUpdate {
@@ -18,6 +20,7 @@ export interface UserUpdate {
   role?: string;
   is_active?: boolean;
   site_ids?: number[];
+  password?: string;
 }
 
 @Injectable({
@@ -33,19 +36,63 @@ export class UserService {
     if (organizationId) {
       params = params.set('organization_id', organizationId.toString());
     }
-    return this.http.get<User[]>(this.API_URL, { params });
+    return this.http.get<any[]>(this.API_URL, { params }).pipe(
+      map(users => users.map(user => this.transformUserResponse(user)))
+    );
   }
 
   getById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.API_URL}/${id}`);
+    return this.http.get<any>(`${this.API_URL}/${id}`).pipe(
+      map(user => this.transformUserResponse(user))
+    );
   }
 
   create(user: UserCreate): Observable<User> {
-    return this.http.post<User>(this.API_URL, user);
+    const nameParts = user.full_name.trim().split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+
+    const payload = {
+      email: user.email,
+      password: user.password,
+      first_name: firstName,
+      last_name: lastName,
+      role: user.role,
+      organization_id: user.organization_id,
+      site_ids: user.site_ids || [],
+      is_active: user.is_active !== undefined ? user.is_active : true
+    };
+
+    return this.http.post<any>(this.API_URL, payload).pipe(
+      map(response => this.transformUserResponse(response))
+    );
   }
 
   update(id: number, user: UserUpdate): Observable<User> {
-    return this.http.put<User>(`${this.API_URL}/${id}`, user);
+    const payload: any = {};
+
+    if (user.email !== undefined) payload.email = user.email;
+    if (user.role !== undefined) payload.role = user.role;
+    if (user.is_active !== undefined) payload.is_active = user.is_active;
+    if (user.site_ids !== undefined) payload.site_ids = user.site_ids;
+    if (user.password !== undefined && user.password) payload.password = user.password;
+
+    if (user.full_name !== undefined) {
+      const nameParts = user.full_name.trim().split(' ');
+      payload.first_name = nameParts[0] || '';
+      payload.last_name = nameParts.slice(1).join(' ') || '';
+    }
+
+    return this.http.put<any>(`${this.API_URL}/${id}`, payload).pipe(
+      map(response => this.transformUserResponse(response))
+    );
+  }
+
+  private transformUserResponse(response: any): User {
+    return {
+      ...response,
+      full_name: response.full_name || `${response.first_name || ''} ${response.last_name || ''}`.trim()
+    };
   }
 
   delete(id: number): Observable<void> {

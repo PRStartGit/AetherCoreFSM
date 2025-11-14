@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from typing import List
 from datetime import date
 from app.core.database import get_db
@@ -61,7 +61,9 @@ def list_checklists(
     current_user: User = Depends(get_current_user)
 ):
     """List checklists with filters."""
-    query = db.query(Checklist)
+    from app.models.category import Category
+
+    query = db.query(Checklist).options(joinedload(Checklist.category))
 
     # Filter by site
     if site_id:
@@ -77,13 +79,50 @@ def list_checklists(
     if end_date:
         query = query.filter(Checklist.checklist_date <= end_date)
 
-    # Filter by organization (non-super-admins)
-    if current_user.role != UserRole.SUPER_ADMIN:
+    # Filter by organization and user sites
+    if current_user.role == UserRole.SUPER_ADMIN:
+        # Super admins see all checklists
+        pass
+    elif current_user.role == UserRole.ORG_ADMIN:
+        # Org admins see all checklists in their organization
         from app.models.site import Site
         query = query.join(Site).filter(Site.organization_id == current_user.organization_id)
+    elif current_user.role == UserRole.SITE_USER:
+        # Site users only see checklists for their assigned sites
+        from app.models.user_site import UserSite
+        assigned_site_ids = [us.site_id for us in current_user.user_sites]
+        if not assigned_site_ids:
+            # Return empty list if user has no assigned sites
+            return []
+        query = query.filter(Checklist.site_id.in_(assigned_site_ids))
 
     checklists = query.order_by(Checklist.checklist_date.desc()).offset(skip).limit(limit).all()
-    return checklists
+
+    # Manually build response to handle time field serialization
+    result = []
+    for checklist in checklists:
+        checklist_dict = {
+            "id": checklist.id,
+            "checklist_date": checklist.checklist_date,
+            "category_id": checklist.category_id,
+            "site_id": checklist.site_id,
+            "status": checklist.status,
+            "total_items": checklist.total_items,
+            "completed_items": checklist.completed_items,
+            "completion_percentage": checklist.completion_percentage,
+            "completed_by_id": checklist.completed_by_id,
+            "created_at": checklist.created_at,
+            "completed_at": checklist.completed_at,
+            "updated_at": checklist.updated_at,
+            "category": {
+                "id": checklist.category.id,
+                "name": checklist.category.name,
+                "closes_at": checklist.category.closes_at.strftime('%H:%M:%S') if checklist.category.closes_at else None
+            } if checklist.category else None
+        }
+        result.append(checklist_dict)
+
+    return result
 
 
 @router.get("/checklists/{checklist_id}", response_model=ChecklistWithItems)

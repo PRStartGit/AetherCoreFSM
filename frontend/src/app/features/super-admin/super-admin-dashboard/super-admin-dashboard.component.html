@@ -1,113 +1,85 @@
-<div class="dashboard-container">
-  <div class="dashboard-header">
-    <h1>Super Admin Dashboard</h1>
-    <button mat-raised-button color="primary" (click)="refresh()" [disabled]="loading">
-      <mat-icon>refresh</mat-icon>
-      Refresh
-    </button>
+<div class="p-8 bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <h1 class="text-3xl font-bold text-gray-900 mb-2">Super Admin Dashboard</h1>
+  <p class="text-gray-600 mb-8">Manage your entire platform from one place</p>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-20">
+    <div class="text-gray-400">Loading...</div>
   </div>
 
-  <div *ngIf="loading" class="loading-container">
-    <mat-spinner></mat-spinner>
+  <!-- Error State -->
+  <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+    <p class="text-red-800">{{ error }}</p>
+    <button (click)="refresh()" class="mt-2 text-red-600 hover:text-red-800 font-medium">Try Again</button>
   </div>
 
-  <div *ngIf="error" class="error-container">
-    <mat-icon color="warn">error</mat-icon>
-    <p>{{ error }}</p>
-    <button mat-button color="primary" (click)="refresh()">Try Again</button>
-  </div>
+  <!-- Dashboard Content -->
+  <div *ngIf="!loading && !error && metrics">
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
-  <div *ngIf="!loading && !error && metrics" class="metrics-grid">
-    <mat-card class="metric-card">
-      <mat-card-content>
-        <div class="metric-icon" style="background-color: #667eea;">
-          <mat-icon>business</mat-icon>
+      <!-- Organizations Card -->
+      <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow border border-gray-100">
+        <div class="flex items-start justify-between mb-3">
+          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+          </svg>
         </div>
-        <div class="metric-details">
-          <h3>{{ metrics.total_organizations }}</h3>
-          <p>Total Organizations</p>
-        </div>
-      </mat-card-content>
-    </mat-card>
+        <div class="text-4xl font-bold text-gray-900 mb-2">{{ metrics.total_organizations }}</div>
+        <div class="text-sm text-gray-600 font-medium">Total Organizations</div>
+      </div>
 
-    <mat-card class="metric-card">
-      <mat-card-content>
-        <div class="metric-icon" style="background-color: #f093fb;">
-          <mat-icon>location_on</mat-icon>
+      <!-- Sites Card -->
+      <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow border border-gray-100">
+        <div class="flex items-start justify-between mb-3">
+          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
         </div>
-        <div class="metric-details">
-          <h3>{{ metrics.total_sites }}</h3>
-          <p>Total Sites</p>
-        </div>
-      </mat-card-content>
-    </mat-card>
+        <div class="text-4xl font-bold text-gray-900 mb-2">{{ metrics.total_sites }}</div>
+        <div class="text-sm text-gray-600 font-medium">Total Sites</div>
+      </div>
 
-    <mat-card class="metric-card">
-      <mat-card-content>
-        <div class="metric-icon" style="background-color: #4facfe;">
-          <mat-icon>people</mat-icon>
+      <!-- Users Card -->
+      <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow border border-gray-100">
+        <div class="flex items-start justify-between mb-3">
+          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
         </div>
-        <div class="metric-details">
-          <h3>{{ metrics.total_users }}</h3>
-          <p>Total Users</p>
-        </div>
-      </mat-card-content>
-    </mat-card>
+        <div class="text-4xl font-bold text-gray-900 mb-2">{{ metrics.total_users }}</div>
+        <div class="text-sm text-gray-600 font-medium">Total Users</div>
+      </div>
 
-    <mat-card class="metric-card">
-      <mat-card-content>
-        <div class="metric-icon" style="background-color: #43e97b;">
-          <mat-icon>credit_card</mat-icon>
+      <!-- Subscriptions Card -->
+      <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow border border-gray-100">
+        <div class="flex items-start justify-between mb-3">
+          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
         </div>
-        <div class="metric-details">
-          <h3>{{ metrics.active_subscriptions }}</h3>
-          <p>Active Subscriptions</p>
-        </div>
-      </mat-card-content>
-    </mat-card>
+        <div class="text-4xl font-bold text-gray-900 mb-2">{{ metrics.active_subscriptions }}</div>
+        <div class="text-sm text-gray-600 font-medium">Active Subscriptions</div>
+      </div>
 
-    <mat-card class="metric-card">
-      <mat-card-content>
-        <div class="metric-icon" style="background-color: #fa709a;">
-          <mat-icon>checklist</mat-icon>
-        </div>
-        <div class="metric-details">
-          <h3>{{ metrics.total_checklists_today }}</h3>
-          <p>Checklists Today</p>
-        </div>
-      </mat-card-content>
-    </mat-card>
+    </div>
 
-    <mat-card class="metric-card">
-      <mat-card-content>
-        <div class="metric-icon" style="background-color: #ff6b6b;">
-          <mat-icon>bug_report</mat-icon>
+    <!-- Recent Activity -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div class="p-6 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900">Recent Activity</h2>
+      </div>
+      <div class="p-6" *ngIf="metrics.recent_activity.length === 0">
+        <p class="text-gray-500 text-center">No recent activity</p>
+      </div>
+      <div *ngIf="metrics.recent_activity.length > 0">
+        <div *ngFor="let activity of metrics.recent_activity" class="px-6 py-4 border-b border-gray-100 hover:bg-gray-50">
+          <div class="font-medium text-gray-900">{{ activity.description }}</div>
+          <div class="text-sm text-gray-500 mt-1">{{ activity.timestamp | date:'short' }}</div>
         </div>
-        <div class="metric-details">
-          <h3>{{ metrics.total_open_defects }}</h3>
-          <p>Open Defects</p>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <div *ngIf="!loading && !error && metrics" class="activity-section">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Recent Activity</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div *ngIf="metrics.recent_activity.length === 0" class="no-activity">
-          <p>No recent activity</p>
-        </div>
-        <mat-list *ngIf="metrics.recent_activity.length > 0">
-          <mat-list-item *ngFor="let activity of metrics.recent_activity">
-            <mat-icon matListItemIcon>notifications</mat-icon>
-            <div matListItemTitle>{{ activity.description }}</div>
-            <div matListItemLine>{{ activity.timestamp | date:'short' }}</div>
-          </mat-list-item>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
   </div>
 </div>

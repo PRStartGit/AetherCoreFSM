@@ -1,132 +1,146 @@
-<div class="checklist-list-container">
-  <div class="header">
-    <h1>Checklists</h1>
-    <button mat-raised-button color="primary" (click)="openCreateDialog()" *ngIf="!isSiteUser()">
-      <mat-icon>add</mat-icon>
-      New Checklist
+<div class="max-w-7xl mx-auto px-4">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-800 m-0">Checklists</h1>
+      <p class="text-gray-600 mt-1">Manage site inspection checklists</p>
+    </div>
+    <button *ngIf="!isSiteUser()"
+            (click)="openCreateDialog()"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+      + New Checklist
     </button>
   </div>
 
   <!-- Filters -->
-  <mat-card class="filter-card">
-    <mat-card-content>
-      <div class="filters">
-        <mat-form-field appearance="outline">
-          <mat-label>Status</mat-label>
-          <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onFilterChange()">
-            <mat-option value="all">All</mat-option>
-            <mat-option *ngFor="let status of statuses" [value]="status">
-              {{ status.replace('_', ' ') | titlecase }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Site</mat-label>
-          <mat-select [(ngModel)]="selectedSite" (selectionChange)="onFilterChange()">
-            <mat-option value="all">All Sites</mat-option>
-            <mat-option *ngFor="let site of sites" [value]="site.id">
-              {{ site.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card>
-    <mat-card-content>
-      <div *ngIf="loading" class="loading-container">
-        <mat-spinner></mat-spinner>
+  <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+        <select [(ngModel)]="selectedStatus"
+                (change)="onFilterChange()"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="all">All Statuses</option>
+          <option *ngFor="let status of statuses" [value]="status">
+            {{ status.replace('_', ' ') | titlecase }}
+          </option>
+        </select>
       </div>
 
-      <table mat-table [dataSource]="checklists" *ngIf="!loading" class="checklists-table">
-        <!-- Site Column -->
-        <ng-container matColumnDef="site">
-          <th mat-header-cell *matHeaderCellDef>Site</th>
-          <td mat-cell *matCellDef="let checklist">{{ getSiteName(checklist.site_id) }}</td>
-        </ng-container>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Site</label>
+        <select [(ngModel)]="selectedSite"
+                (change)="onFilterChange()"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="all">All Sites</option>
+          <option *ngFor="let site of sites" [value]="site.id">
+            {{ site.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-        <!-- Category Column -->
-        <ng-container matColumnDef="category">
-          <th mat-header-cell *matHeaderCellDef>Category</th>
-          <td mat-cell *matCellDef="let checklist">{{ checklist.category?.name || '-' }}</td>
-        </ng-container>
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-20">
+    <div class="text-gray-400">Loading checklists...</div>
+  </div>
 
-        <!-- Status Column -->
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let checklist">
-            <span class="status-badge" [ngClass]="getStatusClass(checklist.status)">
-              {{ checklist.status.replace('_', ' ') | titlecase }}
-            </span>
-          </td>
-        </ng-container>
+  <!-- Checklists Card -->
+  <div *ngIf="!loading" class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <!-- Empty State -->
+    <div *ngIf="checklists.length === 0" class="text-center py-16 px-6">
+      <div class="text-6xl mb-4">📋</div>
+      <h3 class="text-lg font-semibold text-gray-700 mt-4 mb-2">No Checklists Found</h3>
+      <p class="text-gray-500 mb-6">Create your first checklist to get started</p>
+      <button *ngIf="!isSiteUser()"
+              (click)="openCreateDialog()"
+              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+        + Create First Checklist
+      </button>
+    </div>
 
-        <!-- Due Date Column -->
-        <ng-container matColumnDef="due_date">
-          <th mat-header-cell *matHeaderCellDef>Due Date</th>
-          <td mat-cell *matCellDef="let checklist">
-            <span [class.overdue]="isOverdue(checklist)">
-              {{ checklist.due_date | date:'short' }}
-            </span>
-          </td>
-        </ng-container>
+    <!-- Checklists Table -->
+    <div *ngIf="checklists.length > 0" class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-700">Site</th>
+            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-700">Category</th>
+            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-700">Status</th>
+            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-700">Due Date</th>
+            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-700">Progress</th>
+            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-700">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let checklist of checklists" class="border-b border-gray-100 hover:bg-gray-50">
+            <!-- Site -->
+            <td class="px-6 py-4 text-gray-800">{{ getSiteName(checklist.site_id) }}</td>
 
-        <!-- Progress Column -->
-        <ng-container matColumnDef="progress">
-          <th mat-header-cell *matHeaderCellDef>Progress</th>
-          <td mat-cell *matCellDef="let checklist">
-            <div class="progress-container">
-              <mat-progress-bar
-                mode="determinate"
-                [value]="getProgressPercentage(checklist)"
-                [color]="checklist.status === 'completed' ? 'primary' : 'accent'">
-              </mat-progress-bar>
-              <span class="progress-text">{{ getProgressPercentage(checklist) }}%</span>
-            </div>
-          </td>
-        </ng-container>
+            <!-- Category -->
+            <td class="px-6 py-4 text-gray-800">{{ checklist.category?.name || '-' }}</td>
 
-        <!-- Actions Column -->
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let checklist">
-            <button mat-icon-button (click)="openCompletionView(checklist)"
-                    matTooltip="Complete Checklist"
-                    *ngIf="canComplete(checklist)">
-              <mat-icon>edit_note</mat-icon>
-            </button>
-            <button mat-icon-button (click)="openCompletionView(checklist)"
-                    matTooltip="View Details"
-                    *ngIf="!canComplete(checklist)">
-              <mat-icon>visibility</mat-icon>
-            </button>
-            <button mat-icon-button (click)="deleteChecklist(checklist)"
-                    matTooltip="Delete"
-                    color="warn"
-                    *ngIf="!isSiteUser()">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
+            <!-- Status -->
+            <td class="px-6 py-4">
+              <span class="inline-block px-3 py-1 rounded-lg text-xs font-semibold"
+                    [ngClass]="{
+                      'bg-yellow-100 text-yellow-800': checklist.status === 'pending',
+                      'bg-blue-100 text-blue-800': checklist.status === 'in_progress',
+                      'bg-green-100 text-green-800': checklist.status === 'completed',
+                      'bg-red-100 text-red-800': checklist.status === 'overdue'
+                    }">
+                {{ checklist.status.replace('_', ' ') | titlecase }}
+              </span>
+            </td>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <!-- Due Date -->
+            <td class="px-6 py-4">
+              <span [ngClass]="{'text-red-600 font-semibold': isOverdue(checklist), 'text-gray-800': !isOverdue(checklist)}">
+                {{ checklist.checklist_date | date:'short' }}
+              </span>
+            </td>
 
-        <!-- No data row -->
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-            <div class="no-data">
-              <mat-icon>assignment_turned_in</mat-icon>
-              <p>No checklists found</p>
-              <button mat-raised-button color="primary" (click)="openCreateDialog()" *ngIf="!isSiteUser()">
-                Create First Checklist
-              </button>
-            </div>
-          </td>
-        </tr>
+            <!-- Progress -->
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                <div class="flex-1 bg-gray-200 rounded-full h-2">
+                  <div class="rounded-full h-2"
+                       [ngClass]="checklist.status === 'completed' ? 'bg-green-600' : 'bg-blue-600'"
+                       [style.width.%]="getProgressPercentage(checklist)"></div>
+                </div>
+                <span class="text-sm font-medium text-gray-700 min-w-[45px]">
+                  {{ getProgressPercentage(checklist) }}%
+                </span>
+              </div>
+            </td>
+
+            <!-- Actions -->
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                <button *ngIf="canComplete(checklist)"
+                        (click)="openCompletionView(checklist)"
+                        class="px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg font-medium"
+                        title="Complete Checklist">
+                  Complete
+                </button>
+                <button *ngIf="!canComplete(checklist)"
+                        (click)="openCompletionView(checklist)"
+                        class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded-lg font-medium"
+                        title="View Details">
+                  View
+                </button>
+                <button *ngIf="!isSiteUser()"
+                        (click)="deleteChecklist(checklist)"
+                        class="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded-lg font-medium"
+                        title="Delete">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
       </table>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 </div>

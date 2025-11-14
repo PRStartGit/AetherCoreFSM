@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskService } from '../../../core/services/task.service';
-import { Task, Category, Site } from '../../../core/models/monitoring.model';
+import { Task, Category } from '../../../core/models/monitoring.model';
+import { Site } from '../../../core/models';
 
 @Component({
   selector: 'app-task-form',
@@ -16,7 +17,6 @@ export class TaskFormComponent implements OnInit {
   isEditMode = false;
   categories: Category[] = [];
   sites: Site[] = [];
-  frequencies = ['daily', 'weekly', 'monthly', 'quarterly', 'yearly'];
 
   constructor(
     private fb: FormBuilder,
@@ -37,7 +37,7 @@ export class TaskFormComponent implements OnInit {
       name: [data.task?.name || '', [Validators.required, Validators.maxLength(200)]],
       description: [data.task?.description || ''],
       category_id: [data.task?.category_id || null, Validators.required],
-      frequency: [data.task?.frequency || 'daily', Validators.required],
+      order_index: [data.task?.order_index || 0],
       site_ids: [data.task?.site_ids || []],
       is_active: [data.task?.is_active !== undefined ? data.task.is_active : true]
     });
@@ -55,8 +55,8 @@ export class TaskFormComponent implements OnInit {
     const formValue = this.taskForm.getRawValue();
 
     const request = this.isEditMode
-      ? this.taskService.updateTask(this.data.task!.id, formValue)
-      : this.taskService.createTask(formValue);
+      ? this.taskService.update(this.data.task!.id, formValue)
+      : this.taskService.create(formValue);
 
     request.subscribe({
       next: () => {
@@ -67,7 +67,7 @@ export class TaskFormComponent implements OnInit {
         );
         this.dialogRef.close(true);
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error saving task:', error);
         this.snackBar.open(
           `Failed to ${this.isEditMode ? 'update' : 'create'} task`,

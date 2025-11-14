@@ -1,8 +1,18 @@
 // Category Models
+export enum ChecklistFrequency {
+  DAILY = 'daily',
+  WEEKLY = 'weekly',
+  MONTHLY = 'monthly',
+  SIX_MONTHLY = 'six_monthly',
+  YEARLY = 'yearly'
+}
+
 export interface Category {
   id: number;
   name: string;
   description: string;
+  frequency: string;
+  closes_at: string | null;
   is_global: boolean;
   organization_id: number | null;
   is_active: boolean;
@@ -13,6 +23,8 @@ export interface Category {
 export interface CategoryCreate {
   name: string;
   description: string;
+  frequency: string;
+  closes_at?: string | null;
   is_global?: boolean;
   organization_id?: number;
 }
@@ -23,20 +35,21 @@ export interface Task {
   category_id: number;
   name: string;
   description: string;
-  frequency: string;
-  form_schema: any;
+  order_index: number;
+  form_config: any;
   is_active: boolean;
   created_at: string;
   updated_at: string;
   assigned_sites?: number[];
+  site_ids?: number[];  // For compatibility with form
 }
 
 export interface TaskCreate {
   category_id: number;
   name: string;
   description: string;
-  frequency: string;
-  form_schema?: any;
+  order_index?: number;
+  form_config?: any;
 }
 
 export interface TaskAssignment {
@@ -67,12 +80,17 @@ export interface Checklist {
   id: number;
   site_id: number;
   category_id: number;
-  scheduled_date: string;
+  checklist_date: string;  // Backend uses checklist_date, not scheduled_date
   status: ChecklistStatus;
   completed_at: string | null;
   created_at: string;
   updated_at: string;
   items?: ChecklistItem[];
+  category?: Category;
+  total_items?: number;
+  completed_items?: number;
+  completion_percentage?: number;
+  completed_by_id?: number | null;
 }
 
 export interface ChecklistCreate {

@@ -1,6 +1,11 @@
 /* Global Styles */
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html, body {
   height: 100%;
 }

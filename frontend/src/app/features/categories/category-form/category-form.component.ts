@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CategoryService } from '../../../core/services/category.service';
 import { AuthService } from '../../../core/auth/auth.service';
-import { Category } from '../../../core/models/monitoring.model';
+import { Category, ChecklistFrequency } from '../../../core/models/monitoring.model';
 
 @Component({
   selector: 'app-category-form',
@@ -15,6 +15,7 @@ export class CategoryFormComponent implements OnInit {
   categoryForm: FormGroup;
   loading = false;
   isEditMode = false;
+  frequencies = Object.values(ChecklistFrequency);
 
   constructor(
     private fb: FormBuilder,
@@ -29,6 +30,8 @@ export class CategoryFormComponent implements OnInit {
     this.categoryForm = this.fb.group({
       name: [data.category?.name || '', [Validators.required, Validators.maxLength(100)]],
       description: [data.category?.description || ''],
+      frequency: [data.category?.frequency || ChecklistFrequency.DAILY, Validators.required],
+      closes_at: [data.category?.closes_at || null],
       is_global: [data.category?.is_global || false],
       is_active: [data.category?.is_active !== undefined ? data.category.is_active : true]
     });
@@ -50,8 +53,8 @@ export class CategoryFormComponent implements OnInit {
     const formValue = this.categoryForm.getRawValue();
 
     const request = this.isEditMode
-      ? this.categoryService.updateCategory(this.data.category!.id, formValue)
-      : this.categoryService.createCategory(formValue);
+      ? this.categoryService.update(this.data.category!.id, formValue)
+      : this.categoryService.create(formValue);
 
     request.subscribe({
       next: () => {
@@ -62,7 +65,7 @@ export class CategoryFormComponent implements OnInit {
         );
         this.dialogRef.close(true);
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error saving category:', error);
         this.snackBar.open(
           `Failed to ${this.isEditMode ? 'update' : 'create'} category`,

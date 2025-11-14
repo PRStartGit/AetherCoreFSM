@@ -1,109 +1,28 @@
-.sidenav-container {
-  height: 100vh;
-}
+/* Custom styles that can't be achieved with Tailwind */
 
-.sidenav {
-  width: 250px;
-  background-color: #2c3e50;
-  color: white;
-  display: flex;
-  flex-direction: column;
-}
-
-.sidenav-header {
-  padding: 24px 16px;
-  background-color: #1a252f;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.sidenav-header h2 {
-  margin: 0 0 8px 0;
-  font-size: 24px;
-  font-weight: 500;
-}
-
-.sidenav-header p {
-  margin: 4px 0;
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-.user-role {
-  font-size: 12px;
-  opacity: 0.7;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.sidenav mat-nav-list {
-  flex: 1;
-  padding-top: 8px;
-}
-
-.sidenav mat-nav-list a {
-  color: rgba(255, 255, 255, 0.8);
-  margin: 4px 8px;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-.sidenav mat-nav-list a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.sidenav mat-nav-list a.active-link {
-  background-color: #667eea;
-  color: white;
-}
-
-.sidenav-footer {
-  padding: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.logout-button {
-  width: 100%;
-  color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-}
-
-.logout-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.toolbar {
-  position: sticky;
+/* Active nav item indicator (left border animation) */
+.nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
   top: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  bottom: 0;
+  width: 4px;
+  background-color: #2563EB;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms ease;
 }
 
-.toolbar-title {
-  font-size: 18px;
-  font-weight: 500;
+.nav-item-active::before {
+  transform: scaleX(1);
 }
 
-.toolbar-spacer {
-  flex: 1 1 auto;
+/* Ensure Material Design components work well */
+::ng-deep .mat-mdc-list-item {
+  --mdc-list-list-item-label-text-color: inherit !important;
 }
 
-.content-container {
-  padding: 24px;
-  background-color: #f5f5f5;
-  min-height: calc(100vh - 64px);
-}
-
-@media (max-width: 768px) {
-  .sidenav {
-    width: 200px;
-  }
-
-  .content-container {
-    padding: 16px;
-  }
+::ng-deep .mat-mdc-menu-content {
+  padding: 0 !important;
 }

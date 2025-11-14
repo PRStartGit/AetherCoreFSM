@@ -67,14 +67,14 @@ def send_welcome_email(email: str, password: str):
 
 def create_initial_super_admin():
     """Create the initial super admin user."""
-    print("\n🚀 RiskProof Initial Setup")
+    print("\nAetherCoreFSM Initial Setup")
     print("="*70)
     print("Creating super admin account...")
 
     # Create all tables
-    print("\n📊 Creating database tables...")
+    print("\nCreating database tables...")
     Base.metadata.create_all(bind=engine)
-    print("✓ Database tables created successfully")
+    print("Database tables created successfully")
 
     db = SessionLocal()
 

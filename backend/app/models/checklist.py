@@ -37,6 +37,7 @@ class Checklist(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationships
+    category = relationship("Category")
     site = relationship("Site", back_populates="checklists")
     completed_by = relationship("User", back_populates="created_checklists", foreign_keys=[completed_by_id])
     items = relationship("ChecklistItem", back_populates="checklist", cascade="all, delete-orphan")

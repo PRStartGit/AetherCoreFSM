@@ -14,7 +14,7 @@ import { CategoryFormComponent } from '../category-form/category-form.component'
 export class CategoryListComponent implements OnInit {
   categories: Category[] = [];
   loading = false;
-  displayedColumns: string[] = ['name', 'description', 'is_global', 'is_active', 'actions'];
+  displayedColumns: string[] = ['name', 'description', 'frequency', 'is_global', 'is_active', 'actions'];
 
   constructor(
     private categoryService: CategoryService,
@@ -32,12 +32,12 @@ export class CategoryListComponent implements OnInit {
     const user = this.authService.getUser();
     const isSuperAdmin = user?.role === 'super_admin';
 
-    this.categoryService.getCategories(isSuperAdmin ? undefined : false).subscribe({
-      next: (categories) => {
+    this.categoryService.getAll(isSuperAdmin ? undefined : false).subscribe({
+      next: (categories: any[]) => {
         this.categories = categories;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading categories:', error);
         this.snackBar.open('Failed to load categories', 'Close', { duration: 3000 });
         this.loading = false;
@@ -73,12 +73,12 @@ export class CategoryListComponent implements OnInit {
 
   deleteCategory(category: Category): void {
     if (confirm(`Are you sure you want to delete "${category.name}"?`)) {
-      this.categoryService.deleteCategory(category.id).subscribe({
+      this.categoryService.delete(category.id).subscribe({
         next: () => {
           this.snackBar.open('Category deleted successfully', 'Close', { duration: 3000 });
           this.loadCategories();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error deleting category:', error);
           this.snackBar.open('Failed to delete category', 'Close', { duration: 3000 });
         }

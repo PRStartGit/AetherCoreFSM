@@ -1,19 +1,4 @@
-.full-width {
-  width: 100%;
-  margin-bottom: 16px;
-}
-
-.checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 16px 0;
-}
-
-.inline-spinner {
-  display: inline-block;
-  margin-right: 8px;
-}
+/* Using Tailwind classes for most styling */
 
 mat-dialog-content {
   min-width: 500px;

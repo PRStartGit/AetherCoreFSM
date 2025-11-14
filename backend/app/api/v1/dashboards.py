@@ -162,6 +162,11 @@ def get_site_user_dashboard(
     current_user: User = Depends(get_current_user)
 ):
     """Get site user dashboard."""
+    from app.models.user_site import UserSite
+
+    # Get user's assigned site IDs
+    assigned_site_ids = [us.site_id for us in current_user.user_sites]
+
     # Get user's assigned sites
     assigned_sites = []
     for user_site in current_user.user_sites:
@@ -173,11 +178,11 @@ def get_site_user_dashboard(
             "rag_status": rag_data["rag_status"]
         })
 
-    # Today's checklists
+    # Today's checklists (only for assigned sites)
     today = datetime.utcnow().date()
-    todays_checklists_query = db.query(Checklist).join(Site).filter(
+    todays_checklists_query = db.query(Checklist).filter(
         Checklist.checklist_date == today,
-        Site.organization_id == current_user.organization_id
+        Checklist.site_id.in_(assigned_site_ids)
     )
 
     todays_checklists = []
@@ -189,9 +194,9 @@ def get_site_user_dashboard(
             "completion_percentage": checklist.completion_percentage
         })
 
-    # Assigned checklists (pending)
-    assigned_checklists_query = db.query(Checklist).join(Site).filter(
-        Site.organization_id == current_user.organization_id,
+    # Assigned checklists (pending) - only for assigned sites
+    assigned_checklists_query = db.query(Checklist).filter(
+        Checklist.site_id.in_(assigned_site_ids),
         Checklist.status.in_([ChecklistStatus.PENDING, ChecklistStatus.IN_PROGRESS])
     ).order_by(Checklist.checklist_date.desc()).limit(20)
 
@@ -205,9 +210,9 @@ def get_site_user_dashboard(
             "completion_percentage": checklist.completion_percentage
         })
 
-    # Open defects
-    open_defects_query = db.query(Defect).join(Site).filter(
-        Site.organization_id == current_user.organization_id,
+    # Open defects - only for assigned sites
+    open_defects_query = db.query(Defect).filter(
+        Defect.site_id.in_(assigned_site_ids),
         Defect.status == DefectStatus.OPEN
     ).order_by(Defect.created_at.desc()).limit(20)
 
@@ -221,9 +226,9 @@ def get_site_user_dashboard(
             "created_at": defect.created_at.isoformat()
         })
 
-    # Recent completed
-    recent_completed_query = db.query(Checklist).join(Site).filter(
-        Site.organization_id == current_user.organization_id,
+    # Recent completed - only for assigned sites
+    recent_completed_query = db.query(Checklist).filter(
+        Checklist.site_id.in_(assigned_site_ids),
         Checklist.status == ChecklistStatus.COMPLETED
     ).order_by(Checklist.completed_at.desc()).limit(10)
 

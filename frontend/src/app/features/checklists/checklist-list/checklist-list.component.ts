@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 import { ChecklistService } from '../../../core/services/checklist.service';
 import { SiteService } from '../../../core/services/site.service';
 import { AuthService } from '../../../core/auth/auth.service';
-import { Checklist, Site, ChecklistStatus } from '../../../core/models/monitoring.model';
+import { Checklist, ChecklistStatus } from '../../../core/models/monitoring.model';
+import { Site } from '../../../core/models';
 import { ChecklistFormComponent } from '../checklist-form/checklist-form.component';
 
 @Component({
@@ -39,11 +40,11 @@ export class ChecklistListComponent implements OnInit {
   }
 
   loadSites(): void {
-    this.siteService.getSites().subscribe({
-      next: (sites) => {
+    this.siteService.getAll().subscribe({
+      next: (sites: any[]) => {
         this.sites = sites;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading sites:', error);
       }
     });
@@ -51,15 +52,15 @@ export class ChecklistListComponent implements OnInit {
 
   loadChecklists(): void {
     this.loading = true;
-    const status = this.selectedStatus !== 'all' ? this.selectedStatus : undefined;
+    const status = this.selectedStatus !== 'all' ? this.selectedStatus as ChecklistStatus : undefined;
     const siteId = this.selectedSite !== 'all' ? parseInt(this.selectedSite) : undefined;
 
-    this.checklistService.getChecklists(status, siteId).subscribe({
-      next: (checklists) => {
+    this.checklistService.getAll(siteId, undefined, status).subscribe({
+      next: (checklists: any[]) => {
         this.checklists = checklists;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading checklists:', error);
         this.snackBar.open('Failed to load checklists', 'Close', { duration: 3000 });
         this.loading = false;
@@ -89,12 +90,12 @@ export class ChecklistListComponent implements OnInit {
 
   deleteChecklist(checklist: Checklist): void {
     if (confirm(`Are you sure you want to delete this checklist?`)) {
-      this.checklistService.deleteChecklist(checklist.id).subscribe({
+      this.checklistService.delete(checklist.id).subscribe({
         next: () => {
           this.snackBar.open('Checklist deleted successfully', 'Close', { duration: 3000 });
           this.loadChecklists();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error deleting checklist:', error);
           this.snackBar.open('Failed to delete checklist', 'Close', { duration: 3000 });
         }
@@ -112,17 +113,17 @@ export class ChecklistListComponent implements OnInit {
   }
 
   getProgressPercentage(checklist: Checklist): number {
-    if (!checklist.total_items || checklist.total_items === 0) {
+    if (!checklist.total_items || checklist.total_items === 0 || !checklist.completed_items) {
       return 0;
     }
     return Math.round((checklist.completed_items / checklist.total_items) * 100);
   }
 
   isOverdue(checklist: Checklist): boolean {
-    if (!checklist.due_date) {
+    if (!checklist.checklist_date) {
       return false;
     }
-    const dueDate = new Date(checklist.due_date);
+    const dueDate = new Date(checklist.checklist_date);
     const now = new Date();
     return dueDate < now && checklist.status !== ChecklistStatus.COMPLETED;
   }

@@ -18,6 +18,7 @@ class UserCreate(UserBase):
     """User creation schema."""
     password: str
     organization_id: Optional[int] = None
+    site_ids: list[int] = []
 
 
 class UserUpdate(BaseModel):
@@ -28,6 +29,7 @@ class UserUpdate(BaseModel):
     phone: Optional[str] = None
     is_active: Optional[bool] = None
     role: Optional[UserRole] = None
+    site_ids: Optional[list[int]] = None
 
 
 class UserResponse(UserBase):
@@ -36,6 +38,8 @@ class UserResponse(UserBase):
     organization_id: Optional[int] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
+    site_ids: list[int] = []
+    full_name: str  # Computed property from User model
 
     class Config:
         from_attributes = True

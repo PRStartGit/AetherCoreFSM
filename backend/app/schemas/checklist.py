@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_serializer
 from typing import Optional, List
-from datetime import datetime, date
+from datetime import datetime, date, time
 from app.models.checklist import ChecklistStatus
 
 
@@ -40,6 +40,24 @@ class ChecklistItemUpdate(BaseModel):
     photo_url: Optional[str] = None
 
 
+class CategoryInfo(BaseModel):
+    """Category information for checklist response."""
+    id: int
+    name: str
+    closes_at: Optional[str] = None
+
+    model_config = {"from_attributes": True}
+
+    @field_serializer('closes_at', when_used='always')
+    def serialize_closes_at(self, closes_at):
+        """Convert time object to string."""
+        if closes_at is None:
+            return None
+        if isinstance(closes_at, time):
+            return closes_at.strftime('%H:%M:%S')
+        return str(closes_at)
+
+
 class ChecklistResponse(ChecklistBase):
     """Checklist response schema."""
     id: int
@@ -51,6 +69,7 @@ class ChecklistResponse(ChecklistBase):
     created_at: datetime
     completed_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    category: Optional[CategoryInfo] = None
 
     class Config:
         from_attributes = True
