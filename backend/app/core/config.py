@@ -6,7 +6,7 @@ import os
 class Settings(BaseSettings):
     # API Settings
     API_V1_PREFIX: str = "/api/v1"
-    PROJECT_NAME: str = "AetherCoreFSM - Safety Management Platform"
+    PROJECT_NAME: str = "Zynthio - Safety Management Platform"
     VERSION: str = "1.0.0"
     DESCRIPTION: str = "Multi-tenant safety management platform"
 
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
 
     # Email (SendGrid)
     SENDGRID_API_KEY: Optional[str] = None
-    FROM_EMAIL: str = "noreply@aethercore.com"
+    FROM_EMAIL: str = "noreply@zynthio.com"
 
     # File Upload
     UPLOAD_DIR: str = "uploads"

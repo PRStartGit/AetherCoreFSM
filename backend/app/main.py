@@ -29,7 +29,7 @@ Base.metadata.create_all(bind=engine)
 async def root():
     """Root endpoint."""
     return {
-        "message": "Welcome to AetherCoreFSM API",
+        "message": "Welcome to Zynthio API",
         "version": settings.VERSION,
         "docs": "/docs"
     }
