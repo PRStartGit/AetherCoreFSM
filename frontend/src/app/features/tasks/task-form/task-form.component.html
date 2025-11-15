@@ -1,17 +1,19 @@
-<div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+<div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
   <!-- Header -->
   <div class="px-6 py-4 border-b border-gray-200">
     <h2 class="text-xl font-bold text-gray-900">
-      {{ isEditMode ? 'Edit Task' : 'New Task' }}
+      {{ showFieldBuilder ? 'Configure Dynamic Fields' : (isEditMode ? 'Edit Task' : 'New Task') }}
     </h2>
     <p class="text-sm text-gray-600 mt-1">
-      {{ isEditMode ? 'Update task details' : 'Create a new checklist task' }}
+      <span *ngIf="!showFieldBuilder">{{ isEditMode ? 'Update task details' : 'Create a new checklist task' }}</span>
+      <span *ngIf="showFieldBuilder">Add custom form fields for this task</span>
     </p>
   </div>
 
   <!-- Content -->
   <div class="px-6 py-4 overflow-y-auto flex-1">
-    <form [formGroup]="taskForm" class="flex flex-col gap-5">
+    <!-- Step 1: Basic Task Form -->
+    <form [formGroup]="taskForm" class="flex flex-col gap-5" *ngIf="!showFieldBuilder">
       <!-- Name -->
       <div>
         <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -83,8 +85,20 @@
         <p class="mt-1 text-xs text-gray-500">Hold Ctrl/Cmd to select multiple sites. Leave empty to assign to all sites</p>
       </div>
 
-      <!-- Active Checkbox -->
-      <div class="pt-2 border-t border-gray-200">
+      <!-- Options -->
+      <div class="pt-2 border-t border-gray-200 flex flex-col gap-3">
+        <!-- Dynamic Form Checkbox -->
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox"
+                 formControlName="has_dynamic_form"
+                 class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+          <div class="flex flex-col">
+            <span class="text-sm font-medium text-gray-700">Enable Dynamic Form Fields</span>
+            <span class="text-xs text-gray-500">Configure custom form fields for data collection</span>
+          </div>
+        </label>
+
+        <!-- Active Checkbox -->
         <label class="flex items-center gap-2 cursor-pointer">
           <input type="checkbox"
                  formControlName="is_active"
@@ -93,25 +107,50 @@
         </label>
       </div>
     </form>
+
+    <!-- Step 2: Field Builder -->
+    <div *ngIf="showFieldBuilder && savedTaskId">
+      <app-task-field-builder
+        [taskId]="savedTaskId"
+        (fieldsSaved)="onFieldsConfigured()">
+      </app-task-field-builder>
+    </div>
   </div>
 
   <!-- Footer -->
   <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
-    <button type="button"
-            (click)="onCancel()"
-            [disabled]="loading"
-            class="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
-      Cancel
-    </button>
-    <button type="button"
-            (click)="onSubmit()"
-            [disabled]="taskForm.invalid || loading"
-            class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-      <svg *ngIf="loading" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-      <span>{{ isEditMode ? 'Update' : 'Create' }}</span>
-    </button>
+    <!-- Basic Task Form Footer -->
+    <ng-container *ngIf="!showFieldBuilder">
+      <button type="button"
+              (click)="onCancel()"
+              [disabled]="loading"
+              class="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+        Cancel
+      </button>
+      <button type="button"
+              (click)="onSubmit()"
+              [disabled]="taskForm.invalid || loading"
+              class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+        <svg *ngIf="loading" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>{{ taskForm.get('has_dynamic_form')?.value ? 'Next: Configure Fields' : (isEditMode ? 'Update' : 'Create') }}</span>
+      </button>
+    </ng-container>
+
+    <!-- Field Builder Footer -->
+    <ng-container *ngIf="showFieldBuilder">
+      <button type="button"
+              (click)="onBackToTaskForm()"
+              class="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">
+        Back to Task
+      </button>
+      <button type="button"
+              (click)="onFieldsConfigured()"
+              class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+        Done
+      </button>
+    </ng-container>
   </div>
 </div>

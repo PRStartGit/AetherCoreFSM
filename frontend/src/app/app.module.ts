@@ -57,6 +57,7 @@ import { UserFormComponent } from './features/super-admin/users/user-form/user-f
 import { SitesListComponent } from './features/org-admin/sites-list/sites-list.component';
 import { SitesFormComponent } from './features/org-admin/sites-form/sites-form.component';
 import { ProfileComponent } from './features/profile/profile.component';
+import { TaskFieldBuilderComponent } from './features/tasks/task-field-builder/task-field-builder.component';
 
 @NgModule({
   declarations: [
@@ -115,7 +116,9 @@ import { ProfileComponent } from './features/profile/profile.component';
     MatProgressBarModule,
     MatDividerModule,
     MatCheckboxModule,
-    MatTooltipModule
+    MatTooltipModule,
+    // Standalone Components
+    TaskFieldBuilderComponent
   ],
   providers: [
     {

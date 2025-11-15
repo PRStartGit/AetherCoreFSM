@@ -38,6 +38,7 @@ export interface Task {
   order_index: number;
   form_config: any;
   is_active: boolean;
+  has_dynamic_form?: boolean;
   created_at: string;
   updated_at: string;
   assigned_sites?: number[];
@@ -50,6 +51,7 @@ export interface TaskCreate {
   description: string;
   order_index?: number;
   form_config?: any;
+  has_dynamic_form?: boolean;
 }
 
 export interface TaskAssignment {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,6 +15,7 @@ import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-
 })
 export class TaskFieldBuilderComponent implements OnInit {
   @Input() taskId!: number;
+  @Output() fieldsSaved = new EventEmitter<TaskField[]>();
 
   fieldsForm: FormGroup;
   existingFields: TaskField[] = [];
@@ -177,6 +178,7 @@ export class TaskFieldBuilderComponent implements OnInit {
           this.snackBar.open('Fields saved successfully!', 'Close', { duration: 3000 });
           this.saving = false;
           this.loadExistingFields();
+          this.fieldsSaved.emit(createdFields);
         },
         error: (error) => {
           console.error('Error saving fields:', error);
