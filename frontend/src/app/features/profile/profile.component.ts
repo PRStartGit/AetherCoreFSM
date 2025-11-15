@@ -127,7 +127,9 @@ export class ProfileComponent implements OnInit {
   onChangePassword(): void {
     const dialogRef = this.dialog.open(ChangePasswordDialogComponent, {
       width: '500px',
-      disableClose: false
+      maxWidth: '95vw',
+      disableClose: false,
+      autoFocus: true
     });
 
     dialogRef.afterClosed().subscribe(result => {
