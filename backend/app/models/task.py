@@ -18,6 +18,9 @@ class Task(Base):
     # Example: {"type": "dynamic_quantity", "question": "How many fridges?", "item_type": "fridge"}
     form_config = Column(JSON, nullable=True)
 
+    # Dynamic Task Fields (new system)
+    has_dynamic_form = Column(Boolean, default=False)
+
     # Foreign Keys
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
 
@@ -29,6 +32,7 @@ class Task(Base):
     category = relationship("Category", back_populates="tasks")
     site_tasks = relationship("SiteTask", back_populates="task", cascade="all, delete-orphan")
     checklist_items = relationship("ChecklistItem", back_populates="task", cascade="all, delete-orphan")
+    task_fields = relationship("TaskField", back_populates="task", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Task {self.name} (Category: {self.category.name})>"

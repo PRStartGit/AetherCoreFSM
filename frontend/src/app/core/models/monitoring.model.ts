@@ -38,6 +38,7 @@ export interface Task {
   order_index: number;
   form_config: any;
   is_active: boolean;
+  has_dynamic_form?: boolean;
   created_at: string;
   updated_at: string;
   assigned_sites?: number[];
@@ -50,11 +51,83 @@ export interface TaskCreate {
   description: string;
   order_index?: number;
   form_config?: any;
+  has_dynamic_form?: boolean;
 }
 
 export interface TaskAssignment {
   task_id: number;
   site_ids: number[];
+}
+
+// Task Field Models
+export enum TaskFieldType {
+  NUMBER = 'number',
+  TEXT = 'text',
+  TEMPERATURE = 'temperature',
+  YES_NO = 'yes_no',
+  DROPDOWN = 'dropdown',
+  PHOTO = 'photo',
+  REPEATING_GROUP = 'repeating_group'
+}
+
+export interface TaskField {
+  id: number;
+  task_id: number;
+  field_type: TaskFieldType | string;
+  field_label: string;
+  field_order: number;
+  is_required: boolean;
+  validation_rules: any;
+  options: string[] | null;
+  show_if: any;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TaskFieldCreate {
+  task_id: number;
+  field_type: string;
+  field_label: string;
+  field_order: number;
+  is_required?: boolean;
+  validation_rules?: any;
+  options?: string[];
+  show_if?: any;
+}
+
+export interface TaskFieldBulkCreate {
+  task_id: number;
+  fields: Omit<TaskFieldCreate, 'task_id'>[];
+}
+
+export interface TaskFieldResponse {
+  id: number;
+  checklist_item_id: number;
+  task_field_id: number;
+  text_value: string | null;
+  number_value: number | null;
+  boolean_value: boolean | null;
+  json_value: any;
+  file_url: string | null;
+  auto_defect_id: number | null;
+  completed_at: string;
+  completed_by: number | null;
+}
+
+export interface TaskFieldResponseCreate {
+  checklist_item_id: number;
+  task_field_id: number;
+  text_value?: string;
+  number_value?: number;
+  boolean_value?: boolean;
+  json_value?: any;
+  file_url?: string;
+  completed_by?: number;
+}
+
+export interface TaskFieldResponseSubmission {
+  checklist_item_id: number;
+  responses: Omit<TaskFieldResponseCreate, 'checklist_item_id'>[];
 }
 
 // Checklist Models

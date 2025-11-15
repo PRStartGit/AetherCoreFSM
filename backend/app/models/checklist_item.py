@@ -33,6 +33,7 @@ class ChecklistItem(Base):
     checklist = relationship("Checklist", back_populates="items")
     task = relationship("Task", back_populates="checklist_items")
     defects = relationship("Defect", back_populates="checklist_item", cascade="all, delete-orphan")
+    field_responses = relationship("TaskFieldResponse", back_populates="checklist_item", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<ChecklistItem {self.item_name} (Completed: {self.is_completed})>"

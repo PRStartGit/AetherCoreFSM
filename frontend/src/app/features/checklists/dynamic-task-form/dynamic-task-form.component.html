@@ -1,0 +1,137 @@
+<div class="dynamic-task-form">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading form...</p>
+  </div>
+
+  <!-- Dynamic Form -->
+  <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()" *ngIf="!loading && taskFields.length > 0">
+    <div class="form-fields">
+      <div *ngFor="let field of taskFields" class="field-wrapper">
+        <div class="field-header">
+          <span class="field-icon">{{ getFieldIcon(field.field_type) }}</span>
+          <label class="field-label">
+            {{ field.field_label }}
+            <span *ngIf="field.is_required" class="required">*</span>
+          </label>
+        </div>
+
+        <!-- Number Input -->
+        <div *ngIf="field.field_type === TaskFieldType.NUMBER || field.field_type === TaskFieldType.TEMPERATURE">
+          <input
+            type="number"
+            [formControlName]="'field_' + field.id"
+            [class.out-of-range]="isOutOfRange(field)"
+            class="form-input"
+            [placeholder]="'Enter ' + field.field_label.toLowerCase()"
+            step="any"
+          />
+          <div class="field-hint" *ngIf="field.validation_rules">
+            {{ getValidationMessage(field) }}
+          </div>
+          <div class="warning-message" *ngIf="isOutOfRange(field)">
+            ⚠️ Value is outside expected range! This may create a defect.
+          </div>
+        </div>
+
+        <!-- Text Input -->
+        <div *ngIf="field.field_type === TaskFieldType.TEXT">
+          <input
+            type="text"
+            [formControlName]="'field_' + field.id"
+            class="form-input"
+            [placeholder]="'Enter ' + field.field_label.toLowerCase()"
+          />
+        </div>
+
+        <!-- Yes/No Toggle -->
+        <div *ngIf="field.field_type === TaskFieldType.YES_NO" class="yes-no-field">
+          <div class="yes-no-buttons">
+            <button
+              type="button"
+              class="yes-no-btn"
+              [class.active]="dynamicForm.get('field_' + field.id)?.value === true"
+              (click)="dynamicForm.get('field_' + field.id)?.setValue(true)"
+            >
+              <span class="text-2xl">✓</span>
+              <span>Yes</span>
+            </button>
+            <button
+              type="button"
+              class="yes-no-btn"
+              [class.active]="dynamicForm.get('field_' + field.id)?.value === false"
+              (click)="dynamicForm.get('field_' + field.id)?.setValue(false)"
+            >
+              <span class="text-2xl">✗</span>
+              <span>No</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dropdown -->
+        <div *ngIf="field.field_type === TaskFieldType.DROPDOWN">
+          <select
+            [formControlName]="'field_' + field.id"
+            class="form-select"
+          >
+            <option value="">Select an option...</option>
+            <option *ngFor="let option of field.options" [value]="option">
+              {{ option }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Photo Upload -->
+        <div *ngIf="field.field_type === TaskFieldType.PHOTO">
+          <div class="photo-upload">
+            <button type="button" class="photo-btn">
+              <span class="text-3xl">📷</span>
+              <span>Take Photo</span>
+            </button>
+            <input
+              type="text"
+              [formControlName]="'field_' + field.id"
+              class="form-input mt-2"
+              placeholder="Photo URL"
+            />
+          </div>
+        </div>
+
+        <!-- Error Messages -->
+        <div class="error-message" *ngIf="dynamicForm.get('field_' + field.id)?.invalid && dynamicForm.get('field_' + field.id)?.touched">
+          <span *ngIf="dynamicForm.get('field_' + field.id)?.errors?.['required']">
+            This field is required
+          </span>
+          <span *ngIf="dynamicForm.get('field_' + field.id)?.errors?.['min']">
+            Value must be at least {{ field.validation_rules?.min }}
+          </span>
+          <span *ngIf="dynamicForm.get('field_' + field.id)?.errors?.['max']">
+            Value must not exceed {{ field.validation_rules?.max }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-actions">
+      <button
+        type="submit"
+        [disabled]="submitting || dynamicForm.invalid"
+        class="submit-btn"
+      >
+        <span *ngIf="!submitting">Submit Form</span>
+        <span *ngIf="submitting" class="flex items-center justify-center">
+          <span class="spinner-sm mr-2"></span>
+          Submitting...
+        </span>
+      </button>
+    </div>
+  </form>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && taskFields.length === 0" class="empty-state">
+    <span class="text-5xl mb-4 block">📋</span>
+    <p class="text-gray-600">No form fields configured for this task</p>
+  </div>
+</div>

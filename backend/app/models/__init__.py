@@ -12,6 +12,8 @@ from app.models.checklist_item import ChecklistItem
 from app.models.defect import Defect, DefectSeverity, DefectStatus
 from app.models.organization_module import OrganizationModule
 from app.models.password_reset_token import PasswordResetToken
+from app.models.task_field import TaskField
+from app.models.task_field_response import TaskFieldResponse
 
 __all__ = [
     "User",
@@ -31,4 +33,6 @@ __all__ = [
     "DefectStatus",
     "OrganizationModule",
     "PasswordResetToken",
+    "TaskField",
+    "TaskFieldResponse",
 ]
