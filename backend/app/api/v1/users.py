@@ -64,9 +64,8 @@ def create_user(
             db.add(user_site)
         db.commit()
 
-    # Load site_ids for response
-    new_user.site_ids = [us.site_id for us in new_user.user_sites]
-
+    # Refresh to get relationships
+    db.refresh(new_user)
     return new_user
 
 
@@ -90,11 +89,6 @@ def list_users(
         query = query.filter(User.organization_id == current_user.organization_id)
 
     users = query.offset(skip).limit(limit).all()
-
-    # Load site_ids for each user
-    for user in users:
-        user.site_ids = [us.site_id for us in user.user_sites]
-
     return users
 
 
@@ -120,9 +114,6 @@ def get_user(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Not enough permissions"
             )
-
-    # Load site_ids for response
-    user.site_ids = [us.site_id for us in user.user_sites]
 
     return user
 
@@ -176,9 +167,6 @@ def update_user(
 
     db.commit()
     db.refresh(user)
-
-    # Load site_ids for response
-    user.site_ids = [us.site_id for us in user.user_sites]
 
     return user
 
