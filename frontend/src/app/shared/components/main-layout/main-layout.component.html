@@ -6,35 +6,35 @@
 <!-- Sidebar - Responsive -->
 <div [class.translate-x-0]="isMobileMenuOpen"
      class="w-60 bg-gray-800 h-screen fixed left-0 top-0 z-50 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
-  <div class="p-4 border-b border-gray-700">
-    <h1 class="text-white text-xl font-bold">Zynthio</h1>
-    <p class="text-gray-400 text-xs mt-1">Site Monitoring</p>
+  <div class="p-3 border-b border-gray-700">
+    <h1 class="text-white text-lg font-bold">Zynthio</h1>
+    <p class="text-gray-400 text-xs">Site Monitoring</p>
   </div>
-  <nav class="mt-2 px-2 flex-1 overflow-y-auto">
+  <nav class="mt-1 px-2 flex-1 overflow-y-auto py-2">
     <a *ngFor="let item of navigationItems"
        [routerLink]="item.route"
        (click)="closeMobileMenu()"
        routerLinkActive="nav-item-active"
-       class="nav-item flex items-center gap-4 py-3.5 px-4 text-gray-300 text-sm font-medium hover:bg-gray-700 hover:text-white cursor-pointer rounded-lg mb-2 transition-all duration-200">
-      <i [class]="item.icon + ' text-lg w-5 text-center'"></i>
+       class="nav-item flex items-center gap-3 py-2.5 px-3 text-gray-300 text-sm font-medium hover:bg-gray-700 hover:text-white cursor-pointer rounded-lg mb-1 transition-all duration-200">
+      <i [class]="item.icon + ' text-base w-5 text-center'"></i>
       <span>{{ item.label }}</span>
     </a>
   </nav>
 
   <!-- User info at bottom -->
-  <div class="px-2 py-4 border-t border-gray-700" *ngIf="user">
-    <div class="flex items-center justify-between gap-3 px-2 py-2 hover:bg-gray-700 rounded-lg transition-all duration-200">
-      <div class="flex items-center gap-3 min-w-0 flex-1">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0">
+  <div class="px-2 py-3 border-t border-gray-700" *ngIf="user">
+    <div class="flex items-center justify-between gap-2 px-2 py-1.5 hover:bg-gray-700 rounded-lg transition-all duration-200">
+      <div class="flex items-center gap-2 min-w-0 flex-1">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold shadow-lg flex-shrink-0">
           {{ user.full_name?.charAt(0) || 'U' }}
         </div>
-        <div class="text-white text-sm min-w-0 flex-1">
+        <div class="text-white text-xs min-w-0 flex-1">
           <div class="font-semibold truncate">{{ user.full_name }}</div>
         </div>
       </div>
       <button (click)="logout()"
-              class="flex items-center justify-center w-9 h-9 text-gray-300 hover:text-red-400 hover:bg-gray-800 rounded-lg transition-all duration-200">
-        <i class="fa-solid fa-arrow-right-from-bracket text-base"></i>
+              class="flex items-center justify-center w-8 h-8 text-gray-300 hover:text-red-400 hover:bg-gray-800 rounded-lg transition-all duration-200">
+        <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
       </button>
     </div>
   </div>
