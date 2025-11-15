@@ -26,10 +26,13 @@ export class OrganizationFormComponent implements OnInit {
   ) {
     this.organizationForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
-      slug: ['', [Validators.required, Validators.maxLength(50), Validators.pattern(/^[a-z0-9-]+$/)]],
+      org_id: ['', [Validators.required, Validators.maxLength(50), Validators.pattern(/^[A-Z0-9-]+$/)]],
+      contact_person: ['', [Validators.required, Validators.maxLength(100)]],
       contact_email: ['', [Validators.required, Validators.email]],
-      subscription_tier: ['free', Validators.required],
-      max_sites: [10, [Validators.required, Validators.min(1)]],
+      contact_phone: [''],
+      address: [''],
+      subscription_tier: ['basic', Validators.required],
+      custom_price_per_site: [null, [Validators.min(0)]],
       is_active: [true]
     });
   }
@@ -51,14 +54,17 @@ export class OrganizationFormComponent implements OnInit {
       next: (org) => {
         this.organizationForm.patchValue({
           name: org.name,
-          slug: org.slug,
+          org_id: org.org_id,
+          contact_person: org.contact_person,
           contact_email: org.contact_email,
+          contact_phone: org.contact_phone,
+          address: org.address,
           subscription_tier: org.subscription_tier,
-          max_sites: org.max_sites,
+          custom_price_per_site: org.custom_price_per_site,
           is_active: org.is_active
         });
-        // Disable slug editing for existing organizations
-        this.organizationForm.get('slug')?.disable();
+        // Disable org_id editing for existing organizations
+        this.organizationForm.get('org_id')?.disable();
         this.loading = false;
       },
       error: (err) => {
@@ -116,11 +122,20 @@ export class OrganizationFormComponent implements OnInit {
 
   getFieldError(fieldName: string): string {
     const field = this.organizationForm.get(fieldName);
-    if (field?.hasError('required')) return `${fieldName} is required`;
+    if (field?.hasError('required')) {
+      const labels: {[key: string]: string} = {
+        'name': 'Organization name',
+        'org_id': 'Organization ID',
+        'contact_person': 'Contact person',
+        'contact_email': 'Contact email',
+        'subscription_tier': 'Subscription tier'
+      };
+      return `${labels[fieldName] || fieldName} is required`;
+    }
     if (field?.hasError('email')) return 'Invalid email format';
-    if (field?.hasError('pattern')) return 'Slug must contain only lowercase letters, numbers, and hyphens';
-    if (field?.hasError('maxlength')) return `${fieldName} is too long`;
-    if (field?.hasError('min')) return `${fieldName} must be at least 1`;
+    if (field?.hasError('pattern')) return 'Organization ID must contain only uppercase letters, numbers, and hyphens (e.g., VIG001, ACME-CORP)';
+    if (field?.hasError('maxlength')) return `Field is too long (max ${field.errors?.['maxlength'].requiredLength} characters)`;
+    if (field?.hasError('min')) return `Value must be at least ${field.errors?.['min'].min}`;
     return '';
   }
 }
