@@ -146,4 +146,16 @@ export class AuthService {
   isSiteUser(): boolean {
     return this.hasRole(UserRole.SITE_USER);
   }
+
+  requestPasswordReset(data: { organization_id: string; email: string }): Observable<any> {
+    return this.http.post(`${this.API_URL}/auth/forgot-password`, data);
+  }
+
+  resetPassword(data: { token: string; new_password: string }): Observable<any> {
+    return this.http.post(`${this.API_URL}/auth/reset-password`, data);
+  }
+
+  changePassword(data: { old_password: string; new_password: string }): Observable<any> {
+    return this.http.post(`${this.API_URL}/change-password`, data);
+  }
 }

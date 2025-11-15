@@ -11,6 +11,7 @@ from app.models.checklist import Checklist, ChecklistStatus
 from app.models.checklist_item import ChecklistItem
 from app.models.defect import Defect, DefectSeverity, DefectStatus
 from app.models.organization_module import OrganizationModule
+from app.models.password_reset_token import PasswordResetToken
 
 __all__ = [
     "User",
@@ -29,4 +30,5 @@ __all__ = [
     "DefectSeverity",
     "DefectStatus",
     "OrganizationModule",
+    "PasswordResetToken",
 ]

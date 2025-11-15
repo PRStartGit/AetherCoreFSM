@@ -9,6 +9,7 @@ import { SiteService } from '../../core/services/site.service';
 import { User } from '../../core/models/user.model';
 import { Organization } from '../../core/models/organization.model';
 import { Site } from '../../core/models';
+import { ChangePasswordDialogComponent } from '../../shared/dialogs/change-password-dialog/change-password-dialog.component';
 
 @Component({
   selector: 'app-profile',
@@ -124,7 +125,31 @@ export class ProfileComponent implements OnInit {
   }
 
   onChangePassword(): void {
-    // TODO: Implement password change
-    this.snackBar.open('Password change coming soon', 'Close', { duration: 3000 });
+    const dialogRef = this.dialog.open(ChangePasswordDialogComponent, {
+      width: '500px',
+      maxWidth: '95vw',
+      disableClose: false,
+      autoFocus: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // result contains { old_password, new_password, confirm_password }
+        const changeData = {
+          old_password: result.old_password,
+          new_password: result.new_password
+        };
+
+        this.authService.changePassword(changeData).subscribe({
+          next: (response) => {
+            this.snackBar.open('Password changed successfully!', 'Close', { duration: 5000 });
+          },
+          error: (error) => {
+            const message = error.error?.detail || 'Failed to change password. Please try again.';
+            this.snackBar.open(message, 'Close', { duration: 5000 });
+          }
+        });
+      }
+    });
   }
 }
