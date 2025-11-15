@@ -27,3 +27,15 @@ class PasswordChange(BaseModel):
     """Password change request schema."""
     old_password: str
     new_password: str
+
+
+class PasswordResetRequest(BaseModel):
+    """Request password reset schema."""
+    organization_id: str  # e.g., "vig"
+    email: EmailStr
+
+
+class PasswordReset(BaseModel):
+    """Reset password with token schema."""
+    token: str
+    new_password: str
