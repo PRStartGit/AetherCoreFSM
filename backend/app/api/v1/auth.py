@@ -7,7 +7,7 @@ from app.core.security import verify_password, create_access_token, get_password
 from app.models.user import User
 from app.models.organization import Organization
 from app.models.password_reset_token import PasswordResetToken
-from app.schemas.auth import LoginRequest, Token, PasswordResetRequest, PasswordReset
+from app.schemas.auth import LoginRequest, Token, PasswordResetRequest, PasswordReset, PasswordChange
 from app.schemas.user import UserResponse
 from app.core.dependencies import get_current_user
 
@@ -97,6 +97,36 @@ def logout():
     This endpoint exists for consistency and future extensions.
     """
     return {"message": "Successfully logged out"}
+
+
+@router.post("/change-password")
+def change_password(
+    password_data: PasswordChange,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Change password for authenticated user.
+    Requires old password for verification.
+    """
+    # Verify old password
+    if not verify_password(password_data.old_password, current_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect"
+        )
+
+    # Update to new password
+    current_user.hashed_password = get_password_hash(password_data.new_password)
+    db.commit()
+
+    print(f"\n{'='*80}")
+    print(f"PASSWORD CHANGED")
+    print(f"{'='*80}")
+    print(f"User: {current_user.full_name} ({current_user.email})")
+    print(f"{'='*80}\n")
+
+    return {"message": "Password changed successfully"}
 
 
 @router.post("/forgot-password")
