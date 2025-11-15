@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defects Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .summary-card {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+        }
+        .summary-card.critical {
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+        .summary-card.high {
+            border-color: #f59e0b;
+            background: #fef3c7;
+        }
+        .summary-card.medium {
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+        .summary-card.low {
+            border-color: #64748b;
+            background: #f1f5f9;
+        }
+        .summary-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1e293b;
+        }
+        .summary-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+        .section-title {
+            color: #dc2626;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin: 40px 0 20px 0;
+            font-size: 20px;
+        }
+        .priority-section {
+            margin: 30px 0;
+        }
+        .priority-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .priority-badge {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        .priority-critical {
+            background: #ef4444;
+            color: white;
+        }
+        .priority-high {
+            background: #f59e0b;
+            color: white;
+        }
+        .priority-medium {
+            background: #3b82f6;
+            color: white;
+        }
+        .priority-low {
+            background: #64748b;
+            color: white;
+        }
+        .defect-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.2s ease;
+        }
+        .defect-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .defect-card.critical {
+            border-left: 6px solid #ef4444;
+            background: #fef2f2;
+        }
+        .defect-card.high {
+            border-left: 6px solid #f59e0b;
+            background: #fffbeb;
+        }
+        .defect-card.medium {
+            border-left: 6px solid #3b82f6;
+            background: #eff6ff;
+        }
+        .defect-card.low {
+            border-left: 6px solid #64748b;
+            background: #f8fafc;
+        }
+        .defect-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .defect-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            flex: 1;
+        }
+        .defect-id {
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            color: #475569;
+        }
+        .defect-meta {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(248, 250, 252, 0.5);
+            border-radius: 6px;
+        }
+        .meta-item {
+            font-size: 13px;
+        }
+        .meta-label {
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .meta-value {
+            color: #1e293b;
+            font-weight: 600;
+        }
+        .defect-description {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-open {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .status-in-progress {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-resolved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .age-indicator {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .age-critical {
+            color: #ef4444;
+            font-weight: 600;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+        }
+        .footer {
+            background: #f8fafc;
+            padding: 30px;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .stats-bar {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚨 Defects Report</h1>
+            <p>{{report_period}}</p>
+            <p style="font-size: 14px; opacity: 0.8;">{{organization_name}}</p>
+        </div>
+
+        <div class="content">
+            <h2>Hello {{recipient_name}},</h2>
+            <p>Here's a comprehensive overview of all active defects across your organization, organized by priority and date.</p>
+
+            <h3 class="section-title">📊 Summary Overview</h3>
+            <div class="summary-cards">
+                <div class="summary-card critical">
+                    <div class="summary-value">{{critical_count}}</div>
+                    <div class="summary-label">Critical</div>
+                </div>
+                <div class="summary-card high">
+                    <div class="summary-value">{{high_count}}</div>
+                    <div class="summary-label">High</div>
+                </div>
+                <div class="summary-card medium">
+                    <div class="summary-value">{{medium_count}}</div>
+                    <div class="summary-label">Medium</div>
+                </div>
+                <div class="summary-card low">
+                    <div class="summary-value">{{low_count}}</div>
+                    <div class="summary-label">Low</div>
+                </div>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-row">
+                    <span><strong>Total Active Defects:</strong></span>
+                    <span style="font-weight: bold; font-size: 18px;">{{total_defects}}</span>
+                </div>
+                <div class="stat-row">
+                    <span><strong>New This Week:</strong></span>
+                    <span style="color: #ef4444; font-weight: 600;">{{new_this_week}}</span>
+                </div>
+                <div class="stat-row">
+                    <span><strong>Resolved This Week:</strong></span>
+                    <span style="color: #10b981; font-weight: 600;">{{resolved_this_week}}</span>
+                </div>
+                <div class="stat-row">
+                    <span><strong>Average Resolution Time:</strong></span>
+                    <span>{{avg_resolution_time}} days</span>
+                </div>
+            </div>
+
+            {{#critical_defects}}
+            <div class="priority-section">
+                <div class="priority-header">
+                    <span class="priority-badge priority-critical">🔴 Critical Priority</span>
+                    <span style="color: #64748b; font-size: 14px;">{{critical_count}} defects requiring immediate attention</span>
+                </div>
+
+                {{#defects}}
+                <div class="defect-card critical">
+                    <div class="defect-header">
+                        <div class="defect-title">{{title}}</div>
+                        <div class="defect-id">#{{defect_id}}</div>
+                    </div>
+
+                    <div class="defect-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Site</span>
+                            <span class="meta-value">{{site_name}}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Reported</span>
+                            <span class="meta-value">{{reported_date}}</span>
+                            <span class="age-indicator age-critical">{{age_days}} days old</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Status</span>
+                            <span class="status-badge status-{{status_class}}">{{status}}</span>
+                        </div>
+                    </div>
+
+                    <div class="defect-description">
+                        {{description}}
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #64748b; margin-top: 10px;">
+                        <span>Reported by: {{reported_by}}</span>
+                        <span>Category: {{category}}</span>
+                    </div>
+                </div>
+                {{/defects}}
+            </div>
+            {{/critical_defects}}
+
+            {{#high_defects}}
+            <div class="priority-section">
+                <div class="priority-header">
+                    <span class="priority-badge priority-high">🟠 High Priority</span>
+                    <span style="color: #64748b; font-size: 14px;">{{high_count}} defects</span>
+                </div>
+
+                {{#defects}}
+                <div class="defect-card high">
+                    <div class="defect-header">
+                        <div class="defect-title">{{title}}</div>
+                        <div class="defect-id">#{{defect_id}}</div>
+                    </div>
+
+                    <div class="defect-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Site</span>
+                            <span class="meta-value">{{site_name}}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Reported</span>
+                            <span class="meta-value">{{reported_date}}</span>
+                            <span class="age-indicator">{{age_days}} days old</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Status</span>
+                            <span class="status-badge status-{{status_class}}">{{status}}</span>
+                        </div>
+                    </div>
+
+                    <div class="defect-description">
+                        {{description}}
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #64748b; margin-top: 10px;">
+                        <span>Reported by: {{reported_by}}</span>
+                        <span>Category: {{category}}</span>
+                    </div>
+                </div>
+                {{/defects}}
+            </div>
+            {{/high_defects}}
+
+            {{#medium_defects}}
+            <div class="priority-section">
+                <div class="priority-header">
+                    <span class="priority-badge priority-medium">🟡 Medium Priority</span>
+                    <span style="color: #64748b; font-size: 14px;">{{medium_count}} defects</span>
+                </div>
+
+                {{#defects}}
+                <div class="defect-card medium">
+                    <div class="defect-header">
+                        <div class="defect-title">{{title}}</div>
+                        <div class="defect-id">#{{defect_id}}</div>
+                    </div>
+
+                    <div class="defect-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Site</span>
+                            <span class="meta-value">{{site_name}}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Reported</span>
+                            <span class="meta-value">{{reported_date}}</span>
+                            <span class="age-indicator">{{age_days}} days old</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Status</span>
+                            <span class="status-badge status-{{status_class}}">{{status}}</span>
+                        </div>
+                    </div>
+
+                    <div class="defect-description">
+                        {{description}}
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #64748b; margin-top: 10px;">
+                        <span>Reported by: {{reported_by}}</span>
+                        <span>Category: {{category}}</span>
+                    </div>
+                </div>
+                {{/defects}}
+            </div>
+            {{/medium_defects}}
+
+            {{#low_defects}}
+            <div class="priority-section">
+                <div class="priority-header">
+                    <span class="priority-badge priority-low">⚪ Low Priority</span>
+                    <span style="color: #64748b; font-size: 14px;">{{low_count}} defects</span>
+                </div>
+
+                {{#defects}}
+                <div class="defect-card low">
+                    <div class="defect-header">
+                        <div class="defect-title">{{title}}</div>
+                        <div class="defect-id">#{{defect_id}}</div>
+                    </div>
+
+                    <div class="defect-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Site</span>
+                            <span class="meta-value">{{site_name}}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Reported</span>
+                            <span class="meta-value">{{reported_date}}</span>
+                            <span class="age-indicator">{{age_days}} days old</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Status</span>
+                            <span class="status-badge status-{{status_class}}">{{status}}</span>
+                        </div>
+                    </div>
+
+                    <div class="defect-description">
+                        {{description}}
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #64748b; margin-top: 10px;">
+                        <span>Reported by: {{reported_by}}</span>
+                        <span>Category: {{category}}</span>
+                    </div>
+                </div>
+                {{/defects}}
+            </div>
+            {{/low_defects}}
+
+            <center>
+                <a href="{{defects_dashboard_url}}" class="button">View Defects Dashboard</a>
+            </center>
+
+            <p style="margin-top: 40px; color: #64748b; font-size: 14px;">
+                This report is generated based on all active defects in your organization. Defects are sorted by priority (Critical → High → Medium → Low) and then by date reported (oldest first).
+            </p>
+        </div>
+
+        <div class="footer">
+            <p><strong>Zynthio Site Monitoring</strong></p>
+            <p>Defects Report • Generated on {{report_date}}</p>
+            <p style="margin-top: 20px; font-size: 12px; color: #94a3b8;">
+                Organization: {{organization_name}} • Total Sites: {{total_sites}}
+            </p>
+        </div>
+    </div>
+</body>
+</html>
