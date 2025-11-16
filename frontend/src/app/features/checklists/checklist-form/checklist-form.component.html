@@ -1,0 +1,88 @@
+<div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+  <!-- Header -->
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h2 class="text-xl font-bold text-gray-900">Create New Checklist</h2>
+    <p class="text-sm text-gray-600 mt-1">Schedule a new checklist for a site</p>
+  </div>
+
+  <!-- Content -->
+  <div class="px-6 py-4 overflow-y-auto flex-1">
+    <form [formGroup]="checklistForm" class="flex flex-col gap-5">
+      <!-- Site -->
+      <div>
+        <label for="site_id" class="block text-sm font-semibold text-gray-700 mb-2">
+          Site <span class="text-red-500">*</span>
+        </label>
+        <select id="site_id"
+                formControlName="site_id"
+                class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="checklistForm.get('site_id')?.invalid && checklistForm.get('site_id')?.touched ? 'border-red-500' : 'border-gray-300'">
+          <option value="">Select a site</option>
+          <option *ngFor="let site of sites" [value]="site.id">
+            {{ site.name }}
+          </option>
+        </select>
+        <p *ngIf="checklistForm.get('site_id')?.hasError('required') && checklistForm.get('site_id')?.touched"
+           class="mt-1 text-sm text-red-600">
+          Site is required
+        </p>
+      </div>
+
+      <!-- Category -->
+      <div>
+        <label for="category_id" class="block text-sm font-semibold text-gray-700 mb-2">
+          Category <span class="text-red-500">*</span>
+        </label>
+        <select id="category_id"
+                formControlName="category_id"
+                class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="checklistForm.get('category_id')?.invalid && checklistForm.get('category_id')?.touched ? 'border-red-500' : 'border-gray-300'">
+          <option value="">Select a category</option>
+          <option *ngFor="let category of categories" [value]="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+        <p *ngIf="checklistForm.get('category_id')?.hasError('required') && checklistForm.get('category_id')?.touched"
+           class="mt-1 text-sm text-red-600">
+          Category is required
+        </p>
+      </div>
+
+      <!-- Scheduled Date -->
+      <div>
+        <label for="scheduled_date" class="block text-sm font-semibold text-gray-700 mb-2">
+          Scheduled Date <span class="text-red-500">*</span>
+        </label>
+        <input type="date"
+               id="scheduled_date"
+               formControlName="scheduled_date"
+               class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+               [ngClass]="checklistForm.get('scheduled_date')?.invalid && checklistForm.get('scheduled_date')?.touched ? 'border-red-500' : 'border-gray-300'">
+        <p *ngIf="checklistForm.get('scheduled_date')?.hasError('required') && checklistForm.get('scheduled_date')?.touched"
+           class="mt-1 text-sm text-red-600">
+          Scheduled date is required
+        </p>
+      </div>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+    <button type="button"
+            (click)="onCancel()"
+            [disabled]="loading"
+            class="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+      Cancel
+    </button>
+    <button type="button"
+            (click)="onSubmit()"
+            [disabled]="checklistForm.invalid || loading"
+            class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+      <svg *ngIf="loading" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span>Create</span>
+    </button>
+  </div>
+</div>

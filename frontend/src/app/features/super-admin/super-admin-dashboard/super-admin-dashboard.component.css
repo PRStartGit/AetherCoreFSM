@@ -1,0 +1,6 @@
+/* Custom styles for Material Design components with Tailwind */
+
+/* Ensure mat-card-content padding works with Tailwind */
+::ng-deep mat-card-content.p-5 {
+  padding: 1.25rem !important;
+}

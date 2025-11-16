@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Performance Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .stat-card.highlight {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid #10b981;
+        }
+        .stat-card.warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+        }
+        .stat-card.danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #ef4444;
+        }
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1e293b;
+            margin: 10px 0;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-change {
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        .stat-change.positive {
+            color: #10b981;
+        }
+        .stat-change.negative {
+            color: #ef4444;
+        }
+        .performance-bar {
+            background: #e2e8f0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+        }
+        .performance-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .section-title {
+            color: #4f46e5;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin: 30px 0 20px 0;
+        }
+        .site-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            background: #f8fafc;
+            border-left: 4px solid #cbd5e1;
+        }
+        .site-row.excellent {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+        .site-row.good {
+            border-left-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .site-row.needs-improvement {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+        .site-row.poor {
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.3);
+        }
+        .footer {
+            background: #f8fafc;
+            padding: 30px;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th {
+            background: #f1f5f9;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 2px solid #cbd5e1;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Weekly Performance Report</h1>
+            <p>{{week_start}} - {{week_end}}</p>
+            <p style="font-size: 14px; opacity: 0.8;">{{organization_name}}</p>
+        </div>
+
+        <div class="content">
+            <h2>Hello {{recipient_name}},</h2>
+            <p>Here's your comprehensive performance summary for the week ending {{week_end}}.</p>
+
+            <h3 class="section-title">📈 Overall Performance Metrics</h3>
+
+            <div class="summary-grid">
+                <div class="stat-card highlight">
+                    <div class="stat-label">Completion Rate</div>
+                    <div class="stat-value">{{completion_rate}}%</div>
+                    <div class="stat-change {{completion_trend}}">
+                        {{completion_change}} from last week
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Total Tasks</div>
+                    <div class="stat-value">{{total_tasks}}</div>
+                    <div class="stat-change">
+                        {{completed_tasks}} completed
+                    </div>
+                </div>
+
+                <div class="stat-card {{defects_severity}}">
+                    <div class="stat-label">Active Defects</div>
+                    <div class="stat-value">{{active_defects}}</div>
+                    <div class="stat-change">
+                        {{new_defects}} new this week
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Sites Monitored</div>
+                    <div class="stat-value">{{total_sites}}</div>
+                    <div class="stat-change">
+                        {{active_sites}} active
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="section-title">🎯 Completion Trend</h3>
+            <div class="performance-bar">
+                <div class="performance-bar-fill" style="width: {{completion_rate}}%;">
+                    {{completion_rate}}%
+                </div>
+            </div>
+            <p style="text-align: center; color: #64748b; font-size: 14px;">
+                {{completed_tasks}} of {{total_tasks}} tasks completed
+            </p>
+
+            <h3 class="section-title">🏢 Top Performing Sites</h3>
+            {{#top_sites}}
+            <div class="site-row {{performance_class}}">
+                <div>
+                    <strong>{{site_name}}</strong>
+                    <div style="font-size: 12px; color: #64748b;">{{tasks_completed}}/{{tasks_total}} tasks</div>
+                </div>
+                <div style="font-weight: bold; color: {{performance_color}};">
+                    {{performance_percentage}}%
+                </div>
+            </div>
+            {{/top_sites}}
+
+            <h3 class="section-title">⚠️ Sites Needing Attention</h3>
+            {{#attention_sites}}
+            <div class="site-row needs-improvement">
+                <div>
+                    <strong>{{site_name}}</strong>
+                    <div style="font-size: 12px; color: #64748b;">{{issue_description}}</div>
+                </div>
+                <div style="font-weight: bold; color: #f59e0b;">
+                    {{completion_rate}}%
+                </div>
+            </div>
+            {{/attention_sites}}
+
+            <h3 class="section-title">📋 Task Categories Breakdown</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Completed</th>
+                        <th>Total</th>
+                        <th>Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#category_stats}}
+                    <tr>
+                        <td>{{category_name}}</td>
+                        <td>{{completed}}</td>
+                        <td>{{total}}</td>
+                        <td><strong>{{rate}}%</strong></td>
+                    </tr>
+                    {{/category_stats}}
+                </tbody>
+            </table>
+
+            <h3 class="section-title">💡 Key Insights</h3>
+            <ul>
+                {{#insights}}
+                <li>{{insight_text}}</li>
+                {{/insights}}
+            </ul>
+
+            <center>
+                <a href="{{dashboard_url}}" class="button">View Detailed Dashboard</a>
+            </center>
+
+            <p style="margin-top: 40px; color: #64748b; font-size: 14px;">
+                This report is automatically generated every Monday morning. To customize your reporting preferences or view historical reports, visit your dashboard.
+            </p>
+        </div>
+
+        <div class="footer">
+            <p><strong>Zynthio Site Monitoring</strong></p>
+            <p>Automated Weekly Report • Generated on {{report_date}}</p>
+            <p style="margin-top: 20px; font-size: 12px; color: #94a3b8;">
+                To unsubscribe from weekly reports, visit your notification preferences in the dashboard.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

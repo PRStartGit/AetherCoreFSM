@@ -1,0 +1,5 @@
+/* Using Tailwind classes for most styling */
+
+mat-dialog-content {
+  min-width: 500px;
+}

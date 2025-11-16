@@ -1,28 +1,97 @@
-# Angular specific
-/dist/
-/out-tsc/
-/tmp/
-/coverage/
-/e2e/test-output/
-/.angular/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# PyCharm
+.idea/
+
+# VSCode
+.vscode/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# FastAPI
+*.log
+
+# Node / Angular
+node_modules/
+npm-debug.log
+yarn-error.log
+frontend/dist/
+frontend/.angular/
+frontend/.sass-cache/
+frontend/coverage/
+
+# Angular cache
 .angular/
 
-# Node modules and dependency files
-/node_modules/
-/package-lock.json
-/yarn.lock
-
-# Environment files
-/.env
-
-# Angular CLI and build artefacts
-/.angular-cli.json
-/.ng/
-
-# TypeScript cache
-*.tsbuildinfo
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
 
 # Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+logs/
+*.log
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Alembic
+alembic.ini
+
+# Uploads
+uploads/
+media/
+
+# Windows junk files
+nul
+*.nul
+
+# Temporary/backup files
+*.tmp
+*.bak
+*.orig
+
+# Seed/utility scripts (comment out if needed)
+# backend/*seed*.py
+# backend/*test*.py
+# backend/reset_database.py

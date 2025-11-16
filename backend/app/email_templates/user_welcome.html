@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Zynthio</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .content h2 {
+            color: #059669;
+            margin-top: 0;
+        }
+        .info-box {
+            background: #f0fdf4;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .info-box strong {
+            color: #065f46;
+        }
+        .credentials {
+            background: #ecfdf5;
+            border: 2px solid #10b981;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .credentials p {
+            margin: 10px 0;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+        }
+        .footer {
+            background: #f8fafc;
+            padding: 30px;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer a {
+            color: #10b981;
+            text-decoration: none;
+        }
+        .role-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👋 Welcome to Zynthio!</h1>
+            <p>Your Account Has Been Created</p>
+        </div>
+
+        <div class="content">
+            <h2>Hello {{user_name}},</h2>
+
+            <p>You've been invited to join <strong>{{organization_name}}</strong> on Zynthio's Site Monitoring Platform!</p>
+
+            <div class="info-box">
+                <p><strong>Organization:</strong> {{organization_name}}</p>
+                <p><strong>Your Role:</strong> <span class="role-badge">{{user_role}}</span></p>
+                <p><strong>Assigned Sites:</strong> {{assigned_sites}}</p>
+            </div>
+
+            <h3>Your Login Credentials</h3>
+            <p>Your account has been created with the following credentials:</p>
+
+            <div class="credentials">
+                <p><strong>Email:</strong> {{user_email}}</p>
+                <p><strong>Temporary Password:</strong> {{temporary_password}}</p>
+            </div>
+
+            <p><strong>⚠️ Security First:</strong> Please reset your password immediately after your first login for security purposes.</p>
+
+            <center>
+                <a href="{{login_url}}" class="button">Login to Your Account</a>
+            </center>
+
+            <h3>Getting Started</h3>
+            <p>Based on your role as <strong>{{user_role}}</strong>, you'll be able to:</p>
+            <ul>
+                {{role_permissions}}
+            </ul>
+
+            <p>If you have any questions or need help navigating the platform, don't hesitate to reach out to your organization administrator or our support team.</p>
+        </div>
+
+        <div class="footer">
+            <p><strong>Zynthio Site Monitoring</strong></p>
+            <p>Need help? Contact us at <a href="mailto:support@zynthio.com">support@zynthio.com</a></p>
+            <p style="margin-top: 20px; font-size: 12px; color: #94a3b8;">
+                This email was sent to {{user_email}}. If you didn't expect this email, please contact your organization administrator.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
