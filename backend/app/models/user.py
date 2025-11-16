@@ -11,35 +11,44 @@ class UserRole(str, enum.Enum):
     ORG_ADMIN = "org_admin"
     SITE_USER = "site_user"
 
+    def __str__(self):
+        return self.value
+
 
 class Department(str, enum.Enum):
     """User department enumeration."""
-    MANAGEMENT = "management"
-    BOH = "boh"  # Back of House
-    FOH = "foh"  # Front of House
+    management = "management"
+    boh = "boh"  # Back of House
+    foh = "foh"  # Front of House
+
+    def __str__(self):
+        return self.value
 
 
 class JobTitle(str, enum.Enum):
     """User job title enumeration."""
     # Management Level - Can see all tasks
-    GENERAL_MANAGER = "general_manager"
-    ASSISTANT_MANAGER = "assistant_manager"
-    HEAD_CHEF = "head_chef"
-    SOUS_CHEF = "sous_chef"
-    SUPERVISOR = "supervisor"
+    general_manager = "general_manager"
+    assistant_manager = "assistant_manager"
+    head_chef = "head_chef"
+    sous_chef = "sous_chef"
+    supervisor = "supervisor"
 
     # Regular Staff - See only department tasks
-    TEAM_MEMBER = "team_member"
+    team_member = "team_member"
+
+    def __str__(self):
+        return self.value
 
     @property
     def is_management(self) -> bool:
         """Check if job title is management level."""
         return self in [
-            JobTitle.GENERAL_MANAGER,
-            JobTitle.ASSISTANT_MANAGER,
-            JobTitle.HEAD_CHEF,
-            JobTitle.SOUS_CHEF,
-            JobTitle.SUPERVISOR
+            JobTitle.general_manager,
+            JobTitle.assistant_manager,
+            JobTitle.head_chef,
+            JobTitle.sous_chef,
+            JobTitle.supervisor
         ]
 
 
@@ -57,8 +66,8 @@ class User(Base):
     phone = Column(String, nullable=True)
 
     # Department and Job Title
-    department = Column(SQLEnum(Department), nullable=True)
-    job_title = Column(SQLEnum(JobTitle), nullable=True)
+    department = Column(SQLEnum(Department, name='department', native_enum=True, create_constraint=False), nullable=True)
+    job_title = Column(SQLEnum(JobTitle, name='jobtitle', native_enum=True, create_constraint=False), nullable=True)
 
     # Foreign Keys
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
@@ -88,11 +97,11 @@ class User(Base):
         if not self.job_title:
             return False
         return self.job_title in [
-            JobTitle.GENERAL_MANAGER,
-            JobTitle.ASSISTANT_MANAGER,
-            JobTitle.HEAD_CHEF,
-            JobTitle.SOUS_CHEF,
-            JobTitle.SUPERVISOR
+            JobTitle.general_manager,
+            JobTitle.assistant_manager,
+            JobTitle.head_chef,
+            JobTitle.sous_chef,
+            JobTitle.supervisor
         ]
 
     def can_see_task(self, task_departments: list) -> bool:
