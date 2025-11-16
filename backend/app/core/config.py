@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
 
     # Database
+    # For development: SQLite (default)
+    # For production: PostgreSQL (set via environment variable)
+    # Example: postgresql://user:password@localhost:5432/dbname
     DATABASE_URL: str = "sqlite:///./aethercore.db"
 
     # CORS
@@ -26,9 +29,24 @@ class Settings(BaseSettings):
         "http://127.0.0.1:8000",
     ]
 
-    # Email (SendGrid)
-    SENDGRID_API_KEY: Optional[str] = None
+    # Email Configuration
+    # SMTP Settings (Primary - Cost-effective)
+    SMTP_HOST: Optional[str] = None  # e.g., smtp.gmail.com, smtp.office365.com
+    SMTP_PORT: int = 587  # 587 for TLS, 465 for SSL
+    SMTP_USER: Optional[str] = None
+    SMTP_PASSWORD: Optional[str] = None
+    SMTP_TLS: bool = True
+    SMTP_SSL: bool = False
+
+    # Email Settings
     FROM_EMAIL: str = "noreply@zynthio.com"
+    FROM_NAME: str = "Zynthio Site Monitoring"
+
+    # SendGrid (Fallback option)
+    SENDGRID_API_KEY: Optional[str] = None
+
+    # Email Templates Directory
+    EMAIL_TEMPLATES_DIR: str = "app/email_templates"
 
     # File Upload
     UPLOAD_DIR: str = "uploads"
