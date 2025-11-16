@@ -57,6 +57,7 @@ import { UserFormComponent } from './features/super-admin/users/user-form/user-f
 import { SitesListComponent } from './features/org-admin/sites-list/sites-list.component';
 import { SitesFormComponent } from './features/org-admin/sites-form/sites-form.component';
 import { ProfileComponent } from './features/profile/profile.component';
+import { LandingPageComponent } from './features/landing-page/landing-page.component';
 import { TaskFieldBuilderComponent } from './features/tasks/task-field-builder/task-field-builder.component';
 
 @NgModule({
@@ -85,7 +86,8 @@ import { TaskFieldBuilderComponent } from './features/tasks/task-field-builder/t
     // ReportsComponent,
     SitesListComponent,
     SitesFormComponent,
-    ProfileComponent
+    ProfileComponent,
+    LandingPageComponent
   ],
   imports: [
     BrowserModule,

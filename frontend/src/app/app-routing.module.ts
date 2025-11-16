@@ -21,11 +21,16 @@ import { UserFormComponent } from './features/super-admin/users/user-form/user-f
 import { SitesListComponent } from './features/org-admin/sites-list/sites-list.component';
 import { SitesFormComponent } from './features/org-admin/sites-form/sites-form.component';
 import { ProfileComponent } from './features/profile/profile.component';
+import { LandingPageComponent } from './features/landing-page/landing-page.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { UserRole } from './core/models';
 
 const routes: Routes = [
+  {
+    path: 'pricing',
+    component: LandingPageComponent
+  },
   {
     path: 'login',
     component: LoginComponent

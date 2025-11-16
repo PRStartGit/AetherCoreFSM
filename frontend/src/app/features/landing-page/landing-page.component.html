@@ -1,0 +1,450 @@
+<!-- Landing Page with Pricing Section -->
+<div class="min-h-screen bg-white">
+
+  <!-- Pricing Header -->
+  <section class="py-20 bg-gradient-to-br from-gray-50 to-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+        PRICING
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-600 mb-4">
+        Simple, transparent pricing that scales
+      </p>
+      <p class="text-lg text-gray-500">
+        with your business
+      </p>
+    </div>
+  </section>
+
+  <!-- Fife Special Offer Banner (Prominent) -->
+  <section class="py-8 bg-gradient-to-r from-blue-600 to-purple-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <div class="text-3xl md:text-4xl font-bold text-white mb-4">
+          🎉 SPECIAL OFFER FOR FIFE BUSINESSES 🎉
+        </div>
+        <p class="text-xl md:text-2xl text-white mb-6">
+          6 Months FREE Trial - No Credit Card Required
+        </p>
+        <button (click)="claimFifeTrial()"
+                class="px-8 py-4 bg-white text-purple-600 rounded-lg text-lg font-bold hover:bg-gray-100 transition-all shadow-lg">
+          Claim Your Free Trial
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Cards (3-Column Layout) -->
+  <section class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- Starter Plan -->
+        <div class="bg-white border-2 border-gray-200 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all">
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Starter</h3>
+          <p class="text-gray-600 mb-6">Perfect for independent venues</p>
+
+          <div class="mb-6">
+            <div class="flex items-baseline gap-2">
+              <span class="text-5xl font-bold text-gray-900">£12</span>
+            </div>
+            <p class="text-sm text-gray-500 mt-1">per site / month</p>
+            <p class="text-sm font-semibold text-gray-700 mt-2">1-3 sites</p>
+          </div>
+
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Mobile app access</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Digital safety checklists</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Photo upload & evidence</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Email reports</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Basic support</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Unlimited users</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Cloud storage</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">EHO inspection ready</span>
+            </li>
+          </ul>
+
+          <button (click)="startTrial('starter')"
+                  class="w-full py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition-all">
+            Start Free Trial
+          </button>
+          <p class="text-xs text-center text-gray-500 mt-3">No credit card required</p>
+        </div>
+
+        <!-- Professional Plan (Most Popular) -->
+        <div class="bg-blue-50 border-2 border-blue-500 rounded-2xl p-8 shadow-2xl transform md:scale-105 relative">
+          <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+            <span class="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-bold uppercase">
+              Most Popular
+            </span>
+          </div>
+
+          <h3 class="text-2xl font-bold text-gray-900 mb-2 mt-2">Professional</h3>
+          <p class="text-gray-600 mb-6">For growing restaurant groups</p>
+
+          <div class="mb-6">
+            <div class="flex items-baseline gap-2">
+              <span class="text-5xl font-bold text-gray-900">£10</span>
+            </div>
+            <p class="text-sm text-gray-500 mt-1">per site / month</p>
+            <p class="text-sm font-semibold text-gray-700 mt-2">4-10 sites</p>
+          </div>
+
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700 font-semibold">Everything in Starter, plus:</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Documents module</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Priority support</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Custom branding</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Advanced analytics</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Multi-site dashboard</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Staff training tracking</span>
+            </li>
+          </ul>
+
+          <button (click)="startTrial('professional')"
+                  class="w-full py-3 bg-black text-white rounded-lg font-semibold hover:bg-green-600 transition-all">
+            Start Free Trial
+          </button>
+          <p class="text-xs text-center text-gray-500 mt-3">No credit card required</p>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="bg-white border-2 border-gray-200 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all">
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Enterprise</h3>
+          <p class="text-gray-600 mb-6">For large hospitality groups</p>
+
+          <div class="mb-6">
+            <div class="flex items-baseline gap-2">
+              <span class="text-5xl font-bold text-gray-900">£8</span>
+            </div>
+            <p class="text-sm text-gray-500 mt-1">per site / month</p>
+            <p class="text-sm font-semibold text-gray-700 mt-2">11+ sites</p>
+          </div>
+
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700 font-semibold">Everything in Pro, plus:</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">E-learning module</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Dedicated account manager</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">API access</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Custom integrations</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Advanced permissions</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">SLA guarantee</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-gray-700">Onboarding assistance</span>
+            </li>
+          </ul>
+
+          <button (click)="contactSales()"
+                  class="w-full py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition-all">
+            Contact Sales
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Annual Billing Section -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">
+        Save 15% with annual billing
+      </h2>
+
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <table class="w-full">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-6 py-4 text-left text-sm font-bold text-gray-900">Plan</th>
+              <th class="px-6 py-4 text-left text-sm font-bold text-gray-900">Monthly</th>
+              <th class="px-6 py-4 text-left text-sm font-bold text-gray-900">Annual</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-gray-900 font-medium">Starter</td>
+              <td class="px-6 py-4 text-gray-700">£12/site</td>
+              <td class="px-6 py-4 text-green-600 font-semibold">£10.20/site</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-gray-900 font-medium">Professional</td>
+              <td class="px-6 py-4 text-gray-700">£10/site</td>
+              <td class="px-6 py-4 text-green-600 font-semibold">£8.50/site</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-gray-900 font-medium">Enterprise</td>
+              <td class="px-6 py-4 text-gray-700">£8/site</td>
+              <td class="px-6 py-4 text-green-600 font-semibold">£6.80/site</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="text-center text-gray-600 mt-6 text-lg">
+        <span class="font-semibold text-green-600">2 months free</span> when you pay annually
+      </p>
+    </div>
+  </section>
+
+  <!-- Pricing Examples -->
+  <section class="py-16 bg-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">
+        Pricing Examples
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Example 1 -->
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border-2 border-blue-200">
+          <h3 class="font-bold text-gray-900 mb-3">Single pub</h3>
+          <p class="text-gray-700 mb-2">1 site × £12 = <span class="font-bold text-2xl text-blue-600">£12/month</span></p>
+          <p class="text-sm text-gray-600">Annual: £122.40/year <span class="text-green-600 font-semibold">(save £21.60)</span></p>
+        </div>
+
+        <!-- Example 2 -->
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border-2 border-purple-200">
+          <h3 class="font-bold text-gray-900 mb-3">Small restaurant group (5 sites)</h3>
+          <p class="text-gray-700 mb-2">5 sites × £10 = <span class="font-bold text-2xl text-purple-600">£50/month</span></p>
+          <p class="text-sm text-gray-600">Annual: £510/year <span class="text-green-600 font-semibold">(save £90)</span></p>
+        </div>
+
+        <!-- Example 3 -->
+        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border-2 border-green-200">
+          <h3 class="font-bold text-gray-900 mb-3">Regional chain (15 sites)</h3>
+          <p class="text-gray-700 mb-2">15 sites × £8 = <span class="font-bold text-2xl text-green-600">£120/month</span></p>
+          <p class="text-sm text-gray-600">Annual: £1,224/year <span class="text-green-600 font-semibold">(save £216)</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">
+        Frequently Asked Questions
+      </h2>
+
+      <div class="space-y-6">
+        <!-- FAQ Item 1 -->
+        <div class="bg-white rounded-xl p-6 shadow-md">
+          <h3 class="text-xl font-bold text-gray-900 mb-3">How does site-based pricing work?</h3>
+          <p class="text-gray-700 leading-relaxed">
+            You pay per physical location (site). For example, if you have 5 restaurants,
+            you'd pay 5 × £10 = £50/month on the Pro plan. Unlimited users per site included.
+          </p>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="bg-white rounded-xl p-6 shadow-md">
+          <h3 class="text-xl font-bold text-gray-900 mb-3">What counts as a 'site'?</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Any physical location where safety checks are performed. Each restaurant, pub,
+            cafe, or kitchen is one site.
+          </p>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="bg-white rounded-xl p-6 shadow-md">
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Can I change plans later?</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Yes! Upgrade or downgrade anytime. Changes take effect at your next billing cycle.
+          </p>
+        </div>
+
+        <!-- FAQ Item 4 -->
+        <div class="bg-white rounded-xl p-6 shadow-md">
+          <h3 class="text-xl font-bold text-gray-900 mb-3">What payment methods do you accept?</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Credit card, debit card, or Direct Debit (annual plans). All processed securely via Stripe.
+          </p>
+        </div>
+
+        <!-- FAQ Item 5 -->
+        <div class="bg-white rounded-xl p-6 shadow-md">
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Is there a setup fee?</h3>
+          <p class="text-gray-700 leading-relaxed">
+            No setup fees, no hidden costs. Just the monthly per-site price.
+          </p>
+        </div>
+
+        <!-- FAQ Item 6 -->
+        <div class="bg-white rounded-xl p-6 shadow-md">
+          <h3 class="text-xl font-bold text-gray-900 mb-3">What happens after the free trial?</h3>
+          <p class="text-gray-700 leading-relaxed">
+            You'll be charged for your first month. Cancel anytime before the trial ends - no charge, no questions asked.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof & Testimonials -->
+  <section class="py-20 bg-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-semibold text-gray-900 text-center mb-12">
+        Trusted by restaurants across Scotland
+      </h2>
+
+      <!-- Logo Placeholder Section -->
+      <div class="flex justify-center items-center gap-12 mb-16 flex-wrap">
+        <div class="w-32 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+          <span class="text-gray-400 text-sm">Logo</span>
+        </div>
+        <div class="w-32 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+          <span class="text-gray-400 text-sm">Logo</span>
+        </div>
+        <div class="w-32 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+          <span class="text-gray-400 text-sm">Logo</span>
+        </div>
+        <div class="w-32 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+          <span class="text-gray-400 text-sm">Logo</span>
+        </div>
+      </div>
+
+      <!-- Testimonial -->
+      <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8 md:p-12 shadow-xl">
+        <div class="flex items-start gap-4 mb-6">
+          <svg class="w-12 h-12 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"></path>
+          </svg>
+          <div>
+            <p class="text-xl text-gray-800 leading-relaxed mb-6 italic">
+              "Zynthio cut our admin time by 10 hours a week and our EHO inspector was
+              genuinely impressed with our digital records."
+            </p>
+            <p class="text-gray-900 font-bold">— Karol T</p>
+            <p class="text-gray-600">Viva Italia Group (13 locations)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-20 bg-gradient-to-br from-gray-900 to-black text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-4xl font-bold mb-6">Ready to get started?</h2>
+      <p class="text-xl text-gray-300 mb-8">
+        Join hundreds of venues streamlining their safety compliance today
+      </p>
+      <button (click)="startTrial('professional')"
+              class="px-8 py-4 bg-green-500 text-white rounded-lg text-lg font-bold hover:bg-green-600 transition-all shadow-lg">
+        Start Your Free Trial
+      </button>
+      <p class="text-gray-400 mt-4">No credit card required • Cancel anytime</p>
+    </div>
+  </section>
+
+</div>
