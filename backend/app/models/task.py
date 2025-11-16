@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text, JSON
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text, JSON, ARRAY
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from sqlalchemy.dialects.postgresql import ARRAY as PG_ARRAY
 from app.core.database import Base
 
 
@@ -20,6 +21,11 @@ class Task(Base):
 
     # Dynamic Task Fields (new system)
     has_dynamic_form = Column(Boolean, default=False)
+
+    # Department Allocation
+    # Array of department strings (e.g., ['boh', 'foh'] or null for all departments)
+    # If null or empty, task is visible to everyone
+    allocated_departments = Column(PG_ARRAY(String), nullable=True)
 
     # Foreign Keys
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
