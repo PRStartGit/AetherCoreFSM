@@ -20,10 +20,13 @@
 
         <!-- Navigation Buttons -->
         <div class="flex items-center gap-3">
-          <button (click)="navigateToLogin()"
+          <!-- Show Login button only when user is not logged in -->
+          <button *ngIf="!isLoggedIn"
+                  (click)="navigateToLogin()"
                   class="px-5 py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors rounded-lg hover:bg-gray-100">
             Login
           </button>
+          <!-- Always show Dashboard button -->
           <button (click)="navigateToDashboard()"
                   class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-all shadow-md hover:shadow-lg">
             Dashboard

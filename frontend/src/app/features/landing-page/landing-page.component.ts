@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-landing-page',
@@ -9,6 +10,9 @@ import { Router } from '@angular/router';
 export class LandingPageComponent implements OnInit {
   // Subscription toggle state
   isAnnual: boolean = false;
+
+  // Authentication state
+  isLoggedIn: boolean = false;
 
   // Pricing data
   pricingPlans = {
@@ -65,10 +69,16 @@ export class LandingPageComponent implements OnInit {
     }
   };
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    // Component initialization
+    // Subscribe to authentication state changes
+    this.authService.authState$.subscribe(state => {
+      this.isLoggedIn = state.isAuthenticated;
+    });
   }
 
   /**
