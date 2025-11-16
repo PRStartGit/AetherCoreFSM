@@ -23,13 +23,16 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
   private subscriptionTierChart?: Chart;
   private orgPerformanceChart?: Chart;
 
-  // Mock data for RAG status and organization performance
+  // TODO: Mock data - Replace with real RAG status data from API when available
+  // Backend needs to provide organization-level RAG aggregation endpoint
   ragStatus = {
     green: 12,
     amber: 5,
     red: 2
   };
 
+  // TODO: Mock data - Replace with real organization performance data from API when available
+  // Backend needs to provide top organizations by completion rate endpoint
   orgPerformanceData = [
     { org_name: 'Acme Corp', completion_rate: 92, sites: 8, rag_status: 'green' },
     { org_name: 'TechStart Inc', completion_rate: 88, sites: 5, rag_status: 'green' },
@@ -38,13 +41,8 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
     { org_name: 'MegaBuild Co', completion_rate: 85, sites: 15, rag_status: 'green' }
   ];
 
-  recentActivity = [
-    { type: 'organization', action: 'New organization created', details: 'VIG001 - Vanguard Sites', timestamp: '2 minutes ago', icon: 'building' },
-    { type: 'site', action: 'Site added', details: 'Vanguard HQ added to VIG001', timestamp: '15 minutes ago', icon: 'map-pin' },
-    { type: 'user', action: 'User registered', details: 'john@vanguard.com joined', timestamp: '1 hour ago', icon: 'user' },
-    { type: 'defect', action: 'Defect reported', details: 'Critical defect at Site A', timestamp: '2 hours ago', icon: 'alert' },
-    { type: 'task', action: 'Task completed', details: 'Safety checklist completed', timestamp: '3 hours ago', icon: 'check' }
-  ];
+  // This will be populated from API metrics.recent_activity
+  recentActivity: any[] = [];
 
   constructor(private dashboardService: DashboardService) {}
 
@@ -66,6 +64,18 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
     this.dashboardService.getSuperAdminMetrics().subscribe({
       next: (data) => {
         this.metrics = data;
+
+        // Populate recent activity from API data
+        if (data.recent_activity && data.recent_activity.length > 0) {
+          this.recentActivity = data.recent_activity.map((activity: any) => ({
+            type: activity.type || 'general',
+            action: activity.description || 'Activity',
+            details: activity.description || '',
+            timestamp: this.formatTimestamp(activity.timestamp),
+            icon: this.getIconForType(activity.type)
+          }));
+        }
+
         this.loading = false;
         // Update charts with new data
         setTimeout(() => {
@@ -78,6 +88,34 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
         console.error('Error loading metrics:', err);
       }
     });
+  }
+
+  private formatTimestamp(timestamp: string): string {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    return date.toLocaleDateString();
+  }
+
+  private getIconForType(type: string): string {
+    const iconMap: { [key: string]: string } = {
+      'organization': 'building',
+      'site': 'map-pin',
+      'user': 'user',
+      'defect': 'alert',
+      'task': 'check',
+      'checklist': 'check',
+      'report': 'document'
+    };
+    return iconMap[type?.toLowerCase()] || 'info';
   }
 
   refresh(): void {
@@ -128,7 +166,8 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
       this.platformGrowthChart.destroy();
     }
 
-    // Mock data for platform growth over last 6 months
+    // TODO: Replace with real historical growth data from API
+    // Backend needs to provide time-series data for organizations, sites, and users
     const months = ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'];
     const organizations = [12, 15, 18, 20, 22, 25];
     const sites = [45, 58, 72, 88, 105, 128];
@@ -205,7 +244,8 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
       this.subscriptionTierChart.destroy();
     }
 
-    // Mock data for subscription tiers
+    // TODO: Replace with real subscription tier distribution from API
+    // Backend needs to provide organization count grouped by subscription tier
     const config: ChartConfiguration = {
       type: 'pie',
       data: {

@@ -90,7 +90,8 @@ export class OrgAdminDashboardComponent implements OnInit, AfterViewInit {
       this.completionTrendChart.destroy();
     }
 
-    // Mock data for last 7 days completion rate trend
+    // TODO: Replace with real historical completion rate data from API
+    // Backend needs to provide 7-day time-series data for completion rates
     const last7Days = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'];
     const completionRates = [72, 75, 78, 76, 82, 85, 88];
 
@@ -143,7 +144,8 @@ export class OrgAdminDashboardComponent implements OnInit, AfterViewInit {
       this.defectDistributionChart.destroy();
     }
 
-    // Mock data for defect distribution by priority
+    // TODO: Replace with real defect distribution data from API
+    // Backend needs to provide defect counts grouped by priority (Critical, High, Medium, Low)
     const config: ChartConfiguration = {
       type: 'doughnut',
       data: {
@@ -183,7 +185,8 @@ export class OrgAdminDashboardComponent implements OnInit, AfterViewInit {
       this.sitePerformanceChart.destroy();
     }
 
-    // Mock data for site performance comparison
+    // Uses real site data from API metrics.site_details
+    // Fallback to mock data if API data is not available
     const siteNames = this.metrics?.site_details.slice(0, 5).map(s => s.site_name) ||
                       ['Site A', 'Site B', 'Site C', 'Site D', 'Site E'];
     const completionRates = this.metrics?.site_details.slice(0, 5).map(s => s.completion_rate) ||
