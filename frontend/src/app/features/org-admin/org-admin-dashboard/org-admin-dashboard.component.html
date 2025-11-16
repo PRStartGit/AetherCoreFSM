@@ -94,6 +94,50 @@
       </div>
     </div>
 
+    <!-- Analytics Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+
+      <!-- Completion Rate Trend Chart -->
+      <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-900">Completion Rate Trend</h2>
+          <p class="text-sm text-gray-600 mt-1">Last 7 days performance</p>
+        </div>
+        <div class="p-6">
+          <div class="relative h-64">
+            <canvas #completionTrendChart></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Defect Distribution Chart -->
+      <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-900">Defect Distribution</h2>
+          <p class="text-sm text-gray-600 mt-1">By priority level</p>
+        </div>
+        <div class="p-6">
+          <div class="relative h-64">
+            <canvas #defectDistributionChart></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Site Performance Comparison Chart -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+      <div class="p-6 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900">Site Performance Comparison</h2>
+        <p class="text-sm text-gray-600 mt-1">Completion rates across sites</p>
+      </div>
+      <div class="p-6">
+        <div class="relative h-80">
+          <canvas #sitePerformanceChart></canvas>
+        </div>
+      </div>
+    </div>
+
     <!-- Site Details Table -->
     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
       <div class="p-6 border-b border-gray-200">

@@ -243,6 +243,41 @@ class EmailService:
             to_name=recipient_name
         )
 
+    def send_super_admin_welcome_email(
+        self,
+        admin_email: str,
+        temporary_password: str,
+        platform_url: str,
+        deployment_date: str,
+        total_organizations: int = 0,
+        total_sites: int = 0,
+        total_users: int = 1,
+        active_checklists: int = 0
+    ) -> bool:
+        """Send welcome email to super admin when system is deployed"""
+        context = {
+            'admin_email': admin_email,
+            'temporary_password': temporary_password,
+            'platform_url': platform_url,
+            'login_url': f"{platform_url}/login",
+            'deployment_date': deployment_date,
+            'total_organizations': total_organizations,
+            'total_sites': total_sites,
+            'total_users': total_users,
+            'active_checklists': active_checklists,
+            'email_service_status': '✅ Operational' if self.smtp_host else '⚠️ Not Configured',
+            'database_status': '✅ Connected',
+            'celery_status': '✅ Running'
+        }
+
+        return self.send_template_email(
+            to_email=admin_email,
+            subject="🚀 Zynthio Platform is Live!",
+            template_name='super_admin_welcome',
+            context=context,
+            to_name='Super Admin'
+        )
+
     def _get_role_permissions(self, role: str) -> str:
         """Get formatted permissions list for role"""
         permissions = {
@@ -298,3 +333,8 @@ def send_weekly_performance_email(*args, **kwargs):
 def send_defect_report_email(*args, **kwargs):
     """Send defect report email"""
     return email_service.send_defect_report_email(*args, **kwargs)
+
+
+def send_super_admin_welcome_email(*args, **kwargs):
+    """Send super admin welcome email"""
+    return email_service.send_super_admin_welcome_email(*args, **kwargs)
