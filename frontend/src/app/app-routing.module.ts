@@ -28,6 +28,10 @@ import { UserRole } from './core/models';
 
 const routes: Routes = [
   {
+    path: '',
+    component: LandingPageComponent
+  },
+  {
     path: 'pricing',
     component: LandingPageComponent
   },
@@ -154,17 +158,12 @@ const routes: Routes = [
         path: 'profile',
         component: ProfileComponent,
         canActivate: [AuthGuard]
-      },
-      {
-        path: '',
-        redirectTo: '/login',
-        pathMatch: 'full'
       }
     ]
   },
   {
     path: '**',
-    redirectTo: '/login'
+    redirectTo: ''
   }
 ];
 

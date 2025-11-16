@@ -63,4 +63,20 @@ export class LandingPageComponent implements OnInit {
     // this.router.navigate(['/contact-sales']);
   }
 
+  /**
+   * Navigate to login page
+   */
+  navigateToLogin(): void {
+    this.router.navigate(['/login']);
+  }
+
+  /**
+   * Navigate to dashboard (will redirect to appropriate dashboard based on user role)
+   */
+  navigateToDashboard(): void {
+    // If user is already logged in, AuthGuard will handle routing to the correct dashboard
+    // Otherwise, will redirect to login page
+    this.router.navigate(['/login']);
+  }
+
 }
