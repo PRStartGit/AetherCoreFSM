@@ -40,59 +40,58 @@
   </nav>
 
   <!-- Hero Section with Background Image -->
-  <section class="relative py-20 md:py-32 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-    <!-- Background Pattern -->
-    <div class="absolute inset-0 z-0 opacity-40">
-      <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, rgb(203 213 225) 1px, transparent 0); background-size: 40px 40px;"></div>
+  <section class="relative py-24 md:py-32 overflow-hidden" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0">
+      <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1920&h=1080&fit=crop&q=80"
+           alt="Modern office"
+           class="w-full h-full object-cover opacity-10">
     </div>
 
-    <!-- Decorative Gradient Blobs -->
-    <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style="animation-delay: 2s;"></div>
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 z-0 bg-gradient-to-br from-blue-600/90 via-indigo-600/90 to-purple-600/90"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <!-- Trust Badge -->
-      <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-white rounded-full text-blue-600 text-sm font-semibold mb-8 shadow-lg border border-blue-100">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-        </svg>
-        <span>Trusted by 500+ venues across Scotland</span>
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-semibold shadow-xl border border-white/20">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+          </svg>
+          <span>Trusted by 500+ venues across Scotland</span>
+        </div>
       </div>
 
       <!-- Main Heading -->
-      <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-8 leading-tight tracking-tight">
-        <span class="block text-slate-900 mb-2">
+      <div class="text-center mb-8">
+        <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-4 leading-tight drop-shadow-2xl">
           Simple, Transparent
-        </span>
-        <span class="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-          Pricing
-        </span>
-      </h1>
+          <span class="block mt-2">Pricing</span>
+        </h1>
+      </div>
 
       <!-- Subheading -->
-      <p class="text-xl md:text-2xl lg:text-3xl text-slate-700 font-medium max-w-4xl mx-auto mb-6 leading-relaxed">
+      <p class="text-center text-xl md:text-2xl text-white/95 font-medium max-w-3xl mx-auto mb-8 leading-relaxed drop-shadow-lg">
         Professional site monitoring that scales with your business
       </p>
 
       <!-- Feature Points -->
-      <div class="flex flex-wrap justify-center items-center gap-4 md:gap-6 text-base md:text-lg text-slate-600 font-medium">
-        <div class="flex items-center gap-2">
-          <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+      <div class="flex flex-wrap justify-center items-center gap-6 md:gap-8 text-base md:text-lg">
+        <div class="flex items-center gap-2 text-white font-semibold">
+          <svg class="w-6 h-6 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
           </svg>
           <span>No setup fees</span>
         </div>
-        <span class="text-slate-300 hidden md:inline">•</span>
-        <div class="flex items-center gap-2">
-          <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+        <div class="flex items-center gap-2 text-white font-semibold">
+          <svg class="w-6 h-6 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
           </svg>
           <span>Cancel anytime</span>
         </div>
-        <span class="text-slate-300 hidden md:inline">•</span>
-        <div class="flex items-center gap-2">
-          <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+        <div class="flex items-center gap-2 text-white font-semibold">
+          <svg class="w-6 h-6 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
           </svg>
           <span>14-day free trial</span>
         </div>
