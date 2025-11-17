@@ -107,6 +107,26 @@ services:
     networks:
       - zynthio-network
 
+  # Celery Beat (for scheduled tasks)
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: zynthio-celery-beat
+    restart: unless-stopped
+    command: celery -A app.celery_app beat --loglevel=info
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-changeme}@database:5432/${POSTGRES_DB:-zynthio}
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-this-in-production}
+    depends_on:
+      - database
+      - redis
+      - backend
+    networks:
+      - zynthio-network
+
   # Frontend
   frontend:
     build:
