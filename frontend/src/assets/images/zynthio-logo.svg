@@ -1,15 +1,17 @@
-<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Shield/Badge Icon -->
-  <path d="M20 8L30 4L40 8V22C40 32 30 40 30 40C30 40 20 32 20 22V8Z" fill="#00B4D8"/>
-  <path d="M26 18L28 20L34 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg width="500" height="150" viewBox="0 0 500 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hygieneBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0369A1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0EA5E9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
 
-  <!-- Text: ZYNTHIO -->
-  <text x="50" y="32" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
-    ZYNTHIO
-  </text>
+  <!-- Z in gradient -->
+  <text x="30" y="85" font-family="'Century Gothic', 'Futura', 'Arial', sans-serif" font-size="72" font-weight="700" fill="url(#hygieneBlue)">Z</text>
+
+  <!-- YNTHIO in dark gray -->
+  <text x="75" y="85" font-family="'Century Gothic', 'Futura', 'Arial', sans-serif" font-size="72" font-weight="300" fill="#1F2937">YNTHIO</text>
 
   <!-- Tagline -->
-  <text x="50" y="45" font-family="Arial, sans-serif" font-size="10" fill="#64748B">
-    Site Safety Management
-  </text>
+  <text x="30" y="110" font-family="'Arial', sans-serif" font-size="14" font-weight="400" fill="#64748B">Site Safety Management</text>
 </svg>
