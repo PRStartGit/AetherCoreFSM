@@ -14,6 +14,9 @@ export class LandingPageComponent implements OnInit {
   // Authentication state
   isLoggedIn: boolean = false;
 
+  // Mobile menu state
+  isMobileMenuOpen: boolean = false;
+
   // Pricing data
   pricingPlans = {
     starter: {
@@ -143,6 +146,20 @@ export class LandingPageComponent implements OnInit {
    */
   navigateToDashboard(): void {
     this.router.navigate(['/login']);
+  }
+
+  /**
+   * Toggle mobile menu open/closed
+   */
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  /**
+   * Close mobile menu
+   */
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
   }
 
 }
