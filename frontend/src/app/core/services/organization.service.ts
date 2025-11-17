@@ -7,7 +7,7 @@ import { Organization, OrganizationCreate, OrganizationUpdate } from '../models'
   providedIn: 'root'
 })
 export class OrganizationService {
-  private readonly API_URL = 'http://localhost:8000/api/v1/organizations';
+  private readonly API_URL = '/api/v1/organizations';
 
   constructor(private http: HttpClient) {}
 

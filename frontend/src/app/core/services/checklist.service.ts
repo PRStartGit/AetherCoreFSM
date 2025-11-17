@@ -7,7 +7,7 @@ import { Checklist, ChecklistCreate, ChecklistItemUpdate, ChecklistStatus } from
   providedIn: 'root'
 })
 export class ChecklistService {
-  private readonly API_URL = 'http://localhost:8000/api/v1/checklists';
+  private readonly API_URL = '/api/v1/checklists';
 
   constructor(private http: HttpClient) {}
 

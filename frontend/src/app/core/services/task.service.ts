@@ -7,7 +7,7 @@ import { Task, TaskCreate, TaskAssignment } from '../models';
   providedIn: 'root'
 })
 export class TaskService {
-  private readonly API_URL = 'http://localhost:8000/api/v1/tasks';
+  private readonly API_URL = '/api/v1/tasks';
 
   constructor(private http: HttpClient) {}
 

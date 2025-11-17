@@ -7,7 +7,7 @@ import { Site, SiteCreate, SiteUpdate, SiteRAGStatus } from '../models';
   providedIn: 'root'
 })
 export class SiteService {
-  private readonly API_URL = 'http://localhost:8000/api/v1/sites';
+  private readonly API_URL = '/api/v1/sites';
 
   constructor(private http: HttpClient) {}
 

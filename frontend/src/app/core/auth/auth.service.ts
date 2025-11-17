@@ -9,7 +9,7 @@ import { User, LoginRequest, LoginResponse, AuthState, UserRole } from '../model
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:8000/api/v1';
+  private readonly API_URL = '/api/v1';
   private readonly TOKEN_KEY = 'aethercore_token';
   private readonly USER_KEY = 'aethercore_user';
 

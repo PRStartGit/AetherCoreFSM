@@ -14,7 +14,7 @@ import {
   providedIn: 'root'
 })
 export class TaskFieldService {
-  private readonly API_URL = 'http://localhost:8000/api/v1';
+  private readonly API_URL = '/api/v1';
 
   constructor(private http: HttpClient) {}
 

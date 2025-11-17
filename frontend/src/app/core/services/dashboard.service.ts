@@ -7,7 +7,7 @@ import { SuperAdminMetrics, OrgAdminMetrics, SiteUserMetrics } from '../models';
   providedIn: 'root'
 })
 export class DashboardService {
-  private readonly API_URL = 'http://localhost:8000/api/v1/dashboards';
+  private readonly API_URL = '/api/v1/dashboards';
 
   constructor(private http: HttpClient) {}
 

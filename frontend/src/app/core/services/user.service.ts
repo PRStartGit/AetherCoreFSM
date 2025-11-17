@@ -27,7 +27,7 @@ export interface UserUpdate {
   providedIn: 'root'
 })
 export class UserService {
-  private readonly API_URL = 'http://localhost:8000/api/v1/users';
+  private readonly API_URL = '/api/v1/users';
 
   constructor(private http: HttpClient) {}
 

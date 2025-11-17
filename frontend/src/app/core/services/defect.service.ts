@@ -7,7 +7,7 @@ import { Defect, DefectCreate, DefectUpdate, DefectStatus, DefectSeverity } from
   providedIn: 'root'
 })
 export class DefectService {
-  private readonly API_URL = 'http://localhost:8000/api/v1/defects';
+  private readonly API_URL = '/api/v1/defects';
 
   constructor(private http: HttpClient) {}
 
