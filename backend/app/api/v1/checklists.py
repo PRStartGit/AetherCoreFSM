@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
-from typing import List
-from datetime import date
+from typing import List, Optional
+from datetime import date, timedelta
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import User, UserRole
@@ -11,8 +11,17 @@ from app.schemas.checklist import (
     ChecklistCreate, ChecklistUpdate, ChecklistResponse,
     ChecklistWithItems, ChecklistItemUpdate
 )
+from pydantic import BaseModel
 
 router = APIRouter()
+
+
+# Schema for bulk generation
+class BulkGenerateRequest(BaseModel):
+    start_date: date
+    end_date: Optional[date] = None
+    site_ids: Optional[List[int]] = None
+    category_ids: Optional[List[int]] = None
 
 
 @router.post("/checklists", response_model=ChecklistResponse, status_code=status.HTTP_201_CREATED)
@@ -21,7 +30,9 @@ def create_checklist(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Create a new checklist instance."""
+    """Create a new checklist instance with automatically populated items."""
+    from app.models.task import Task
+
     # Check if checklist already exists for this date/category/site
     existing = db.query(Checklist).filter(
         Checklist.checklist_date == checklist_data.checklist_date,
@@ -35,6 +46,7 @@ def create_checklist(
             detail="Checklist already exists for this date, category, and site"
         )
 
+    # Create the checklist
     new_checklist = Checklist(
         checklist_date=checklist_data.checklist_date,
         category_id=checklist_data.category_id,
@@ -43,10 +55,158 @@ def create_checklist(
     )
 
     db.add(new_checklist)
+    db.flush()  # Get checklist ID without committing
+
+    # Query all active tasks for this category, ordered by order_index
+    tasks = db.query(Task).filter(
+        Task.category_id == checklist_data.category_id,
+        Task.is_active == True
+    ).order_by(Task.order_index).all()
+
+    # Create checklist items for each task
+    for task in tasks:
+        checklist_item = ChecklistItem(
+            checklist_id=new_checklist.id,
+            task_id=task.id,
+            item_name=task.name,
+            is_completed=False
+        )
+        db.add(checklist_item)
+
+    # Set total_items count
+    new_checklist.total_items = len(tasks)
+    new_checklist.completed_items = 0
+
     db.commit()
     db.refresh(new_checklist)
 
     return new_checklist
+
+
+@router.post("/checklists/generate-bulk", status_code=status.HTTP_201_CREATED)
+def generate_checklists_bulk(
+    request: BulkGenerateRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Generate checklists in bulk for multiple dates, sites, and categories.
+    Useful for initial population or testing. Only admins can use this endpoint.
+    """
+    from app.models.task import Task
+    from app.models.category import Category
+    from app.models.site import Site
+
+    # Only admins can generate checklists in bulk
+    if current_user.role not in [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only admins can generate checklists in bulk"
+        )
+
+    # Set end_date to start_date if not provided (single day)
+    end_date = request.end_date or request.start_date
+
+    # Validate date range
+    if end_date < request.start_date:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="end_date must be after or equal to start_date"
+        )
+
+    # Get sites
+    if request.site_ids:
+        sites = db.query(Site).filter(Site.id.in_(request.site_ids)).all()
+        if current_user.role == UserRole.ORG_ADMIN:
+            # Org admins can only generate for their org's sites
+            sites = [s for s in sites if s.organization_id == current_user.organization_id]
+    else:
+        if current_user.role == UserRole.SUPER_ADMIN:
+            sites = db.query(Site).all()
+        else:
+            # Org admins get all sites in their organization
+            sites = db.query(Site).filter(Site.organization_id == current_user.organization_id).all()
+
+    # Get categories
+    if request.category_ids:
+        categories = db.query(Category).filter(
+            Category.id.in_(request.category_ids),
+            Category.is_active == True
+        ).all()
+    else:
+        # Get all active categories (global + org-specific)
+        if current_user.role == UserRole.SUPER_ADMIN:
+            categories = db.query(Category).filter(Category.is_active == True).all()
+        else:
+            categories = db.query(Category).filter(
+                (Category.is_global == True) | (Category.organization_id == current_user.organization_id),
+                Category.is_active == True
+            ).all()
+
+    # Generate checklists
+    created_count = 0
+    skipped_count = 0
+    current_date = request.start_date
+
+    while current_date <= end_date:
+        for site in sites:
+            for category in categories:
+                # Check if checklist already exists
+                existing = db.query(Checklist).filter(
+                    Checklist.checklist_date == current_date,
+                    Checklist.category_id == category.id,
+                    Checklist.site_id == site.id
+                ).first()
+
+                if existing:
+                    skipped_count += 1
+                    continue
+
+                # Create checklist
+                new_checklist = Checklist(
+                    checklist_date=current_date,
+                    category_id=category.id,
+                    site_id=site.id,
+                    status=ChecklistStatus.PENDING
+                )
+                db.add(new_checklist)
+                db.flush()
+
+                # Get tasks for this category
+                tasks = db.query(Task).filter(
+                    Task.category_id == category.id,
+                    Task.is_active == True
+                ).order_by(Task.order_index).all()
+
+                # Create checklist items
+                for task in tasks:
+                    checklist_item = ChecklistItem(
+                        checklist_id=new_checklist.id,
+                        task_id=task.id,
+                        item_name=task.name,
+                        is_completed=False
+                    )
+                    db.add(checklist_item)
+
+                # Set totals
+                new_checklist.total_items = len(tasks)
+                new_checklist.completed_items = 0
+
+                created_count += 1
+
+        # Move to next day
+        current_date += timedelta(days=1)
+
+    db.commit()
+
+    return {
+        "message": "Checklists generated successfully",
+        "created": created_count,
+        "skipped": skipped_count,
+        "date_range": f"{request.start_date} to {end_date}",
+        "sites_count": len(sites),
+        "categories_count": len(categories)
+    }
 
 
 @router.get("/checklists", response_model=List[ChecklistResponse])
