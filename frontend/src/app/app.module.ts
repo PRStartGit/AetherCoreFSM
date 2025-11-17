@@ -59,6 +59,7 @@ import { SitesFormComponent } from './features/org-admin/sites-form/sites-form.c
 import { ProfileComponent } from './features/profile/profile.component';
 import { LandingPageComponent } from './features/landing-page/landing-page.component';
 import { TaskFieldBuilderComponent } from './features/tasks/task-field-builder/task-field-builder.component';
+import { DynamicTaskFormComponent } from './features/checklists/dynamic-task-form/dynamic-task-form.component';
 import { TermsOfServiceComponent } from './features/legal/terms/terms-of-service.component';
 import { PrivacyPolicyComponent } from './features/legal/privacy/privacy-policy.component';
 import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.component';
@@ -78,6 +79,7 @@ import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.co
     ChecklistListComponent,
     ChecklistFormComponent,
     ChecklistCompletionComponent,
+    DynamicTaskFormComponent,
     // DefectListComponent,
     // DefectFormComponent,
     OrganizationListComponent,

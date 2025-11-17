@@ -1,1 +1,86 @@
-<p>checklist-completion works!</p>
+<div class="checklist-completion-container">
+  <!-- Header -->
+  <div class="header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1 *ngIf="checklist">{{ checklist.category?.name || 'Checklist' }}</h1>
+    <p *ngIf="checklist" class="date">{{ checklist.checklist_date | date: 'fullDate' }}</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading checklist...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-container">
+    <mat-icon class="error-icon">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadChecklist()">Retry</button>
+  </div>
+
+  <!-- Checklist Content -->
+  <div *ngIf="!loading && !error && checklist" class="checklist-content">
+    <!-- Progress Bar -->
+    <div class="progress-section">
+      <div class="progress-info">
+        <span>Progress: {{ getProgressPercentage() }}%</span>
+        <span>{{ items.filter(i => i.is_completed).length }} / {{ items.length }} completed</span>
+      </div>
+      <mat-progress-bar
+        mode="determinate"
+        [value]="getProgressPercentage()"
+        [color]="getProgressPercentage() === 100 ? 'primary' : 'accent'">
+      </mat-progress-bar>
+    </div>
+
+    <!-- Checklist Items -->
+    <div class="items-list">
+      <mat-card *ngFor="let item of items; let i = index" class="item-card" [class.completed]="item.is_completed">
+        <mat-card-header>
+          <div class="item-header">
+            <div class="item-number">{{ i + 1 }}</div>
+            <h3>{{ item.item_name }}</h3>
+            <mat-icon *ngIf="item.is_completed" class="completed-icon" color="primary">check_circle</mat-icon>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content>
+          <!-- Dynamic Form for tasks with has_dynamic_form -->
+          <div *ngIf="item.task?.has_dynamic_form" class="dynamic-form-container">
+            <app-dynamic-task-form
+              [taskId]="item.task_id"
+              [checklistItemId]="item.id"
+              [readonly]="item.is_completed"
+              (formSubmitted)="onItemCompleted(item)">
+            </app-dynamic-task-form>
+          </div>
+
+          <!-- Simple checkbox for basic tasks -->
+          <div *ngIf="!item.task?.has_dynamic_form" class="simple-task">
+            <mat-checkbox
+              [(ngModel)]="item.is_completed"
+              (change)="onItemCompleted(item)"
+              [disabled]="item.is_completed">
+              Mark as completed
+            </mat-checkbox>
+          </div>
+
+          <!-- Completion timestamp -->
+          <div *ngIf="item.completed_at" class="completion-info">
+            <mat-icon>access_time</mat-icon>
+            <span>Completed {{ item.completed_at | date: 'short' }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="items.length === 0" class="empty-state">
+      <mat-icon>assignment</mat-icon>
+      <p>No tasks in this checklist</p>
+    </div>
+  </div>
+</div>
