@@ -23,23 +23,17 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
   private subscriptionTierChart?: Chart;
   private orgPerformanceChart?: Chart;
 
-  // TODO: Mock data - Replace with real RAG status data from API when available
+  // TODO: Replace with real RAG status data from API when available
   // Backend needs to provide organization-level RAG aggregation endpoint
   ragStatus = {
-    green: 12,
-    amber: 5,
-    red: 2
+    green: 0,
+    amber: 0,
+    red: 0
   };
 
-  // TODO: Mock data - Replace with real organization performance data from API when available
+  // TODO: Replace with real organization performance data from API when available
   // Backend needs to provide top organizations by completion rate endpoint
-  orgPerformanceData = [
-    { org_name: 'Acme Corp', completion_rate: 92, sites: 8, rag_status: 'green' },
-    { org_name: 'TechStart Inc', completion_rate: 88, sites: 5, rag_status: 'green' },
-    { org_name: 'BuildRight Ltd', completion_rate: 75, sites: 12, rag_status: 'amber' },
-    { org_name: 'SafeConstruct', completion_rate: 68, sites: 6, rag_status: 'amber' },
-    { org_name: 'MegaBuild Co', completion_rate: 85, sites: 15, rag_status: 'green' }
-  ];
+  orgPerformanceData: any[] = [];
 
   // This will be populated from API metrics.recent_activity
   recentActivity: any[] = [];
@@ -168,10 +162,10 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
 
     // TODO: Replace with real historical growth data from API
     // Backend needs to provide time-series data for organizations, sites, and users
-    const months = ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'];
-    const organizations = [12, 15, 18, 20, 22, 25];
-    const sites = [45, 58, 72, 88, 105, 128];
-    const users = [150, 195, 248, 310, 385, 472];
+    const months: string[] = [];
+    const organizations: number[] = [];
+    const sites: number[] = [];
+    const users: number[] = [];
 
     const config: ChartConfiguration = {
       type: 'line',
@@ -249,9 +243,9 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
     const config: ChartConfiguration = {
       type: 'pie',
       data: {
-        labels: ['Enterprise', 'Professional', 'Standard', 'Basic'],
+        labels: [],
         datasets: [{
-          data: [8, 10, 15, 12],
+          data: [],
           backgroundColor: [
             '#8b5cf6', // Purple for Enterprise
             '#3b82f6', // Blue for Professional

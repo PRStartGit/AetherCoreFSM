@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { OrganizationService } from '../../../../core/services/organization.service';
 import { Organization, OrganizationCreate, OrganizationUpdate } from '../../../../core/models';
 
@@ -15,14 +16,18 @@ export class OrganizationFormComponent implements OnInit {
   organizationId?: number;
   loading = false;
   error: string | null = null;
+  postcodeLookupLoading = false;
+  postcodeLookupError: string | null = null;
+  postcode: string = '';
 
-  subscriptionTiers = ['free', 'basic', 'professional', 'enterprise'];
+  subscriptionTiers = ['platform_admin', 'free', 'basic', 'professional', 'enterprise'];
 
   constructor(
     private fb: FormBuilder,
     private organizationService: OrganizationService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private http: HttpClient
   ) {
     this.organizationForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
@@ -137,5 +142,47 @@ export class OrganizationFormComponent implements OnInit {
     if (field?.hasError('maxlength')) return `Field is too long (max ${field.errors?.['maxlength'].requiredLength} characters)`;
     if (field?.hasError('min')) return `Value must be at least ${field.errors?.['min'].min}`;
     return '';
+  }
+
+  lookupPostcode(): void {
+    if (!this.postcode || this.postcode.trim() === '') {
+      this.postcodeLookupError = 'Please enter a postcode';
+      return;
+    }
+
+    this.postcodeLookupLoading = true;
+    this.postcodeLookupError = null;
+
+    // Clean the postcode (remove spaces)
+    const cleanedPostcode = this.postcode.replace(/\s/g, '');
+
+    // Call the free postcodes.io API
+    this.http.get<any>(`https://api.postcodes.io/postcodes/${cleanedPostcode}`).subscribe({
+      next: (response) => {
+        if (response.status === 200 && response.result) {
+          const result = response.result;
+          const addressParts = [];
+
+          // Build address from available data
+          if (result.admin_district) addressParts.push(result.admin_district);
+          if (result.admin_ward) addressParts.push(result.admin_ward);
+          if (result.region) addressParts.push(result.region);
+          if (result.country) addressParts.push(result.country);
+          addressParts.push(this.postcode.toUpperCase());
+
+          const address = addressParts.join(', ');
+          this.organizationForm.patchValue({ address });
+          this.postcodeLookupLoading = false;
+        } else {
+          this.postcodeLookupError = 'Postcode not found';
+          this.postcodeLookupLoading = false;
+        }
+      },
+      error: (err) => {
+        this.postcodeLookupError = 'Invalid postcode or lookup failed';
+        this.postcodeLookupLoading = false;
+        console.error('Postcode lookup error:', err);
+      }
+    });
   }
 }

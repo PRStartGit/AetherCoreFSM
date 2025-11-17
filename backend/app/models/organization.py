@@ -20,7 +20,7 @@ class Organization(Base):
     address = Column(Text, nullable=True)
 
     # Subscription
-    subscription_tier = Column(String, default="basic")  # basic, professional, enterprise
+    subscription_tier = Column(String, default="basic")  # platform_admin, free, basic, professional, enterprise
     custom_price_per_site = Column(Float, nullable=True)  # Custom pricing if set by super admin
     subscription_start_date = Column(DateTime(timezone=True), nullable=True)
     subscription_end_date = Column(DateTime(timezone=True), nullable=True)
