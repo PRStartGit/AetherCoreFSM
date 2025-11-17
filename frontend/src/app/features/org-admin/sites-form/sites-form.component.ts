@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SiteService } from '../../../core/services/site.service';
 import { AuthService } from '../../../core/auth/auth.service';
-import { Site, SiteCreate, SiteUpdate } from '../../../core/models';
+import { OrganizationService } from '../../../core/services/organization.service';
+import { Site, SiteCreate, SiteUpdate, Organization, UserRole } from '../../../core/models';
 
 @Component({
   selector: 'app-sites-form',
@@ -17,17 +18,30 @@ export class SitesFormComponent implements OnInit {
   loading = false;
   error: string | null = null;
   submitting = false;
+  organizations: Organization[] = [];
+  isSuperAdmin = false;
+  UserRole = UserRole;
 
   constructor(
     private fb: FormBuilder,
     private siteService: SiteService,
     private authService: AuthService,
+    private organizationService: OrganizationService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    // Check if user is Super Admin
+    const currentUser = this.authService.getUser();
+    this.isSuperAdmin = currentUser?.role === UserRole.SUPER_ADMIN;
+
     this.initializeForm();
+
+    // Load organizations if Super Admin
+    if (this.isSuperAdmin && !this.isEditMode) {
+      this.loadOrganizations();
+    }
 
     // Check if we're in edit mode
     this.route.params.subscribe(params => {
@@ -40,7 +54,10 @@ export class SitesFormComponent implements OnInit {
   }
 
   initializeForm(): void {
+    const orgValidators = this.isSuperAdmin && !this.isEditMode ? [Validators.required] : [];
+
     this.siteForm = this.fb.group({
+      organization_id: ['', orgValidators],
       name: ['', [Validators.required, Validators.minLength(3)]],
       site_code: ['', [Validators.required, Validators.pattern(/^[A-Z0-9-]+$/)]],
       address: ['', Validators.required],
@@ -54,6 +71,18 @@ export class SitesFormComponent implements OnInit {
       weekly_report_day: [1],
       weekly_report_time: ['09:00'],
       report_recipients: ['']
+    });
+  }
+
+  loadOrganizations(): void {
+    this.organizationService.getAll().subscribe({
+      next: (orgs) => {
+        this.organizations = orgs;
+      },
+      error: (err) => {
+        console.error('Error loading organizations:', err);
+        this.error = 'Failed to load organizations';
+      }
     });
   }
 
@@ -129,17 +158,31 @@ export class SitesFormComponent implements OnInit {
       });
     } else {
       // Create new site
-      const currentUser = this.authService.getUser();
-      if (!currentUser || !currentUser.organization_id) {
-        this.error = 'Organization ID not found';
-        this.submitting = false;
-        return;
+      let organizationId: number;
+
+      if (this.isSuperAdmin) {
+        // Super Admin selects organization from dropdown
+        organizationId = formValue.organization_id;
+        if (!organizationId) {
+          this.error = 'Please select an organization';
+          this.submitting = false;
+          return;
+        }
+      } else {
+        // Org Admin uses their organization
+        const currentUser = this.authService.getUser();
+        if (!currentUser || !currentUser.organization_id) {
+          this.error = 'Organization ID not found';
+          this.submitting = false;
+          return;
+        }
+        organizationId = currentUser.organization_id;
       }
 
       const createData: SiteCreate = {
         name: formValue.name,
         site_code: formValue.site_code,
-        organization_id: currentUser.organization_id,
+        organization_id: organizationId,
         address: formValue.address,
         city: formValue.city,
         postcode: formValue.postcode,
