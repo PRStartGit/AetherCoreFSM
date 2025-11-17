@@ -107,7 +107,11 @@ export class ChecklistCompletionComponent implements OnInit {
 
   getProgressPercentage(): number {
     if (this.items.length === 0) return 0;
-    const completed = this.items.filter(item => item.is_completed).length;
+    const completed = this.getCompletedCount();
     return Math.round((completed / this.items.length) * 100);
+  }
+
+  getCompletedCount(): number {
+    return this.items.filter(item => item.is_completed).length;
   }
 }

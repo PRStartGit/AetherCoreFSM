@@ -27,7 +27,7 @@
     <div class="progress-section">
       <div class="progress-info">
         <span>Progress: {{ getProgressPercentage() }}%</span>
-        <span>{{ items.filter(i => i.is_completed).length }} / {{ items.length }} completed</span>
+        <span>{{ getCompletedCount() }} / {{ items.length }} completed</span>
       </div>
       <mat-progress-bar
         mode="determinate"
