@@ -156,8 +156,8 @@ export class OrganizationFormComponent implements OnInit {
     // Clean the postcode (remove spaces)
     const cleanedPostcode = this.postcode.replace(/\s/g, '');
 
-    // Call the free postcodes.io API
-    this.http.get<any>(`https://api.postcodes.io/postcodes/${cleanedPostcode}`).subscribe({
+    // Call our backend proxy endpoint (avoids CORS issues with Authorization header)
+    this.http.get<any>(`/api/v1/utils/postcode-lookup/${cleanedPostcode}`).subscribe({
       next: (response) => {
         if (response.status === 200 && response.result) {
           const result = response.result;
