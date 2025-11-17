@@ -253,34 +253,34 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
     const data: number[] = [];
     const colors: string[] = [];
 
-    if (subscription.platform_admin > 0) {
+    if (subscription['platform_admin'] > 0) {
       labels.push('Platform Admin');
-      data.push(subscription.platform_admin);
+      data.push(subscription['platform_admin']);
       colors.push('#6366f1');
     }
-    if (subscription.enterprise > 0) {
+    if (subscription['enterprise'] > 0) {
       labels.push('Enterprise');
-      data.push(subscription.enterprise);
+      data.push(subscription['enterprise']);
       colors.push('#8b5cf6');
     }
-    if (subscription.professional > 0) {
+    if (subscription['professional'] > 0) {
       labels.push('Professional');
-      data.push(subscription.professional);
+      data.push(subscription['professional']);
       colors.push('#3b82f6');
     }
-    if (subscription.basic > 0) {
+    if (subscription['basic'] > 0) {
       labels.push('Basic');
-      data.push(subscription.basic);
+      data.push(subscription['basic']);
       colors.push('#10b981');
     }
-    if (subscription.free > 0) {
+    if (subscription['free'] > 0) {
       labels.push('Free');
-      data.push(subscription.free);
+      data.push(subscription['free']);
       colors.push('#06b6d4');
     }
-    if (subscription.trial > 0) {
+    if (subscription['trial'] > 0) {
       labels.push('Trial');
-      data.push(subscription.trial);
+      data.push(subscription['trial']);
       colors.push('#f59e0b');
     }
 
