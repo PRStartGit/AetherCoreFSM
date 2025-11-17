@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
+import secrets
+import string
 from app.core.database import get_db
 from app.core.dependencies import get_current_super_admin, get_current_user
-from app.models.user import User
+from app.core.security import get_password_hash
+from app.models.user import User, UserRole
 from app.models.organization import Organization
 from app.schemas.organization import (
     OrganizationCreate,
@@ -11,6 +14,7 @@ from app.schemas.organization import (
     OrganizationResponse,
     OrganizationWithStats
 )
+from app.services.email_service import send_welcome_email
 
 router = APIRouter()
 
@@ -48,6 +52,47 @@ def create_organization(
     db.add(new_org)
     db.commit()
     db.refresh(new_org)
+
+    # Generate secure random password for the Org Admin
+    def generate_password(length=12):
+        alphabet = string.ascii_letters + string.digits + "!@#$%^&*"
+        password = ''.join(secrets.choice(alphabet) for _ in range(length))
+        return password
+
+    temp_password = generate_password()
+
+    # Extract first and last name from contact person
+    name_parts = org_data.contact_person.split(' ', 1) if org_data.contact_person else ["Admin", ""]
+    first_name = name_parts[0]
+    last_name = name_parts[1] if len(name_parts) > 1 else ""
+
+    # Create Org Admin user
+    org_admin = User(
+        email=org_data.contact_email,
+        hashed_password=get_password_hash(temp_password),
+        first_name=first_name,
+        last_name=last_name,
+        role=UserRole.ORG_ADMIN,
+        organization_id=new_org.id,
+        must_change_password=True,
+        is_active=True
+    )
+
+    db.add(org_admin)
+    db.commit()
+    db.refresh(org_admin)
+
+    # Send welcome email
+    try:
+        send_welcome_email(
+            email=org_data.contact_email,
+            name=org_data.contact_person or "Admin",
+            org_id=new_org.org_id,
+            password=temp_password
+        )
+    except Exception as e:
+        print(f"Failed to send welcome email: {str(e)}")
+        # Don't fail the organization creation if email fails
 
     return new_org
 
