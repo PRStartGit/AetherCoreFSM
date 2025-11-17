@@ -62,6 +62,9 @@ services:
       FROM_EMAIL: ${FROM_EMAIL:-noreply@zynthio.com}
       FROM_NAME: ${FROM_NAME:-Zynthio Site Monitoring}
 
+      # SendGrid
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+
       # Redis/Celery
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0
@@ -94,6 +97,9 @@ services:
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER}
       SMTP_PASSWORD: ${SMTP_PASSWORD}
+      FROM_EMAIL: ${FROM_EMAIL:-noreply@zynthio.com}
+      FROM_NAME: ${FROM_NAME:-Zynthio Site Monitoring}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     depends_on:
       - database
       - redis
