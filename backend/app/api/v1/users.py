@@ -82,8 +82,11 @@ def create_user(
             [site.name for site in db.query(Site).filter(Site.id.in_(user_data.site_ids)).all()]
         )
 
+        # Log email attempt
+        print(f"Attempting to send welcome email to {new_user.email} (role: {new_user.role.value})")
+
         # Send welcome email with temporary password
-        send_welcome_email(
+        email_sent = send_welcome_email(
             user_email=new_user.email,
             user_name=f"{new_user.first_name} {new_user.last_name}",
             organization_name=organization_name,
@@ -92,9 +95,16 @@ def create_user(
             assigned_sites=assigned_sites,
             login_url="https://zynthio.com/login"
         )
+
+        if email_sent:
+            print(f"✅ Welcome email sent successfully to {new_user.email}")
+        else:
+            print(f"⚠️ Welcome email failed to send to {new_user.email} (no exception raised)")
     except Exception as e:
         # Log error but don't fail user creation
-        print(f"Failed to send welcome email: {str(e)}")
+        import traceback
+        print(f"❌ Failed to send welcome email to {new_user.email}: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
 
     return new_user
 
