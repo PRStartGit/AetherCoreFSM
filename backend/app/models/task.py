@@ -12,6 +12,7 @@ class Task(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     description = Column(Text, nullable=True)
+    priority = Column(String, default="medium")  # critical, high, medium, low
     is_active = Column(Boolean, default=True)
     order_index = Column(Integer, default=0)  # For ordering tasks within a category
 
