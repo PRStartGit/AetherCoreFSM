@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { tap, catchError, switchMap } from 'rxjs/operators';
+import { tap, catchError, switchMap, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { User, LoginRequest, LoginResponse, AuthState, UserRole } from '../models';
 
@@ -46,8 +46,8 @@ export class AuthService {
     }
   }
 
-  login(credentials: LoginRequest): Observable<any> {
-    return this.http.post<{access_token: string, token_type: string}>(`${this.API_URL}/login`, credentials).pipe(
+  login(credentials: LoginRequest): Observable<{user: User, must_change_password: boolean}> {
+    return this.http.post<{access_token: string, token_type: string, must_change_password?: boolean}>(`${this.API_URL}/login`, credentials).pipe(
       tap(response => {
         // Update auth state with token immediately so interceptor can use it
         this.authStateSubject.next({
@@ -58,11 +58,14 @@ export class AuthService {
         localStorage.setItem(this.TOKEN_KEY, response.access_token);
       }),
       // Fetch user data after successful login
-      switchMap(() => this.getCurrentUser()),
-      tap(user => {
-        const token = localStorage.getItem(this.TOKEN_KEY)!;
-        this.setAuthState(token, user);
-      }),
+      switchMap((loginResponse) => this.getCurrentUser().pipe(
+        tap(user => {
+          const token = localStorage.getItem(this.TOKEN_KEY)!;
+          this.setAuthState(token, user);
+        }),
+        // Return both user and must_change_password flag
+        map(user => ({ user, must_change_password: loginResponse.must_change_password || false }))
+      )),
       catchError(error => {
         console.error('Login error:', error);
         localStorage.removeItem(this.TOKEN_KEY);

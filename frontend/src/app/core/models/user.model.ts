@@ -11,6 +11,7 @@ export interface User {
   role: UserRole;
   organization_id: number | null;
   is_active: boolean;
+  must_change_password?: boolean;
   created_at: string;
   updated_at: string;
   site_ids?: number[];
@@ -25,7 +26,8 @@ export interface LoginRequest {
 export interface LoginResponse {
   access_token: string;
   token_type: string;
-  user: User;
+  must_change_password?: boolean;
+  user?: User;
 }
 
 export interface AuthState {
