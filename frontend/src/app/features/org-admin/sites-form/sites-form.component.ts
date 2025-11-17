@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { SiteService } from '../../../core/services/site.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { OrganizationService } from '../../../core/services/organization.service';
@@ -21,6 +22,9 @@ export class SitesFormComponent implements OnInit {
   organizations: Organization[] = [];
   isSuperAdmin = false;
   UserRole = UserRole;
+  postcode = '';
+  postcodeLookupLoading = false;
+  postcodeLookupError: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -28,7 +32,8 @@ export class SitesFormComponent implements OnInit {
     private authService: AuthService,
     private organizationService: OrganizationService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -227,5 +232,51 @@ export class SitesFormComponent implements OnInit {
     if (field.errors['pattern']) return 'Invalid format (use uppercase letters, numbers, and hyphens)';
 
     return '';
+  }
+
+  lookupPostcode(): void {
+    if (!this.postcode || this.postcode.trim() === '') {
+      this.postcodeLookupError = 'Please enter a postcode';
+      return;
+    }
+
+    this.postcodeLookupLoading = true;
+    this.postcodeLookupError = null;
+
+    // Clean the postcode (remove spaces)
+    const cleanedPostcode = this.postcode.replace(/\s/g, '');
+
+    // Call our backend proxy endpoint (avoids CORS issues with Authorization header)
+    this.http.get<any>(`/api/v1/utils/postcode-lookup/${cleanedPostcode}`).subscribe({
+      next: (response) => {
+        if (response.status === 200 && response.result) {
+          const result = response.result;
+
+          // Extract address components from postcode data
+          const address = result.admin_ward || result.parish || '';
+          const city = result.admin_district || '';
+          const country = result.country || 'UK';
+          const postcode = this.postcode.toUpperCase();
+
+          // Populate the separate address fields
+          this.siteForm.patchValue({
+            address: address,
+            city: city,
+            postcode: postcode,
+            country: country
+          });
+
+          this.postcodeLookupLoading = false;
+        } else {
+          this.postcodeLookupError = 'Postcode not found';
+          this.postcodeLookupLoading = false;
+        }
+      },
+      error: (err) => {
+        this.postcodeLookupError = 'Invalid postcode or lookup failed';
+        this.postcodeLookupLoading = false;
+        console.error('Postcode lookup error:', err);
+      }
+    });
   }
 }

@@ -161,14 +161,20 @@ export class OrganizationFormComponent implements OnInit {
       next: (response) => {
         if (response.status === 200 && response.result) {
           const result = response.result;
-          const addressParts = [];
 
-          // Build address from available data
-          if (result.admin_district) addressParts.push(result.admin_district);
-          if (result.admin_ward) addressParts.push(result.admin_ward);
-          if (result.region) addressParts.push(result.region);
-          if (result.country) addressParts.push(result.country);
-          addressParts.push(this.postcode.toUpperCase());
+          // Extract address components from postcode data
+          const city = result.admin_district || result.parish || '';
+          const region = result.region || '';
+          const country = result.country || 'United Kingdom';
+          const postcode = this.postcode.toUpperCase();
+
+          // Build a well-formatted address string
+          // Format: City, Region, Postcode, Country
+          const addressParts = [];
+          if (city) addressParts.push(city);
+          if (region && region !== city) addressParts.push(region);
+          addressParts.push(postcode);
+          if (country) addressParts.push(country);
 
           const address = addressParts.join(', ');
           this.organizationForm.patchValue({ address });
