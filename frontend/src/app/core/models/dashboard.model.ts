@@ -6,6 +6,28 @@ export interface SuperAdminMetrics {
   total_checklists_today: number;
   total_open_defects: number;
   recent_activity: ActivityItem[];
+  rag_summary: {
+    green: number;
+    amber: number;
+    red: number;
+  };
+  org_performance: Array<{
+    org_id: number;
+    org_name: string;
+    rag_status: string;
+    completion_rate: number;
+    open_defects: number;
+    total_sites: number;
+  }>;
+  growth_data: Array<{
+    month: string;
+    organizations: number;
+    sites: number;
+    users: number;
+  }>;
+  subscription_summary: {
+    [key: string]: number;
+  };
 }
 
 export interface OrgAdminMetrics {
