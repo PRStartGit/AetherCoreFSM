@@ -63,6 +63,7 @@ class User(Base):
     last_name = Column(String, nullable=False)
     role = Column(SQLEnum(UserRole), nullable=False)
     is_active = Column(Boolean, default=True)
+    must_change_password = Column(Boolean, default=False)
     phone = Column(String, nullable=True)
 
     # Department and Job Title

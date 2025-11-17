@@ -78,7 +78,11 @@ def login(
         }
     )
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "must_change_password": user.must_change_password
+    }
 
 
 @router.get("/me", response_model=UserResponse)
@@ -118,6 +122,7 @@ def change_password(
 
     # Update to new password
     current_user.hashed_password = get_password_hash(password_data.new_password)
+    current_user.must_change_password = False  # Clear forced password change flag
     db.commit()
 
     print(f"\n{'='*80}")

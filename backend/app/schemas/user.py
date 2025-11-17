@@ -12,6 +12,7 @@ class UserBase(BaseModel):
     role: UserRole
     phone: Optional[str] = None
     is_active: bool = True
+    must_change_password: bool = False
     department: Optional[Department] = None
     job_title: Optional[JobTitle] = None
 

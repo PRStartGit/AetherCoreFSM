@@ -50,7 +50,8 @@ def create_user(
         role=user_data.role,
         phone=user_data.phone,
         organization_id=user_data.organization_id,
-        is_active=user_data.is_active
+        is_active=user_data.is_active,
+        must_change_password=True  # Force password change on first login
     )
 
     db.add(new_user)

@@ -12,8 +12,12 @@ import { UserRole } from '../../models';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
+  passwordChangeForm: FormGroup;
   loading = false;
   hidePassword = true;
+  hideNewPassword = true;
+  hideConfirmPassword = true;
+  showPasswordChange = false;
 
   constructor(
     private fb: FormBuilder,
@@ -25,6 +29,11 @@ export class LoginComponent implements OnInit {
       organization_id: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
+    });
+
+    this.passwordChangeForm = this.fb.group({
+      new_password: ['', [Validators.required, Validators.minLength(8)]],
+      confirm_password: ['', Validators.required]
     });
   }
 
@@ -45,12 +54,51 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
-        this.redirectToDashboard();
+        if (response.must_change_password) {
+          this.loading = false;
+          this.showPasswordChange = true;
+          this.snackBar.open('You must change your password before continuing', 'Close', { duration: 5000 });
+        } else {
+          this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
+          this.redirectToDashboard();
+        }
       },
       error: (error) => {
         this.loading = false;
         const message = error.error?.detail || 'Login failed. Please check your credentials.';
+        this.snackBar.open(message, 'Close', { duration: 5000 });
+      }
+    });
+  }
+
+  onPasswordChangeSubmit(): void {
+    if (this.passwordChangeForm.invalid) {
+      return;
+    }
+
+    const { new_password, confirm_password } = this.passwordChangeForm.value;
+
+    if (new_password !== confirm_password) {
+      this.snackBar.open('Passwords do not match', 'Close', { duration: 3000 });
+      return;
+    }
+
+    const oldPassword = this.loginForm.value.password;
+
+    this.loading = true;
+    this.authService.changePassword({
+      old_password: oldPassword,
+      new_password: new_password
+    }).subscribe({
+      next: () => {
+        this.loading = false;
+        this.snackBar.open('Password changed successfully! Redirecting...', 'Close', { duration: 3000 });
+        this.showPasswordChange = false;
+        this.redirectToDashboard();
+      },
+      error: (error) => {
+        this.loading = false;
+        const message = error.error?.detail || 'Failed to change password';
         this.snackBar.open(message, 'Close', { duration: 5000 });
       }
     });
