@@ -4,8 +4,11 @@ from typing import List
 from app.core.database import get_db
 from app.core.dependencies import get_current_org_admin, get_current_user
 from app.core.security import get_password_hash
+from app.core.email import send_welcome_email
 from app.models.user import User, UserRole
 from app.models.user_site import UserSite
+from app.models.organization import Organization
+from app.models.site import Site
 from app.schemas.user import UserCreate, UserUpdate, UserResponse
 
 router = APIRouter()
@@ -67,6 +70,32 @@ def create_user(
 
     # Refresh to get relationships
     db.refresh(new_user)
+
+    # Send welcome email
+    try:
+        # Get organization name
+        organization = db.query(Organization).filter(Organization.id == user_data.organization_id).first()
+        organization_name = organization.name if organization else "Your Organization"
+
+        # Get assigned site names
+        assigned_sites = "All sites" if not user_data.site_ids else ", ".join(
+            [site.name for site in db.query(Site).filter(Site.id.in_(user_data.site_ids)).all()]
+        )
+
+        # Send welcome email with temporary password
+        send_welcome_email(
+            user_email=new_user.email,
+            user_name=f"{new_user.first_name} {new_user.last_name}",
+            organization_name=organization_name,
+            user_role=new_user.role.value,
+            temporary_password=user_data.password,  # Original password before hashing
+            assigned_sites=assigned_sites,
+            login_url="https://zynthio.com/login"
+        )
+    except Exception as e:
+        # Log error but don't fail user creation
+        print(f"Failed to send welcome email: {str(e)}")
+
     return new_user
 
 
