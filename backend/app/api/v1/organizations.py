@@ -14,7 +14,7 @@ from app.schemas.organization import (
     OrganizationResponse,
     OrganizationWithStats
 )
-from app.services.email_service import send_welcome_email
+from app.core.email import send_org_admin_welcome_email
 
 router = APIRouter()
 
@@ -84,11 +84,14 @@ def create_organization(
 
     # Send welcome email
     try:
-        send_welcome_email(
-            email=org_data.contact_email,
-            name=org_data.contact_person or "Admin",
+        send_org_admin_welcome_email(
+            admin_email=org_data.contact_email,
+            contact_person=org_data.contact_person or "Admin",
+            organization_name=new_org.name,
             org_id=new_org.org_id,
-            password=temp_password
+            subscription_tier=new_org.subscription_tier,
+            temporary_password=temp_password,
+            reset_password_url="https://zynthio.com/reset-password"
         )
     except Exception as e:
         print(f"Failed to send welcome email: {str(e)}")
