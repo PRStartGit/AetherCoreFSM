@@ -23,16 +23,12 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
   private subscriptionTierChart?: Chart;
   private orgPerformanceChart?: Chart;
 
-  // TODO: Replace with real RAG status data from API when available
-  // Backend needs to provide organization-level RAG aggregation endpoint
   ragStatus = {
     green: 0,
     amber: 0,
     red: 0
   };
 
-  // TODO: Replace with real organization performance data from API when available
-  // Backend needs to provide top organizations by completion rate endpoint
   orgPerformanceData: any[] = [];
 
   // This will be populated from API metrics.recent_activity
@@ -58,6 +54,20 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
     this.dashboardService.getSuperAdminMetrics().subscribe({
       next: (data) => {
         this.metrics = data;
+
+        // Populate RAG status from API
+        if (data.rag_summary) {
+          this.ragStatus = {
+            green: data.rag_summary.green || 0,
+            amber: data.rag_summary.amber || 0,
+            red: data.rag_summary.red || 0
+          };
+        }
+
+        // Populate organization performance from API
+        if (data.org_performance && data.org_performance.length > 0) {
+          this.orgPerformanceData = data.org_performance;
+        }
 
         // Populate recent activity from API data
         if (data.recent_activity && data.recent_activity.length > 0) {
@@ -160,12 +170,11 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
       this.platformGrowthChart.destroy();
     }
 
-    // TODO: Replace with real historical growth data from API
-    // Backend needs to provide time-series data for organizations, sites, and users
-    const months: string[] = [];
-    const organizations: number[] = [];
-    const sites: number[] = [];
-    const users: number[] = [];
+    // Use real growth data from API
+    const months: string[] = this.metrics?.growth_data?.map((d: any) => d.month) || [];
+    const organizations: number[] = this.metrics?.growth_data?.map((d: any) => d.organizations) || [];
+    const sites: number[] = this.metrics?.growth_data?.map((d: any) => d.sites) || [];
+    const users: number[] = this.metrics?.growth_data?.map((d: any) => d.users) || [];
 
     const config: ChartConfiguration = {
       type: 'line',
@@ -238,20 +247,50 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
       this.subscriptionTierChart.destroy();
     }
 
-    // TODO: Replace with real subscription tier distribution from API
-    // Backend needs to provide organization count grouped by subscription tier
+    // Use real subscription data from API
+    const subscription = this.metrics?.subscription_summary || {};
+    const labels: string[] = [];
+    const data: number[] = [];
+    const colors: string[] = [];
+
+    if (subscription.platform_admin > 0) {
+      labels.push('Platform Admin');
+      data.push(subscription.platform_admin);
+      colors.push('#6366f1');
+    }
+    if (subscription.enterprise > 0) {
+      labels.push('Enterprise');
+      data.push(subscription.enterprise);
+      colors.push('#8b5cf6');
+    }
+    if (subscription.professional > 0) {
+      labels.push('Professional');
+      data.push(subscription.professional);
+      colors.push('#3b82f6');
+    }
+    if (subscription.basic > 0) {
+      labels.push('Basic');
+      data.push(subscription.basic);
+      colors.push('#10b981');
+    }
+    if (subscription.free > 0) {
+      labels.push('Free');
+      data.push(subscription.free);
+      colors.push('#06b6d4');
+    }
+    if (subscription.trial > 0) {
+      labels.push('Trial');
+      data.push(subscription.trial);
+      colors.push('#f59e0b');
+    }
+
     const config: ChartConfiguration = {
       type: 'pie',
       data: {
-        labels: [],
+        labels: labels,
         datasets: [{
-          data: [],
-          backgroundColor: [
-            '#8b5cf6', // Purple for Enterprise
-            '#3b82f6', // Blue for Professional
-            '#06b6d4', // Cyan for Standard
-            '#10b981'  // Green for Basic
-          ],
+          data: data,
+          backgroundColor: colors,
           borderColor: '#fff',
           borderWidth: 2
         }]
@@ -279,7 +318,7 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
       this.orgPerformanceChart.destroy();
     }
 
-    // Use mock organization performance data
+    // Use real organization performance data from API
     const orgNames = this.orgPerformanceData.map(org => org.org_name);
     const completionRates = this.orgPerformanceData.map(org => org.completion_rate);
 

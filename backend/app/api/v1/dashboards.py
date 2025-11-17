@@ -39,11 +39,74 @@ def get_super_admin_dashboard(
 
     # Subscription summary
     subscription_summary = {
+        "platform_admin": db.query(Organization).filter(Organization.subscription_tier == "platform_admin").count(),
+        "free": db.query(Organization).filter(Organization.subscription_tier == "free").count(),
         "basic": db.query(Organization).filter(Organization.subscription_tier == "basic").count(),
         "professional": db.query(Organization).filter(Organization.subscription_tier == "professional").count(),
         "enterprise": db.query(Organization).filter(Organization.subscription_tier == "enterprise").count(),
         "trial": db.query(Organization).filter(Organization.is_trial == True).count()
     }
+
+    # Platform-wide RAG status aggregation
+    rag_summary = {
+        "green": 0,
+        "amber": 0,
+        "red": 0
+    }
+
+    # Get all active organizations and calculate their RAG status
+    active_orgs = db.query(Organization).filter(Organization.is_active == True).all()
+    org_performance = []
+
+    for org in active_orgs:
+        org_rag = get_organization_rag_summary(org.id, db)
+        rag_status = org_rag["overall_rag"]
+
+        # Count RAG statuses
+        if rag_status == "green":
+            rag_summary["green"] += 1
+        elif rag_status == "amber":
+            rag_summary["amber"] += 1
+        elif rag_status == "red":
+            rag_summary["red"] += 1
+
+        # Add to organization performance (top 10 by completion rate)
+        org_performance.append({
+            "org_id": org.id,
+            "org_name": org.name,
+            "rag_status": rag_status,
+            "completion_rate": org_rag["average_completion_rate"],
+            "open_defects": org_rag["total_open_defects"],
+            "total_sites": db.query(Site).filter(Site.organization_id == org.id, Site.is_active == True).count()
+        })
+
+    # Sort by completion rate and take top 10
+    org_performance = sorted(org_performance, key=lambda x: x["completion_rate"], reverse=True)[:10]
+
+    # Platform growth data (last 6 months)
+    growth_data = []
+    for i in range(5, -1, -1):
+        month_start = (datetime.utcnow() - timedelta(days=30 * i)).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        month_end = (month_start + timedelta(days=32)).replace(day=1) - timedelta(seconds=1)
+
+        orgs_count = db.query(Organization).filter(
+            Organization.created_at <= month_end
+        ).count()
+
+        sites_count = db.query(Site).filter(
+            Site.created_at <= month_end
+        ).count()
+
+        users_count = db.query(User).filter(
+            User.created_at <= month_end
+        ).count()
+
+        growth_data.append({
+            "month": month_start.strftime("%b %Y"),
+            "organizations": orgs_count,
+            "sites": sites_count,
+            "users": users_count
+        })
 
     # Recent activity (last 10 completed checklists)
     recent_checklists = db.query(Checklist).filter(
@@ -53,10 +116,11 @@ def get_super_admin_dashboard(
     recent_activity = []
     for checklist in recent_checklists:
         recent_activity.append({
-            "type": "checklist_completed",
-            "site_name": checklist.site.name,
-            "organization_name": checklist.site.organization.name,
-            "date": checklist.completed_at.isoformat() if checklist.completed_at else None
+            "type": "checklist",
+            "description": f"Checklist completed at {checklist.site.name}",
+            "timestamp": checklist.completed_at.isoformat() if checklist.completed_at else None,
+            "organization": checklist.site.organization.name,
+            "site": checklist.site.name
         })
 
     return SuperAdminDashboard(
@@ -66,7 +130,10 @@ def get_super_admin_dashboard(
         total_active_checklists=total_active_checklists,
         total_open_defects=total_open_defects,
         subscription_summary=subscription_summary,
-        recent_activity=recent_activity
+        recent_activity=recent_activity,
+        rag_summary=rag_summary,
+        org_performance=org_performance,
+        growth_data=growth_data
     )
 
 

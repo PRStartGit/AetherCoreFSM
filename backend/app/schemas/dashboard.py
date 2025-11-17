@@ -11,6 +11,9 @@ class SuperAdminDashboard(BaseModel):
     total_open_defects: int
     recent_activity: List[Dict[str, Any]] = []
     subscription_summary: Dict[str, Any] = {}
+    rag_summary: Dict[str, int] = {}
+    org_performance: List[Dict[str, Any]] = []
+    growth_data: List[Dict[str, Any]] = []
 
 
 class OrgAdminDashboard(BaseModel):
