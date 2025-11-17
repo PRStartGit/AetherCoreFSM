@@ -7,7 +7,7 @@
     </div>
     <button *ngIf="!isSiteUser()"
             (click)="openCreateDialog()"
-            class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm sm:text-base">
+            class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-medium text-sm sm:text-base">
       + New Checklist
     </button>
   </div>
@@ -55,7 +55,7 @@
       <p class="text-gray-500 mb-6">Create your first checklist to get started</p>
       <button *ngIf="!isSiteUser()"
               (click)="openCreateDialog()"
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+              class="px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-medium">
         + Create First Checklist
       </button>
     </div>
@@ -97,7 +97,7 @@
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2.5">
             <div class="rounded-full h-2.5"
-                 [ngClass]="checklist.status === 'completed' ? 'bg-green-600' : 'bg-blue-600'"
+                 [ngClass]="checklist.status === 'completed' ? 'bg-green-600' : 'bg-gradient-to-r from-hygiene-600 to-cyan-600'"
                  [style.width.%]="getProgressPercentage(checklist)"></div>
           </div>
         </div>
@@ -170,7 +170,7 @@
                 <div class="flex items-center gap-2">
                   <div class="flex-1 bg-gray-200 rounded-full h-2">
                     <div class="rounded-full h-2"
-                         [ngClass]="checklist.status === 'completed' ? 'bg-green-600' : 'bg-blue-600'"
+                         [ngClass]="checklist.status === 'completed' ? 'bg-green-600' : 'bg-gradient-to-r from-hygiene-600 to-cyan-600'"
                          [style.width.%]="getProgressPercentage(checklist)"></div>
                   </div>
                   <span class="text-sm font-medium text-gray-700 min-w-[45px]">

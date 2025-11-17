@@ -6,6 +6,19 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        hygiene: {
+          DEFAULT: '#00B4D8',
+          50: '#E0F7FB',
+          100: '#B3EDF5',
+          200: '#80E2EF',
+          300: '#4DD7E9',
+          400: '#26CCE3',
+          500: '#00B4D8',
+          600: '#009EBF',
+          700: '#0087A6',
+          800: '#00708D',
+          900: '#005974',
+        },
         primary: {
           DEFAULT: '#2563EB',
           50: '#EFF6FF',

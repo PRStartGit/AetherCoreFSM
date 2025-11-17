@@ -10,8 +10,8 @@ import { User, LoginRequest, LoginResponse, AuthState, UserRole } from '../model
 })
 export class AuthService {
   private readonly API_URL = '/api/v1';
-  private readonly TOKEN_KEY = 'aethercore_token';
-  private readonly USER_KEY = 'aethercore_user';
+  private readonly TOKEN_KEY = 'zynthio_token';
+  private readonly USER_KEY = 'zynthio_user';
 
   private authStateSubject = new BehaviorSubject<AuthState>({
     isAuthenticated: false,

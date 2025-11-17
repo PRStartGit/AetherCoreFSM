@@ -7,7 +7,7 @@
         <p class="text-sm sm:text-base text-gray-600 mt-1">Track and manage site defects</p>
       </div>
       <button (click)="createDefect()"
-              class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center justify-center gap-2 text-sm sm:text-base">
+              class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-medium flex items-center justify-center gap-2 text-sm sm:text-base">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
         </svg>
@@ -58,7 +58,7 @@
       <!-- Filter Actions -->
       <div class="flex sm:items-end gap-2 col-span-1 sm:col-span-2 md:col-span-1">
         <button (click)="applyFilters()"
-                class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm sm:text-base">
+                class="flex-1 px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-medium text-sm sm:text-base">
           Apply
         </button>
         <button (click)="clearFilters()"
@@ -90,7 +90,7 @@
     <h3 class="text-lg font-semibold text-gray-800 mb-1">No Defects Found</h3>
     <p class="text-gray-500 mb-4">Get started by creating your first defect</p>
     <button (click)="createDefect()"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+            class="px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-medium">
       Create Defect
     </button>
   </div>

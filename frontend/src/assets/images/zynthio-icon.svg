@@ -1,0 +1,5 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shield/Badge Icon -->
+  <path d="M8 10L24 4L40 10V26C40 36 24 44 24 44C24 44 8 36 8 26V10Z" fill="#00B4D8"/>
+  <path d="M18 24L21 27L30 18" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
