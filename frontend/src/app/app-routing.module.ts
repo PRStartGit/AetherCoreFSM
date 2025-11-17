@@ -22,6 +22,9 @@ import { SitesListComponent } from './features/org-admin/sites-list/sites-list.c
 import { SitesFormComponent } from './features/org-admin/sites-form/sites-form.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { LandingPageComponent } from './features/landing-page/landing-page.component';
+import { TermsOfServiceComponent } from './features/legal/terms/terms-of-service.component';
+import { PrivacyPolicyComponent } from './features/legal/privacy/privacy-policy.component';
+import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { UserRole } from './core/models';
@@ -46,6 +49,18 @@ const routes: Routes = [
   {
     path: 'reset-password',
     component: ResetPasswordComponent
+  },
+  {
+    path: 'terms',
+    component: TermsOfServiceComponent
+  },
+  {
+    path: 'privacy',
+    component: PrivacyPolicyComponent
+  },
+  {
+    path: 'cookies',
+    component: CookiePolicyComponent
   },
   {
     path: '',

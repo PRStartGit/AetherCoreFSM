@@ -59,6 +59,9 @@ import { SitesFormComponent } from './features/org-admin/sites-form/sites-form.c
 import { ProfileComponent } from './features/profile/profile.component';
 import { LandingPageComponent } from './features/landing-page/landing-page.component';
 import { TaskFieldBuilderComponent } from './features/tasks/task-field-builder/task-field-builder.component';
+import { TermsOfServiceComponent } from './features/legal/terms/terms-of-service.component';
+import { PrivacyPolicyComponent } from './features/legal/privacy/privacy-policy.component';
+import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +90,10 @@ import { TaskFieldBuilderComponent } from './features/tasks/task-field-builder/t
     SitesListComponent,
     SitesFormComponent,
     ProfileComponent,
-    LandingPageComponent
+    LandingPageComponent,
+    TermsOfServiceComponent,
+    PrivacyPolicyComponent,
+    CookiePolicyComponent
   ],
   imports: [
     BrowserModule,
