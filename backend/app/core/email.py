@@ -1,5 +1,5 @@
 """
-Email Service with SMTP Support
+Email Service with SMTP and SendGrid Support
 Handles email sending with HTML templates
 """
 import smtplib
@@ -9,6 +9,8 @@ from email.mime.multipart import MIMEMultipart
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 from jinja2 import Template
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail, Email, To, Content
 
 from app.core.config import settings
 
@@ -86,6 +88,44 @@ class EmailService:
             logger.error(f"Failed to send email to {to_email}: {str(e)}")
             return False
 
+    def send_email_sendgrid(
+        self,
+        to_email: str,
+        subject: str,
+        html_content: str,
+        to_name: Optional[str] = None
+    ) -> bool:
+        """Send email using SendGrid API"""
+        sendgrid_api_key = getattr(settings, 'SENDGRID_API_KEY', None)
+
+        if not sendgrid_api_key:
+            logger.warning("SendGrid API key not configured. Email not sent.")
+            return False
+
+        try:
+            # Create SendGrid message
+            from_email_obj = Email(self.from_email, self.from_name)
+            to_email_obj = To(to_email, to_name)
+            content = Content("text/html", html_content)
+
+            mail = Mail(
+                from_email=from_email_obj,
+                to_emails=to_email_obj,
+                subject=subject,
+                html_content=content
+            )
+
+            # Send email via SendGrid
+            sg = SendGridAPIClient(sendgrid_api_key)
+            response = sg.send(mail)
+
+            logger.info(f"Email sent successfully via SendGrid to {to_email} (status: {response.status_code})")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to send email via SendGrid to {to_email}: {str(e)}")
+            return False
+
     def send_template_email(
         self,
         to_email: str,
@@ -100,8 +140,12 @@ class EmailService:
             template_content = self._load_template(template_name)
             html_content = self._render_template(template_content, context)
 
-            # Send email
-            return self.send_email_smtp(to_email, subject, html_content, to_name)
+            # Try SendGrid first, fall back to SMTP if not configured
+            sendgrid_api_key = getattr(settings, 'SENDGRID_API_KEY', None)
+            if sendgrid_api_key:
+                return self.send_email_sendgrid(to_email, subject, html_content, to_name)
+            else:
+                return self.send_email_smtp(to_email, subject, html_content, to_name)
 
         except Exception as e:
             logger.error(f"Failed to send template email: {str(e)}")
