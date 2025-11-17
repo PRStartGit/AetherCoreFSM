@@ -134,19 +134,19 @@ const routes: Routes = [
         path: 'org-admin/sites',
         component: SitesListComponent,
         canActivate: [RoleGuard],
-        data: { roles: [UserRole.ORG_ADMIN] }
+        data: { roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN] }
       },
       {
         path: 'org-admin/sites/new',
         component: SitesFormComponent,
         canActivate: [RoleGuard],
-        data: { roles: [UserRole.ORG_ADMIN] }
+        data: { roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN] }
       },
       {
         path: 'org-admin/sites/edit/:id',
         component: SitesFormComponent,
         canActivate: [RoleGuard],
-        data: { roles: [UserRole.ORG_ADMIN] }
+        data: { roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN] }
       },
       {
         path: 'site-user',
