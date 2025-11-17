@@ -79,7 +79,6 @@ import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.co
     ChecklistListComponent,
     ChecklistFormComponent,
     ChecklistCompletionComponent,
-    DynamicTaskFormComponent,
     // DefectListComponent,
     // DefectFormComponent,
     OrganizationListComponent,
@@ -128,7 +127,8 @@ import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.co
     MatCheckboxModule,
     MatTooltipModule,
     // Standalone Components
-    TaskFieldBuilderComponent
+    TaskFieldBuilderComponent,
+    DynamicTaskFormComponent
   ],
   providers: [
     {
