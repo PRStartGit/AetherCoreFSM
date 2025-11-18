@@ -37,7 +37,7 @@ export class UserFormComponent implements OnInit {
     this.userForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       full_name: ['', [Validators.required, Validators.maxLength(100)]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: [''],
       role: [UserRole.SITE_USER, Validators.required],
       organization_id: [null],
       site_ids: [[]],
@@ -180,9 +180,12 @@ export class UserFormComponent implements OnInit {
         }
       });
     } else {
+      // Generate a random temporary password
+      const tempPassword = this.generateRandomPassword();
+
       const createData: UserCreate = {
         email: formValue.email,
-        password: formValue.password,
+        password: tempPassword,
         full_name: formValue.full_name,
         role: formValue.role,
         organization_id: formValue.organization_id,
@@ -192,6 +195,7 @@ export class UserFormComponent implements OnInit {
 
       this.userService.create(createData).subscribe({
         next: () => {
+          alert('User created successfully! A password reset email will be sent to the user.');
           this.router.navigate(['/super-admin/users']);
         },
         error: (err) => {
@@ -242,5 +246,16 @@ export class UserFormComponent implements OnInit {
     } else {
       this.userForm.get('site_ids')?.setValue(siteIds.filter((id: number) => id !== siteId));
     }
+  }
+
+  generateRandomPassword(): string {
+    // Generate a random secure password
+    const length = 16;
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    return password;
   }
 }

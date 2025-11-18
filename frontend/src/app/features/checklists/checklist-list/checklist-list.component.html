@@ -112,10 +112,15 @@
 
         <!-- Actions -->
         <div class="flex gap-2">
-          <button *ngIf="canComplete(checklist)"
+          <button *ngIf="canComplete(checklist) && !isPastDay(checklist)"
                   (click)="openCompletionView(checklist)"
                   class="flex-1 px-3 py-2 text-sm text-center text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg font-medium">
             Complete
+          </button>
+          <button *ngIf="isPastDay(checklist) && canComplete(checklist)"
+                  (click)="openCompletionView(checklist)"
+                  class="flex-1 px-3 py-2 text-sm text-center text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg font-medium">
+            View Records
           </button>
           <button *ngIf="!canComplete(checklist)"
                   (click)="openCompletionView(checklist)"
@@ -190,11 +195,17 @@
               <!-- Actions -->
               <td class="px-6 py-4">
                 <div class="flex items-center gap-2">
-                  <button *ngIf="canComplete(checklist)"
+                  <button *ngIf="canComplete(checklist) && !isPastDay(checklist)"
                           (click)="openCompletionView(checklist)"
                           class="px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg font-medium"
                           title="Complete Checklist">
                     Complete
+                  </button>
+                  <button *ngIf="isPastDay(checklist) && canComplete(checklist)"
+                          (click)="openCompletionView(checklist)"
+                          class="px-3 py-1 text-sm text-orange-600 hover:bg-orange-50 rounded-lg font-medium"
+                          title="View Past Day Records">
+                    View Records
                   </button>
                   <button *ngIf="!canComplete(checklist)"
                           (click)="openCompletionView(checklist)"

@@ -145,6 +145,18 @@ export class ChecklistListComponent implements OnInit {
     return checklist.status === ChecklistStatus.PENDING || checklist.status === ChecklistStatus.IN_PROGRESS;
   }
 
+  isPastDay(checklist: Checklist): boolean {
+    if (!checklist.checklist_date) {
+      return false;
+    }
+    const checklistDate = new Date(checklist.checklist_date);
+    const today = new Date();
+    // Set both to midnight for accurate day comparison
+    checklistDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    return checklistDate < today;
+  }
+
   isSiteUser(): boolean {
     return this.authService.isSiteUser();
   }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../../../../core/services/user.service';
 import { OrganizationService } from '../../../../core/services/organization.service';
+import { AuthService } from '../../../../core/auth/auth.service';
 import { User, Organization } from '../../../../core/models';
 
 @Component({
@@ -19,6 +20,7 @@ export class UserListComponent implements OnInit {
   constructor(
     private userService: UserService,
     private organizationService: OrganizationService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -111,5 +113,26 @@ export class UserListComponent implements OnInit {
     if (!orgId) return 'N/A';
     const org = this.organizations.find(o => o.id === orgId);
     return org ? org.name : 'Unknown';
+  }
+
+  sendPasswordReset(user: User): void {
+    if (confirm(`Send password reset email to "${user.full_name}" (${user.email})?`)) {
+      // Find the organization org_id for this user
+      const org = this.organizations.find(o => o.id === user.organization_id);
+      const orgId = org ? org.org_id : 'zyn'; // Default to 'zyn' for super admins
+
+      this.authService.requestPasswordReset({
+        organization_id: orgId,
+        email: user.email
+      }).subscribe({
+        next: () => {
+          alert('Password reset email sent successfully!');
+        },
+        error: (err) => {
+          alert('Failed to send password reset email');
+          console.error('Error sending password reset:', err);
+        }
+      });
+    }
   }
 }
