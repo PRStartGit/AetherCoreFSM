@@ -259,6 +259,9 @@ def submit_field_responses(
     checklist_item.is_completed = True
     checklist_item.completed_at = datetime.utcnow()
 
+    # Flush changes to database so the count query can see the updated item
+    db.flush()
+
     # Update parent checklist completion statistics with row-level locking to prevent race conditions
     checklist = db.query(Checklist).filter(
         Checklist.id == checklist_item.checklist_id
