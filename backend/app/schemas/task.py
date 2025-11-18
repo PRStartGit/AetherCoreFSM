@@ -10,6 +10,7 @@ class TaskBase(BaseModel):
     description: Optional[str] = None
     order_index: int = 0
     form_config: Optional[Dict[str, Any]] = None
+    has_dynamic_form: Optional[bool] = False
     allocated_departments: Optional[List[Department]] = None
 
 
@@ -24,6 +25,7 @@ class TaskUpdate(BaseModel):
     description: Optional[str] = None
     order_index: Optional[int] = None
     form_config: Optional[Dict[str, Any]] = None
+    has_dynamic_form: Optional[bool] = None
     is_active: Optional[bool] = None
     allocated_departments: Optional[List[Department]] = None
 
