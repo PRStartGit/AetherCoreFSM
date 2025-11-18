@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Union
 from datetime import datetime
 
 
@@ -55,7 +55,7 @@ class TaskFieldResponseCreate(BaseModel):
     text_value: Optional[str] = None
     number_value: Optional[float] = None
     boolean_value: Optional[bool] = None
-    json_value: Optional[Dict[str, Any]] = None
+    json_value: Optional[Union[Dict[str, Any], List[Any]]] = None
     file_url: Optional[str] = None
     completed_by: Optional[int] = None
 
@@ -65,7 +65,7 @@ class TaskFieldResponseUpdate(BaseModel):
     text_value: Optional[str] = None
     number_value: Optional[float] = None
     boolean_value: Optional[bool] = None
-    json_value: Optional[Dict[str, Any]] = None
+    json_value: Optional[Union[Dict[str, Any], List[Any]]] = None
     file_url: Optional[str] = None
 
 
@@ -77,7 +77,7 @@ class TaskFieldResponseSchema(BaseModel):
     text_value: Optional[str] = None
     number_value: Optional[float] = None
     boolean_value: Optional[bool] = None
-    json_value: Optional[Dict[str, Any]] = None
+    json_value: Optional[Union[Dict[str, Any], List[Any]]] = None
     file_url: Optional[str] = None
     auto_defect_id: Optional[int] = None
     completed_at: datetime
