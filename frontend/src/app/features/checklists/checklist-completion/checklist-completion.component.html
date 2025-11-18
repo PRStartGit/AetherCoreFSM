@@ -49,12 +49,27 @@
 
         <mat-card-content>
           <!-- Dynamic Form for tasks with has_dynamic_form -->
-          <div *ngIf="item.task?.has_dynamic_form" class="dynamic-form-container">
-            <app-dynamic-task-form
-              [taskId]="item.task_id"
-              [checklistItemId]="item.id"
-              (formSubmitted)="onItemCompleted(item)">
-            </app-dynamic-task-form>
+          <div *ngIf="item.task?.has_dynamic_form">
+            <!-- Show saved responses if item is completed -->
+            <div *ngIf="item.is_completed && itemResponses.has(item.id)" class="saved-responses">
+              <div class="response-item" *ngFor="let response of itemResponses.get(item.id)?.responses">
+                <div class="response-label">
+                  {{ itemResponses.get(item.id)?.fields.find(f => f.id === response.task_field_id)?.field_label }}
+                </div>
+                <div class="response-value">
+                  {{ getResponseValue(response, itemResponses.get(item.id)!.fields.find(f => f.id === response.task_field_id)!) }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Show form if item is not completed -->
+            <div *ngIf="!item.is_completed" class="dynamic-form-container">
+              <app-dynamic-task-form
+                [taskId]="item.task_id"
+                [checklistItemId]="item.id"
+                (formSubmitted)="onItemCompleted(item)">
+              </app-dynamic-task-form>
+            </div>
           </div>
 
           <!-- Simple checkbox for basic tasks -->

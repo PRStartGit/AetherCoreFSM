@@ -3,10 +3,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ChecklistService } from '../../../core/services/checklist.service';
 import { TaskService } from '../../../core/services/task.service';
-import { Checklist, ChecklistItem, Task, ChecklistStatus } from '../../../core/models';
+import { TaskFieldService } from '../../../core/services/task-field.service';
+import { Checklist, ChecklistItem, Task, ChecklistStatus, TaskField, TaskFieldResponse } from '../../../core/models';
 
 interface ChecklistItemWithTask extends ChecklistItem {
   task?: Task;
+}
+
+interface ChecklistItemResponses {
+  responses: TaskFieldResponse[];
+  fields: TaskField[];
 }
 
 @Component({
@@ -20,12 +26,14 @@ export class ChecklistCompletionComponent implements OnInit {
   loading = true;
   error: string | null = null;
   checklistId: number = 0;
+  itemResponses: Map<number, ChecklistItemResponses> = new Map();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private checklistService: ChecklistService,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private taskFieldService: TaskFieldService
   ) {}
 
   ngOnInit(): void {
@@ -53,7 +61,8 @@ export class ChecklistCompletionComponent implements OnInit {
                 ...item,
                 task: tasks[index]
               }));
-              this.loading = false;
+              // Load responses for completed items with dynamic forms
+              this.loadCompletedResponses();
             },
             error: (err) => {
               console.error('Error loading tasks:', err);
@@ -113,5 +122,56 @@ export class ChecklistCompletionComponent implements OnInit {
 
   getCompletedCount(): number {
     return this.items.filter(item => item.is_completed).length;
+  }
+
+  loadCompletedResponses(): void {
+    const completedDynamicItems = this.items.filter(
+      item => item.is_completed && item.task?.has_dynamic_form
+    );
+
+    if (completedDynamicItems.length === 0) {
+      this.loading = false;
+      return;
+    }
+
+    const responseRequests = completedDynamicItems.map(item => {
+      return forkJoin({
+        responses: this.taskFieldService.getResponses(item.id),
+        fields: this.taskFieldService.getAllFields(item.task_id)
+      });
+    });
+
+    forkJoin(responseRequests).subscribe({
+      next: (results) => {
+        completedDynamicItems.forEach((item, index) => {
+          this.itemResponses.set(item.id, results[index]);
+        });
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading responses:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  getResponseValue(response: TaskFieldResponse, field: TaskField): string {
+    // Return the appropriate value based on field type
+    if (response.boolean_value !== null && response.boolean_value !== undefined) {
+      return response.boolean_value ? 'Yes' : 'No';
+    }
+    if (response.number_value !== null && response.number_value !== undefined) {
+      return response.number_value.toString();
+    }
+    if (response.text_value) {
+      return response.text_value;
+    }
+    if (response.file_url) {
+      return 'Photo uploaded';
+    }
+    if (response.json_value) {
+      return JSON.stringify(response.json_value);
+    }
+    return 'N/A';
   }
 }
