@@ -106,7 +106,18 @@
             </div>
             <div class="items-list" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id) && checklistItems.get(checklist.id)!.length > 0">
               <div class="checklist-item" *ngFor="let item of checklistItems.get(checklist.id)">
-                <mat-checkbox
+                <!-- Dynamic Form for tasks with has_dynamic_form -->
+                <div *ngIf="item.task?.has_dynamic_form">
+                  <h4 class="item-name">{{ item.item_name }}</h4>
+                  <app-dynamic-task-form
+                    [taskId]="item.task_id"
+                    [checklistItemId]="item.id"
+                    (formSubmitted)="onDynamicFormSubmitted(checklist.id, item)">
+                  </app-dynamic-task-form>
+                </div>
+
+                <!-- Simple checkbox for basic tasks -->
+                <mat-checkbox *ngIf="!item.task?.has_dynamic_form"
                   [checked]="item.is_completed"
                   (change)="toggleItem(checklist.id, item)">
                   {{ item.item_name }}
@@ -155,7 +166,18 @@
             </div>
             <div class="items-list" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id) && checklistItems.get(checklist.id)!.length > 0">
               <div class="checklist-item" *ngFor="let item of checklistItems.get(checklist.id)">
-                <mat-checkbox
+                <!-- Dynamic Form for tasks with has_dynamic_form -->
+                <div *ngIf="item.task?.has_dynamic_form">
+                  <h4 class="item-name">{{ item.item_name }}</h4>
+                  <app-dynamic-task-form
+                    [taskId]="item.task_id"
+                    [checklistItemId]="item.id"
+                    (formSubmitted)="onDynamicFormSubmitted(checklist.id, item)">
+                  </app-dynamic-task-form>
+                </div>
+
+                <!-- Simple checkbox for basic tasks -->
+                <mat-checkbox *ngIf="!item.task?.has_dynamic_form"
                   [checked]="item.is_completed"
                   (change)="toggleItem(checklist.id, item)">
                   {{ item.item_name }}
@@ -204,7 +226,18 @@
             </div>
             <div class="items-list" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id) && checklistItems.get(checklist.id)!.length > 0">
               <div class="checklist-item" *ngFor="let item of checklistItems.get(checklist.id)">
-                <mat-checkbox
+                <!-- Dynamic Form for tasks with has_dynamic_form -->
+                <div *ngIf="item.task?.has_dynamic_form">
+                  <h4 class="item-name">{{ item.item_name }}</h4>
+                  <app-dynamic-task-form
+                    [taskId]="item.task_id"
+                    [checklistItemId]="item.id"
+                    (formSubmitted)="onDynamicFormSubmitted(checklist.id, item)">
+                  </app-dynamic-task-form>
+                </div>
+
+                <!-- Simple checkbox for basic tasks -->
+                <mat-checkbox *ngIf="!item.task?.has_dynamic_form"
                   [checked]="item.is_completed"
                   (change)="toggleItem(checklist.id, item)">
                   {{ item.item_name }}

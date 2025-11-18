@@ -1,11 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import { ChecklistService } from '../../../core/services/checklist.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { DefectService } from '../../../core/services/defect.service';
+import { TaskService } from '../../../core/services/task.service';
 import { User } from '../../../core/models/user.model';
-import { Checklist, ChecklistStatus, Category, Defect, DefectStatus, ChecklistItem } from '../../../core/models/monitoring.model';
+import { Checklist, ChecklistStatus, Category, Defect, DefectStatus, ChecklistItem, Task } from '../../../core/models/monitoring.model';
+
+interface ChecklistItemWithTask extends ChecklistItem {
+  task?: Task;
+}
 
 interface ChecklistCard {
   id: number;
@@ -42,7 +48,7 @@ export class SiteUserDashboardComponent implements OnInit {
 
   // Expandable checklist state
   expandedChecklists: Set<number> = new Set();
-  checklistItems: Map<number, ChecklistItem[]> = new Map();
+  checklistItems: Map<number, ChecklistItemWithTask[]> = new Map();
   loadingItems: Set<number> = new Set();
 
   constructor(
@@ -50,6 +56,7 @@ export class SiteUserDashboardComponent implements OnInit {
     private checklistService: ChecklistService,
     private categoryService: CategoryService,
     private defectService: DefectService,
+    private taskService: TaskService,
     private router: Router
   ) {}
 
@@ -303,8 +310,31 @@ export class SiteUserDashboardComponent implements OnInit {
 
     this.checklistService.getById(checklistId).subscribe({
       next: (checklist) => {
-        this.checklistItems.set(checklistId, checklist.items || []);
-        this.loadingItems.delete(checklistId);
+        // Load task details for each item to get has_dynamic_form flag
+        if (checklist.items && checklist.items.length > 0) {
+          const taskRequests = checklist.items.map(item =>
+            this.taskService.getById(item.task_id)
+          );
+
+          forkJoin(taskRequests).subscribe({
+            next: (tasks) => {
+              const itemsWithTasks: ChecklistItemWithTask[] = checklist.items!.map((item, index) => ({
+                ...item,
+                task: tasks[index]
+              }));
+              this.checklistItems.set(checklistId, itemsWithTasks);
+              this.loadingItems.delete(checklistId);
+            },
+            error: (err) => {
+              console.error('Error loading tasks:', err);
+              this.checklistItems.set(checklistId, checklist.items || []);
+              this.loadingItems.delete(checklistId);
+            }
+          });
+        } else {
+          this.checklistItems.set(checklistId, []);
+          this.loadingItems.delete(checklistId);
+        }
       },
       error: (err) => {
         console.error('Error loading checklist items:', err);
@@ -313,7 +343,7 @@ export class SiteUserDashboardComponent implements OnInit {
     });
   }
 
-  toggleItem(checklistId: number, item: ChecklistItem): void {
+  toggleItem(checklistId: number, item: ChecklistItemWithTask): void {
     const newCompletedState = !item.is_completed;
 
     this.checklistService.updateItem(checklistId, item.id, {
@@ -330,6 +360,12 @@ export class SiteUserDashboardComponent implements OnInit {
         console.error('Error updating checklist item:', err);
       }
     });
+  }
+
+  onDynamicFormSubmitted(checklistId: number, item: ChecklistItemWithTask): void {
+    // Mark item as completed and reload
+    item.is_completed = true;
+    this.loadChecklists();
   }
 
   getOverallCompletionPercentage(): number {
