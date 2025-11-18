@@ -157,6 +157,30 @@ export class ChecklistListComponent implements OnInit {
     return checklistDate < today;
   }
 
+  getDisplayStatus(checklist: Checklist): string {
+    // Show "Missed" for past-day checklists that are still pending or in progress
+    if (this.isPastDay(checklist) && (checklist.status === ChecklistStatus.PENDING || checklist.status === ChecklistStatus.IN_PROGRESS)) {
+      return 'Missed';
+    }
+    return checklist.status.replace('_', ' ');
+  }
+
+  getStatusBadgeClass(checklist: Checklist): string {
+    // Use red styling for missed past-day checklists
+    if (this.isPastDay(checklist) && (checklist.status === ChecklistStatus.PENDING || checklist.status === ChecklistStatus.IN_PROGRESS)) {
+      return 'bg-red-100 text-red-800';
+    }
+
+    // Default styling based on status
+    const statusMap: { [key: string]: string } = {
+      'pending': 'bg-yellow-100 text-yellow-800',
+      'in_progress': 'bg-blue-100 text-blue-800',
+      'completed': 'bg-green-100 text-green-800',
+      'overdue': 'bg-red-100 text-red-800'
+    };
+    return statusMap[checklist.status] || 'bg-gray-100 text-gray-800';
+  }
+
   isSiteUser(): boolean {
     return this.authService.isSiteUser();
   }
