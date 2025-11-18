@@ -249,6 +249,23 @@ export class SiteUserDashboardComponent implements OnInit {
     return currentTime >= opensAtMinutes && currentTime <= closesAtMinutes;
   }
 
+  isChecklistMissed(closesAt: string | null | undefined): boolean {
+    // If no time restrictions, it can't be missed
+    if (!closesAt) {
+      return false;
+    }
+
+    const now = new Date();
+    const currentTime = now.getHours() * 60 + now.getMinutes(); // Current time in minutes since midnight
+
+    // Parse closes_at time (format: "HH:MM:SS")
+    const [hours, minutes] = closesAt.split(':').map(Number);
+    const closesAtMinutes = hours * 60 + minutes;
+
+    // Check if current time is past the closing time
+    return currentTime > closesAtMinutes;
+  }
+
   loadMyDefects(): void {
     if (!this.currentUser?.id) return;
 

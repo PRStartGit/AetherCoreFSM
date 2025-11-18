@@ -86,7 +86,8 @@
               <span class="items-count">{{ checklist.completedItems }}/{{ checklist.totalItems }}</span>
               <h3 class="checklist-title-compact">
                 {{ checklist.categoryName }}
-                <span *ngIf="!checklist.isActive" class="inactive-badge">Locked</span>
+                <span *ngIf="!checklist.isActive && isChecklistMissed(checklist.closesAt)" class="inactive-badge missed">MISSED</span>
+                <span *ngIf="!checklist.isActive && !isChecklistMissed(checklist.closesAt)" class="inactive-badge">Locked</span>
               </h3>
             </div>
             <div class="header-right">
