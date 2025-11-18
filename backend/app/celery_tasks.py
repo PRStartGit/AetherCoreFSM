@@ -3,11 +3,12 @@ Celery Background Tasks
 """
 import logging
 from datetime import date, timedelta
+from calendar import monthrange
 from sqlalchemy.orm import Session
 
 from app.celery_app import celery_app
 from app.core.database import SessionLocal
-from app.models.category import Category
+from app.models.category import Category, ChecklistFrequency
 from app.models.site import Site
 from app.models.checklist import Checklist, ChecklistStatus
 from app.models.checklist_item import ChecklistItem
@@ -42,21 +43,55 @@ def generate_daily_checklists():
             ).all()
 
             for category in categories:
-                # Check if checklist already exists
+                # Determine if we should create a checklist based on frequency
+                should_create = False
+                checklist_date = today
+
+                if category.frequency == ChecklistFrequency.DAILY:
+                    # Daily categories: create every day, due today
+                    should_create = True
+                    checklist_date = today
+                elif category.frequency == ChecklistFrequency.MONTHLY:
+                    # Monthly categories: only create on the 1st of the month
+                    # Due date is the last day of the month
+                    if today.day == 1:
+                        should_create = True
+                        # Calculate last day of current month
+                        _, last_day = monthrange(today.year, today.month)
+                        checklist_date = date(today.year, today.month, last_day)
+                    else:
+                        logger.debug(f"Skipping monthly category {category.name} - not the 1st of month")
+                elif category.frequency == ChecklistFrequency.WEEKLY:
+                    # Weekly categories: create on Monday (day 0), due same day
+                    if today.weekday() == 0:
+                        should_create = True
+                        checklist_date = today
+                    else:
+                        logger.debug(f"Skipping weekly category {category.name} - not Monday")
+                else:
+                    # For other frequencies (six_monthly, yearly), skip for now
+                    logger.debug(f"Skipping category {category.name} with frequency {category.frequency}")
+                    continue
+
+                if not should_create:
+                    skipped_count += 1
+                    continue
+
+                # Check if checklist already exists for this date
                 existing = db.query(Checklist).filter(
-                    Checklist.checklist_date == today,
+                    Checklist.checklist_date == checklist_date,
                     Checklist.category_id == category.id,
                     Checklist.site_id == site.id
                 ).first()
 
                 if existing:
                     skipped_count += 1
-                    logger.debug(f"Checklist already exists for site {site.name}, category {category.name}")
+                    logger.debug(f"Checklist already exists for site {site.name}, category {category.name}, date {checklist_date}")
                     continue
 
                 # Create new checklist
                 new_checklist = Checklist(
-                    checklist_date=today,
+                    checklist_date=checklist_date,
                     category_id=category.id,
                     site_id=site.id,
                     status=ChecklistStatus.PENDING
@@ -85,7 +120,7 @@ def generate_daily_checklists():
                 new_checklist.completed_items = 0
 
                 created_count += 1
-                logger.info(f"Created checklist for site {site.name}, category {category.name} with {len(tasks)} items")
+                logger.info(f"Created {category.frequency} checklist for site {site.name}, category {category.name}, due {checklist_date}, with {len(tasks)} items")
 
         db.commit()
 
