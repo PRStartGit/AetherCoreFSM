@@ -12,6 +12,7 @@ export interface Category {
   name: string;
   description: string;
   frequency: string;
+  opens_at: string | null;
   closes_at: string | null;
   is_global: boolean;
   organization_id: number | null;
@@ -24,6 +25,7 @@ export interface CategoryCreate {
   name: string;
   description: string;
   frequency: string;
+  opens_at?: string | null;
   closes_at?: string | null;
   is_global?: boolean;
   organization_id?: number;

@@ -77,6 +77,12 @@ export class DynamicTaskFormComponent implements OnInit {
 
   buildForm(): void {
     this.taskFields.forEach(field => {
+      // Skip repeating group fields - they don't have a single control
+      // Their instance controls are created by updateRepeatingGroups()
+      if (field.field_type === TaskFieldType.REPEATING_GROUP) {
+        return;
+      }
+
       const validators = field.is_required ? [Validators.required] : [];
 
       // Add additional validators based on field type
