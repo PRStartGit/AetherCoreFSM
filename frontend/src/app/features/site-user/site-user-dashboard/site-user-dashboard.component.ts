@@ -21,6 +21,9 @@ interface ChecklistCard {
   completionPercentage: number;
   status: ChecklistStatus;
   dueDate: string;
+  isActive?: boolean;  // Whether the checklist is open for editing based on time
+  opensAt?: string | null;
+  closesAt?: string | null;
 }
 
 @Component({
@@ -142,6 +145,9 @@ export class SiteUserDashboardComponent implements OnInit {
         return;
       }
 
+      // Check if checklist is currently active based on time window
+      const isActive = this.isChecklistActive(category);
+
       const card: ChecklistCard = {
         id: checklist.id,
         categoryName: category.name,
@@ -149,7 +155,10 @@ export class SiteUserDashboardComponent implements OnInit {
         completedItems: checklist.completed_items || 0,
         completionPercentage: checklist.completion_percentage || 0,
         status: checklist.status,
-        dueDate: checklist.checklist_date
+        dueDate: checklist.checklist_date,
+        isActive: isActive,
+        opensAt: category.opens_at,
+        closesAt: category.closes_at
       };
 
       const checklistDate = new Date(checklist.checklist_date);
@@ -161,7 +170,8 @@ export class SiteUserDashboardComponent implements OnInit {
                   'Timestamp:', checklistDate.getTime(),
                   'Status:', checklist.status,
                   'Frequency:', category.frequency,
-                  'Is future?', checklistDate > today);
+                  'Is future?', checklistDate > today,
+                  'Is active?', isActive);
 
       switch (checklist.status) {
         case ChecklistStatus.PENDING:
@@ -200,6 +210,33 @@ export class SiteUserDashboardComponent implements OnInit {
     console.log('- Future (pending/in-progress - due later):', this.futureTasks.length);
     console.log('- Missed (overdue):', this.missedTasks.length);
     console.log('- Completed:', this.completedTasks.length);
+  }
+
+  isChecklistActive(category: Category): boolean {
+    // If no time restrictions, it's always active
+    if (!category.opens_at && !category.closes_at) {
+      return true;
+    }
+
+    const now = new Date();
+    const currentTime = now.getHours() * 60 + now.getMinutes(); // Current time in minutes since midnight
+
+    // Parse opens_at time (format: "HH:MM:SS")
+    let opensAtMinutes = 0;
+    if (category.opens_at) {
+      const [hours, minutes] = category.opens_at.split(':').map(Number);
+      opensAtMinutes = hours * 60 + minutes;
+    }
+
+    // Parse closes_at time (format: "HH:MM:SS")
+    let closesAtMinutes = 24 * 60; // Default to end of day
+    if (category.closes_at) {
+      const [hours, minutes] = category.closes_at.split(':').map(Number);
+      closesAtMinutes = hours * 60 + minutes;
+    }
+
+    // Check if current time is within the window
+    return currentTime >= opensAtMinutes && currentTime <= closesAtMinutes;
   }
 
   loadMyDefects(): void {
@@ -382,5 +419,24 @@ export class SiteUserDashboardComponent implements OnInit {
     const percentage = this.getOverallCompletionPercentage();
     const circumference = 2 * Math.PI * 45; // 45 is the radius
     return circumference - (percentage / 100) * circumference;
+  }
+
+  getTimeRangeDisplay(opensAt: string | null | undefined, closesAt: string | null | undefined): string {
+    if (!opensAt && !closesAt) return '';
+
+    const formatTime = (timeStr: string | null | undefined): string => {
+      if (!timeStr) return '';
+      const [hours, minutes] = timeStr.split(':').map(Number);
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    };
+
+    if (opensAt && closesAt) {
+      return `${formatTime(opensAt)} - ${formatTime(closesAt)}`;
+    } else if (opensAt) {
+      return `Opens at ${formatTime(opensAt)}`;
+    } else if (closesAt) {
+      return `Closes at ${formatTime(closesAt)}`;
+    }
+    return '';
   }
 }

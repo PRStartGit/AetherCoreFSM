@@ -80,26 +80,34 @@
       </div>
 
       <div class="task-grid">
-        <mat-card *ngFor="let checklist of openTasks" class="task-card open">
-          <div class="card-compact-header" (click)="toggleChecklist(checklist.id)">
+        <mat-card *ngFor="let checklist of openTasks" class="task-card open" [class.inactive]="!checklist.isActive">
+          <div class="card-compact-header" (click)="checklist.isActive ? toggleChecklist(checklist.id) : null" [style.cursor]="checklist.isActive ? 'pointer' : 'not-allowed'">
             <div class="header-left">
               <span class="items-count">{{ checklist.completedItems }}/{{ checklist.totalItems }}</span>
-              <h3 class="checklist-title-compact">{{ checklist.categoryName }}</h3>
+              <h3 class="checklist-title-compact">
+                {{ checklist.categoryName }}
+                <span *ngIf="!checklist.isActive" class="inactive-badge">Locked</span>
+              </h3>
             </div>
             <div class="header-right">
               <span class="due-date-compact">
-                <mat-icon>schedule</mat-icon>
-                {{ formatDueDate(checklist.dueDate) }}
+                <mat-icon>{{ checklist.isActive ? 'schedule' : 'lock' }}</mat-icon>
+                {{ checklist.isActive ? formatDueDate(checklist.dueDate) : getTimeRangeDisplay(checklist.opensAt, checklist.closesAt) }}
               </span>
-              <mat-icon class="expand-icon">{{ expandedChecklists.has(checklist.id) ? 'expand_less' : 'expand_more' }}</mat-icon>
+              <mat-icon class="expand-icon" *ngIf="checklist.isActive">{{ expandedChecklists.has(checklist.id) ? 'expand_less' : 'expand_more' }}</mat-icon>
             </div>
           </div>
 
           <div class="progress-bar-compact">
-            <mat-progress-bar mode="determinate" [value]="checklist.completionPercentage"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" [value]="checklist.completionPercentage" [color]="checklist.isActive ? 'primary' : 'warn'"></mat-progress-bar>
           </div>
 
-          <div class="checklist-items" *ngIf="expandedChecklists.has(checklist.id)">
+          <div *ngIf="!checklist.isActive" class="inactive-message">
+            <mat-icon>info</mat-icon>
+            <span>This checklist will be available {{ getTimeRangeDisplay(checklist.opensAt, checklist.closesAt) }}</span>
+          </div>
+
+          <div class="checklist-items" *ngIf="expandedChecklists.has(checklist.id) && checklist.isActive">
             <div class="items-loading" *ngIf="loadingItems.has(checklist.id)">
               <mat-spinner diameter="30"></mat-spinner>
               <span>Loading checklist items...</span>
