@@ -410,9 +410,16 @@ export class SiteUserDashboardComponent implements OnInit {
   }
 
   onDynamicFormSubmitted(checklistId: number, item: ChecklistItemWithTask): void {
-    // Mark item as completed and reload
+    // Mark item as completed locally
     item.is_completed = true;
+
+    // Reload the checklist list to update progress counters
     this.loadChecklists();
+
+    // Reload the specific checklist's items to show updated completion status
+    if (this.expandedChecklists.has(checklistId)) {
+      this.loadChecklistItems(checklistId);
+    }
   }
 
   getOverallCompletionPercentage(): number {
