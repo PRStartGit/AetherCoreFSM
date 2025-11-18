@@ -26,7 +26,8 @@ class Category(Base):
 
     # Scheduling
     frequency = Column(SQLEnum(ChecklistFrequency), nullable=False, default=ChecklistFrequency.DAILY)
-    closes_at = Column(Time, nullable=True)  # e.g., 13:00 for "Morning Checks"
+    opens_at = Column(Time, nullable=True)  # e.g., 00:00 for "AM Checks", 17:00 for "PM Checks"
+    closes_at = Column(Time, nullable=True)  # e.g., 12:00 for "AM Checks", 23:59 for "PM Checks"
 
     # Scope: Global (super admin) or Organization-specific
     is_global = Column(Boolean, default=False)  # True if created by super admin
