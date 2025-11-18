@@ -288,9 +288,18 @@ export class DynamicTaskFormComponent implements OnInit {
             if (this.dynamicForm.contains(controlName)) {
               this.dynamicForm.removeControl(controlName);
             }
-            // Add new control
-            const validators = field.is_required ? [Validators.required] : [];
+
+            // Add new control with appropriate validators
+            // Temperature/number fields are required, photos are optional
+            const validators = [];
+            if (template.type === 'temperature' || template.type === 'number') {
+              // Temperature fields are always required in repeating groups
+              validators.push(Validators.required);
+            }
+            // Photo fields are always optional (no validators)
+
             this.dynamicForm.addControl(controlName, this.fb.control('', validators));
+            console.log(`Created control ${controlName} with validators:`, validators.length > 0 ? 'required' : 'optional');
           }
         });
       }
