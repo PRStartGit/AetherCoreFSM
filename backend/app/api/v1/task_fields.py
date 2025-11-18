@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
+from datetime import datetime
 from app.core.database import get_db
 from app.core.dependencies import get_current_org_admin, get_current_user
 from app.models.user import User, UserRole
@@ -8,6 +9,7 @@ from app.models.task import Task
 from app.models.task_field import TaskField
 from app.models.task_field_response import TaskFieldResponse
 from app.models.checklist_item import ChecklistItem
+from app.models.checklist import Checklist, ChecklistStatus
 from app.schemas.task_field import (
     TaskFieldCreate,
     TaskFieldUpdate,
@@ -252,6 +254,32 @@ def submit_field_responses(
         )
         db.add(new_response)
         created_responses.append(new_response)
+
+    # Mark checklist item as completed
+    checklist_item.is_completed = True
+    checklist_item.completed_at = datetime.utcnow()
+
+    # Update parent checklist completion statistics
+    checklist = db.query(Checklist).filter(Checklist.id == checklist_item.checklist_id).first()
+    if checklist:
+        # Count completed items
+        completed_count = db.query(ChecklistItem).filter(
+            ChecklistItem.checklist_id == checklist.id,
+            ChecklistItem.is_completed == True
+        ).count()
+
+        checklist.completed_items = completed_count
+        checklist.calculate_completion()
+
+        # Update checklist status to in_progress
+        if checklist.status == ChecklistStatus.PENDING:
+            checklist.status = ChecklistStatus.IN_PROGRESS
+
+        # If all items are completed, mark checklist as completed
+        if checklist.completed_items == checklist.total_items and checklist.total_items > 0:
+            checklist.status = ChecklistStatus.COMPLETED
+            checklist.completed_at = datetime.utcnow()
+            checklist.completed_by_id = current_user.id
 
     db.commit()
     for response in created_responses:
