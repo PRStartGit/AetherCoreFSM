@@ -21,6 +21,13 @@ export class TaskListComponent implements OnInit {
   loading = false;
   displayedColumns: string[] = ['name', 'category', 'sites', 'status', 'actions'];
 
+  // Filter properties
+  searchTerm: string = '';
+  selectedFrequency: string = 'all';
+
+  // Available frequencies
+  frequencies = ['daily', 'weekly', 'monthly', 'six_monthly', 'yearly'];
+
   constructor(
     private taskService: TaskService,
     private categoryService: CategoryService,
@@ -142,5 +149,21 @@ export class TaskListComponent implements OnInit {
       .map(id => this.sites.find(s => s.id === id)?.name)
       .filter(name => name);
     return names.length > 0 ? names.join(', ') : 'All Sites';
+  }
+
+  get filteredTasks(): Task[] {
+    return this.tasks.filter(task => {
+      // Filter by search term
+      const matchesSearch = !this.searchTerm ||
+        task.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        task.description?.toLowerCase().includes(this.searchTerm.toLowerCase());
+
+      // Filter by frequency
+      const category = this.categories.find(c => c.id === task.category_id);
+      const matchesFrequency = this.selectedFrequency === 'all' ||
+        category?.frequency === this.selectedFrequency;
+
+      return matchesSearch && matchesFrequency;
+    });
   }
 }
