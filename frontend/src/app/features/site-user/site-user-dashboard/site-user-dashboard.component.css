@@ -1039,3 +1039,28 @@ mat-card-content {
 .task-card.inactive .progress-bar-compact mat-progress-bar {
   opacity: 0.5;
 }
+
+/* Form completion message */
+.form-completed-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border: 1.5px solid #10b981;
+  border-radius: 12px;
+  margin: 12px 0;
+}
+
+.form-completed-message .completed-icon {
+  color: #10b981;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.form-completed-message .completed-text {
+  color: #065f46;
+  font-weight: 600;
+  font-size: 14px;
+}

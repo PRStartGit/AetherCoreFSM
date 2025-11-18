@@ -118,7 +118,15 @@
                 <!-- Dynamic Form for tasks with has_dynamic_form -->
                 <div *ngIf="item.task?.has_dynamic_form">
                   <h4 class="item-name">{{ item.item_name }}</h4>
-                  <app-dynamic-task-form
+
+                  <!-- Show completion message if already completed -->
+                  <div *ngIf="item.is_completed" class="form-completed-message">
+                    <mat-icon class="completed-icon">check_circle</mat-icon>
+                    <span class="completed-text">Form submitted successfully</span>
+                  </div>
+
+                  <!-- Show form if not completed -->
+                  <app-dynamic-task-form *ngIf="!item.is_completed"
                     [taskId]="item.task_id"
                     [checklistItemId]="item.id"
                     (formSubmitted)="onDynamicFormSubmitted(checklist.id, item)">
@@ -178,7 +186,15 @@
                 <!-- Dynamic Form for tasks with has_dynamic_form -->
                 <div *ngIf="item.task?.has_dynamic_form">
                   <h4 class="item-name">{{ item.item_name }}</h4>
-                  <app-dynamic-task-form
+
+                  <!-- Show completion message if already completed -->
+                  <div *ngIf="item.is_completed" class="form-completed-message">
+                    <mat-icon class="completed-icon">check_circle</mat-icon>
+                    <span class="completed-text">Form submitted successfully</span>
+                  </div>
+
+                  <!-- Show form if not completed -->
+                  <app-dynamic-task-form *ngIf="!item.is_completed"
                     [taskId]="item.task_id"
                     [checklistItemId]="item.id"
                     (formSubmitted)="onDynamicFormSubmitted(checklist.id, item)">
@@ -243,7 +259,15 @@
                 <!-- Dynamic Form for tasks with has_dynamic_form -->
                 <div *ngIf="item.task?.has_dynamic_form">
                   <h4 class="item-name">{{ item.item_name }}</h4>
-                  <app-dynamic-task-form
+
+                  <!-- Show completion message if already completed -->
+                  <div *ngIf="item.is_completed" class="form-completed-message">
+                    <mat-icon class="completed-icon">check_circle</mat-icon>
+                    <span class="completed-text">Form submitted successfully</span>
+                  </div>
+
+                  <!-- Show form if not completed -->
+                  <app-dynamic-task-form *ngIf="!item.is_completed"
                     [taskId]="item.task_id"
                     [checklistItemId]="item.id"
                     (formSubmitted)="onDynamicFormSubmitted(checklist.id, item)">
