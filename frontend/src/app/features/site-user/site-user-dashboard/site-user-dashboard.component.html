@@ -193,11 +193,16 @@
     </section>
 
     <!-- Future Checklists Section -->
-    <section class="task-section" *ngIf="futureTasks.length > 0">
+    <section class="task-section">
       <h2>
         <mat-icon>event</mat-icon>
         Open, but not due today ({{ futureTasks.length }})
       </h2>
+
+      <div *ngIf="futureTasks.length === 0" class="empty-state">
+        <mat-icon>event_available</mat-icon>
+        <p>No open checklists scheduled for future dates.</p>
+      </div>
 
       <div class="task-grid">
         <mat-card *ngFor="let checklist of futureTasks" class="task-card future">
