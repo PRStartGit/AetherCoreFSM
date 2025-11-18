@@ -145,6 +145,25 @@ export class SiteUserDashboardComponent implements OnInit {
         return;
       }
 
+      // Check if this checklist's opening time has arrived
+      const checklistDate = new Date(checklist.checklist_date);
+      checklistDate.setHours(0, 0, 0, 0);
+      const isToday = checklistDate.getTime() === today.getTime();
+
+      // If checklist is for today and has an opens_at time, check if it's time yet
+      if (isToday && category.opens_at && checklist.status !== ChecklistStatus.COMPLETED) {
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+
+        const [hours, minutes] = category.opens_at.split(':').map(Number);
+        const opensAtMinutes = hours * 60 + minutes;
+
+        if (currentTime < opensAtMinutes) {
+          console.log(`Checklist ${checklist.id} (${category.name}) hasn't opened yet (opens at ${category.opens_at}), skipping`);
+          return;
+        }
+      }
+
       // Check if checklist is currently active based on time window
       const isActive = this.isChecklistActive(category);
 
@@ -160,9 +179,6 @@ export class SiteUserDashboardComponent implements OnInit {
         opensAt: category.opens_at,
         closesAt: category.closes_at
       };
-
-      const checklistDate = new Date(checklist.checklist_date);
-      checklistDate.setHours(0, 0, 0, 0);
 
       console.log(`Checklist ${checklist.id} (${category.name}):`,
                   'Date:', checklist.checklist_date,
