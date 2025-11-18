@@ -259,8 +259,11 @@ def submit_field_responses(
     checklist_item.is_completed = True
     checklist_item.completed_at = datetime.utcnow()
 
-    # Update parent checklist completion statistics
-    checklist = db.query(Checklist).filter(Checklist.id == checklist_item.checklist_id).first()
+    # Update parent checklist completion statistics with row-level locking to prevent race conditions
+    checklist = db.query(Checklist).filter(
+        Checklist.id == checklist_item.checklist_id
+    ).with_for_update().first()
+
     if checklist:
         # Count completed items
         completed_count = db.query(ChecklistItem).filter(
