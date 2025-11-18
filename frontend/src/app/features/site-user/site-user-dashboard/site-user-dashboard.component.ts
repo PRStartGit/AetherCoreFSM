@@ -210,6 +210,16 @@ export class SiteUserDashboardComponent implements OnInit {
     console.log('- Future (pending/in-progress - due later):', this.futureTasks.length);
     console.log('- Missed (overdue):', this.missedTasks.length);
     console.log('- Completed:', this.completedTasks.length);
+
+    // Sort openTasks: active tasks first, then locked tasks
+    this.openTasks.sort((a, b) => {
+      // Both active or both inactive - maintain original order
+      if (a.isActive === b.isActive) return 0;
+      // Active tasks come first (return -1 means a comes before b)
+      return a.isActive ? -1 : 1;
+    });
+
+    console.log('Sorted openTasks - Active first, then locked');
   }
 
   isChecklistActive(category: Category): boolean {

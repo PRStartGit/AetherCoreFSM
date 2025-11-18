@@ -117,6 +117,19 @@ export class DynamicTaskFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    // Debug form validity
+    console.log('Form valid?', this.dynamicForm.valid);
+    console.log('Form value:', this.dynamicForm.value);
+    console.log('Form errors:', this.dynamicForm.errors);
+
+    // Check each control
+    Object.keys(this.dynamicForm.controls).forEach(key => {
+      const control = this.dynamicForm.get(key);
+      if (control?.invalid) {
+        console.log(`Invalid control: ${key}`, control.errors);
+      }
+    });
+
     if (this.dynamicForm.invalid) {
       this.snackBar.open('Please fill in all required fields', 'Close', { duration: 3000 });
       return;
