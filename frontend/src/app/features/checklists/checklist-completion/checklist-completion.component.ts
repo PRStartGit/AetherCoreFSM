@@ -170,6 +170,19 @@ export class ChecklistCompletionComponent implements OnInit {
       return 'Photo uploaded';
     }
     if (response.json_value) {
+      // Format repeating group responses
+      if (Array.isArray(response.json_value)) {
+        return response.json_value.map((item, idx) => {
+          const parts: string[] = [];
+          if (item.temperature !== null && item.temperature !== undefined) {
+            parts.push(`${item.temperature}°C`);
+          }
+          if (item.photo) {
+            parts.push('Photo ✓');
+          }
+          return `Fridge ${idx + 1}: ${parts.join(', ') || 'N/A'}`;
+        }).join('; ');
+      }
       return JSON.stringify(response.json_value);
     }
     return 'N/A';

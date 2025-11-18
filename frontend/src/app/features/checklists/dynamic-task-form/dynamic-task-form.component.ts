@@ -40,6 +40,9 @@ export class DynamicTaskFormComponent implements OnInit {
   loading = false;
   submitting = false;
 
+  // Track repeating group instances
+  repeatingGroups: Map<number, any[]> = new Map();
+
   TaskFieldType = TaskFieldType;
 
   constructor(
@@ -117,33 +120,59 @@ export class DynamicTaskFormComponent implements OnInit {
 
     // Build responses array
     const responses = this.taskFields.map(field => {
-      const value = this.dynamicForm.get(`field_${field.id}`)?.value;
       const response: any = {
         checklist_item_id: this.checklistItemId,
         task_field_id: field.id
       };
 
-      // Set the appropriate value field based on field type
-      switch (field.field_type) {
-        case TaskFieldType.NUMBER:
-        case TaskFieldType.TEMPERATURE:
-          response.number_value = parseFloat(value);
-          break;
-        case TaskFieldType.YES_NO:
-          response.boolean_value = value === 'true' || value === true;
-          break;
-        case TaskFieldType.DROPDOWN:
-        case TaskFieldType.TEXT:
-          response.text_value = value;
-          break;
-        case TaskFieldType.PHOTO:
-          response.file_url = value;
-          break;
-        case TaskFieldType.REPEATING_GROUP:
-          response.json_value = value;
-          break;
-        default:
-          response.text_value = value;
+      // Handle repeating groups specially
+      if (field.field_type === TaskFieldType.REPEATING_GROUP) {
+        const instances = this.getRepeatingInstances(field.id);
+        const groupData: any[] = [];
+
+        instances.forEach((instance, idx) => {
+          const instanceData: any = {};
+          if (field.validation_rules?.repeat_template) {
+            field.validation_rules.repeat_template.forEach((template: any) => {
+              const controlName = `field_${field.id}_${idx}_${template.type}`;
+              const value = this.dynamicForm.get(controlName)?.value;
+
+              // Store based on template type
+              if (template.type === 'temperature' || template.type === 'number') {
+                instanceData[template.type] = parseFloat(value) || null;
+              } else if (template.type === 'photo') {
+                instanceData[template.type] = value || null;
+              } else {
+                instanceData[template.type] = value || null;
+              }
+            });
+          }
+          groupData.push(instanceData);
+        });
+
+        response.json_value = groupData;
+      } else {
+        // Handle regular fields
+        const value = this.dynamicForm.get(`field_${field.id}`)?.value;
+
+        switch (field.field_type) {
+          case TaskFieldType.NUMBER:
+          case TaskFieldType.TEMPERATURE:
+            response.number_value = parseFloat(value);
+            break;
+          case TaskFieldType.YES_NO:
+            response.boolean_value = value === 'true' || value === true;
+            break;
+          case TaskFieldType.DROPDOWN:
+          case TaskFieldType.TEXT:
+            response.text_value = value;
+            break;
+          case TaskFieldType.PHOTO:
+            response.file_url = value;
+            break;
+          default:
+            response.text_value = value;
+        }
       }
 
       return response;
@@ -204,5 +233,57 @@ export class DynamicTaskFormComponent implements OnInit {
       // TODO: Implement actual file upload to cloud storage (S3, etc.)
       console.log('Photo selected:', file.name);
     }
+  }
+
+  onPhotoSelectedRepeating(event: any, fieldId: number, index: number, subFieldType: string): void {
+    const file = event.target?.files?.[0];
+    if (file) {
+      const filename = `photo_${Date.now()}_${file.name}`;
+      const controlName = `field_${fieldId}_${index}_${subFieldType}`;
+      this.dynamicForm.get(controlName)?.setValue(filename);
+      console.log('Photo selected for repeating field:', file.name);
+    }
+  }
+
+  updateRepeatingGroups(countFieldId: number, count: number): void {
+    // Find all repeating group fields that depend on this count field
+    const repeatingFields = this.taskFields.filter(f =>
+      f.field_type === TaskFieldType.REPEATING_GROUP &&
+      f.validation_rules?.repeat_count_field_id === countFieldId
+    );
+
+    repeatingFields.forEach(field => {
+      // Generate instances based on count
+      const instances = [];
+      for (let i = 0; i < count; i++) {
+        instances.push({ index: i, label: `${field.validation_rules.repeat_label || 'Item'} ${i + 1}` });
+      }
+      this.repeatingGroups.set(field.id, instances);
+
+      // Create form controls for each instance
+      if (field.validation_rules?.repeat_template) {
+        field.validation_rules.repeat_template.forEach((template: any) => {
+          for (let i = 0; i < count; i++) {
+            const controlName = `field_${field.id}_${i}_${template.type}`;
+            // Remove old control if exists
+            if (this.dynamicForm.contains(controlName)) {
+              this.dynamicForm.removeControl(controlName);
+            }
+            // Add new control
+            const validators = field.is_required ? [Validators.required] : [];
+            this.dynamicForm.addControl(controlName, this.fb.control('', validators));
+          }
+        });
+      }
+    });
+  }
+
+  onCountChange(field: TaskField): void {
+    const count = parseInt(this.dynamicForm.get(`field_${field.id}`)?.value) || 0;
+    this.updateRepeatingGroups(field.id, count);
+  }
+
+  getRepeatingInstances(fieldId: number): any[] {
+    return this.repeatingGroups.get(fieldId) || [];
   }
 }
