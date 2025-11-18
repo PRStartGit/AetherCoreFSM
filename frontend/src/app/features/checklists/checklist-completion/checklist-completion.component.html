@@ -54,10 +54,10 @@
             <div *ngIf="item.is_completed && itemResponses.has(item.id)" class="saved-responses">
               <div class="response-item" *ngFor="let response of itemResponses.get(item.id)?.responses">
                 <div class="response-label">
-                  {{ itemResponses.get(item.id)?.fields.find(f => f.id === response.task_field_id)?.field_label }}
+                  {{ getFieldForResponse(item.id, response)?.field_label }}
                 </div>
                 <div class="response-value">
-                  {{ getResponseValue(response, itemResponses.get(item.id)!.fields.find(f => f.id === response.task_field_id)!) }}
+                  {{ getResponseValue(response, getFieldForResponse(item.id, response)!) }}
                 </div>
               </div>
             </div>

@@ -174,4 +174,10 @@ export class ChecklistCompletionComponent implements OnInit {
     }
     return 'N/A';
   }
+
+  getFieldForResponse(itemId: number, response: TaskFieldResponse): TaskField | undefined {
+    const itemData = this.itemResponses.get(itemId);
+    if (!itemData) return undefined;
+    return itemData.fields.find(f => f.id === response.task_field_id);
+  }
 }
