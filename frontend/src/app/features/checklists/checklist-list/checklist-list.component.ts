@@ -23,8 +23,7 @@ export class ChecklistListComponent implements OnInit {
   // Filter options
   selectedStatus: string = 'all';
   selectedSite: string = 'all';
-  startDate: string = '';
-  endDate: string = '';
+  selectedDate: string = '';
   statuses = Object.values(ChecklistStatus);
 
   constructor(
@@ -37,6 +36,10 @@ export class ChecklistListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Set default date to today
+    const today = new Date();
+    this.selectedDate = today.toISOString().split('T')[0];
+
     this.loadSites();
     this.loadChecklists();
   }
@@ -56,8 +59,10 @@ export class ChecklistListComponent implements OnInit {
     this.loading = true;
     const status = this.selectedStatus !== 'all' ? this.selectedStatus as ChecklistStatus : undefined;
     const siteId = this.selectedSite !== 'all' ? parseInt(this.selectedSite) : undefined;
-    const startDate = this.startDate || undefined;
-    const endDate = this.endDate || undefined;
+
+    // Use the same date for both start and end to get checklists for a specific day
+    const startDate = this.selectedDate || undefined;
+    const endDate = this.selectedDate || undefined;
 
     this.checklistService.getAll(siteId, undefined, status, startDate, endDate).subscribe({
       next: (checklists: any[]) => {
