@@ -23,6 +23,8 @@ export class ChecklistListComponent implements OnInit {
   // Filter options
   selectedStatus: string = 'all';
   selectedSite: string = 'all';
+  startDate: string = '';
+  endDate: string = '';
   statuses = Object.values(ChecklistStatus);
 
   constructor(
@@ -54,8 +56,10 @@ export class ChecklistListComponent implements OnInit {
     this.loading = true;
     const status = this.selectedStatus !== 'all' ? this.selectedStatus as ChecklistStatus : undefined;
     const siteId = this.selectedSite !== 'all' ? parseInt(this.selectedSite) : undefined;
+    const startDate = this.startDate || undefined;
+    const endDate = this.endDate || undefined;
 
-    this.checklistService.getAll(siteId, undefined, status).subscribe({
+    this.checklistService.getAll(siteId, undefined, status, startDate, endDate).subscribe({
       next: (checklists: any[]) => {
         this.checklists = checklists;
         this.loading = false;
