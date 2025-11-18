@@ -41,33 +41,18 @@
 }
 
 .field-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.field-icon {
-  font-size: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: #f3f4f6;
-  border-radius: 8px;
-  flex-shrink: 0;
+  margin-bottom: 10px;
 }
 
 .field-label {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  color: #111827;
-  flex: 1;
+  color: #374151;
+  display: block;
 
   .required {
     color: #ef4444;
-    margin-left: 4px;
+    margin-left: 2px;
   }
 }
 
@@ -145,47 +130,54 @@
 
   .yes-no-btn {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 8px;
-    padding: 16px;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 20px;
     border: 2px solid #d1d5db;
-    border-radius: 12px;
+    border-radius: 10px;
     background: white;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     color: #374151;
 
-    &:hover {
-      border-color: #3b82f6;
-      background: #eff6ff;
+    &:hover:not(.active) {
+      border-color: #9ca3af;
+      background: #f9fafb;
     }
 
     &.active {
-      border-color: #3b82f6;
-      background: #3b82f6;
+      border-color: transparent;
+      background: linear-gradient(to right, #0891b2, #0e7490);
       color: white;
+      box-shadow: 0 2px 8px rgba(8, 145, 178, 0.3);
     }
 
     span:first-child {
-      font-size: 32px;
+      font-size: 24px;
+      line-height: 1;
     }
   }
 }
 
 // Photo Upload
 .photo-upload {
+  .photo-input {
+    display: none;
+  }
+
   .photo-btn {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     padding: 24px;
     border: 2px dashed #d1d5db;
-    border-radius: 12px;
+    border-radius: 10px;
     background: #f9fafb;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -194,13 +186,27 @@
     color: #374151;
 
     &:hover {
-      border-color: #3b82f6;
-      background: #eff6ff;
+      border-color: #0891b2;
+      background: #ecfeff;
+      color: #0891b2;
     }
 
-    span:first-child {
-      font-size: 40px;
+    svg {
+      width: 40px;
+      height: 40px;
     }
+  }
+
+  .photo-preview {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #ecfeff;
+    border: 1px solid #0891b2;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #0e7490;
+    font-weight: 500;
+    text-align: center;
   }
 }
 
@@ -213,25 +219,26 @@
 .submit-btn {
   width: 100%;
   padding: 16px;
-  background: #3b82f6;
+  background: linear-gradient(to right, #0891b2, #0e7490);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.2);
 
   &:hover:not(:disabled) {
-    background: #2563eb;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.4);
   }
 
   &:disabled {
     background: #9ca3af;
     cursor: not-allowed;
     transform: none;
+    box-shadow: none;
   }
 }
 

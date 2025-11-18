@@ -10,7 +10,6 @@
     <div class="form-fields">
       <div *ngFor="let field of taskFields" class="field-wrapper">
         <div class="field-header">
-          <span class="field-icon">{{ getFieldIcon(field.field_type) }}</span>
           <label class="field-label">
             {{ field.field_label }}
             <span *ngIf="field.is_required" class="required">*</span>
@@ -85,16 +84,22 @@
         <!-- Photo Upload -->
         <div *ngIf="field.field_type === TaskFieldType.PHOTO">
           <div class="photo-upload">
-            <button type="button" class="photo-btn">
-              <span class="text-3xl">📷</span>
-              <span>Take Photo</span>
-            </button>
             <input
-              type="text"
-              [formControlName]="'field_' + field.id"
-              class="form-input mt-2"
-              placeholder="Photo URL"
+              type="file"
+              accept="image/*"
+              [id]="'photo_' + field.id"
+              class="photo-input"
+              (change)="onPhotoSelected($event, field)"
             />
+            <label [for]="'photo_' + field.id" class="photo-btn">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <span>Upload Photo</span>
+            </label>
+            <div *ngIf="dynamicForm.get('field_' + field.id)?.value" class="photo-preview">
+              Photo uploaded
+            </div>
           </div>
         </div>
 

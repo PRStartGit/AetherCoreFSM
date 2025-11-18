@@ -119,6 +119,7 @@ export class DynamicTaskFormComponent implements OnInit {
     const responses = this.taskFields.map(field => {
       const value = this.dynamicForm.get(`field_${field.id}`)?.value;
       const response: any = {
+        checklist_item_id: this.checklistItemId,
         task_field_id: field.id
       };
 
@@ -191,5 +192,17 @@ export class DynamicTaskFormComponent implements OnInit {
       return `Maximum: ${rules.max}`;
     }
     return '';
+  }
+
+  onPhotoSelected(event: any, field: TaskField): void {
+    const file = event.target?.files?.[0];
+    if (file) {
+      // For now, just store the filename. In production, you'd upload to cloud storage
+      const filename = `photo_${Date.now()}_${file.name}`;
+      this.dynamicForm.get(`field_${field.id}`)?.setValue(filename);
+
+      // TODO: Implement actual file upload to cloud storage (S3, etc.)
+      console.log('Photo selected:', file.name);
+    }
   }
 }
