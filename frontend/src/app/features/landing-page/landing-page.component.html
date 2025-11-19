@@ -750,7 +750,8 @@
         <a href="#pricing" (click)="closeMobileMenu()">Pricing</a>
         <a href="#about" (click)="closeMobileMenu()">About</a>
         <a href="#contact" (click)="closeMobileMenu()">Contact</a>
-        <a (click)="navigateToLogin(); closeMobileMenu()">Login</a>
+        <a *ngIf="!isLoggedIn" (click)="navigateToLogin(); closeMobileMenu()">Login</a>
+        <a *ngIf="isLoggedIn" (click)="navigateToDashboard(); closeMobileMenu()">Dashboard</a>
         <a href="#trial" class="btn-primary" (click)="closeMobileMenu()" style="margin-top: 1rem;">Start Free Trial</a>
     </div>
 </div>
@@ -777,7 +778,8 @@
             <a href="#pricing">Pricing</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
-            <a (click)="navigateToLogin()">Login</a>
+            <a *ngIf="!isLoggedIn" (click)="navigateToLogin()">Login</a>
+            <a *ngIf="isLoggedIn" (click)="navigateToDashboard()">Dashboard</a>
         </div>
 
         <!-- Mobile Hamburger Button -->
