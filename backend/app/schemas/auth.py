@@ -40,3 +40,22 @@ class PasswordReset(BaseModel):
     """Reset password with token schema."""
     token: str
     new_password: str
+
+
+class RegistrationRequest(BaseModel):
+    """Registration request schema for new trial sign-ups."""
+    # Organization details
+    company_name: str
+    org_id: str  # Desired organization ID (e.g., "acme", "restaurant123")
+
+    # Contact details
+    contact_person: str
+    contact_email: EmailStr
+    contact_phone: Optional[str] = None
+    address: Optional[str] = None
+
+    # Admin user details
+    admin_first_name: str
+    admin_last_name: str
+    admin_email: EmailStr
+    admin_password: str
