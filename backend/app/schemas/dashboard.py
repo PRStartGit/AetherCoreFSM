@@ -6,8 +6,6 @@ class SuperAdminDashboard(BaseModel):
     """Super admin dashboard data."""
     total_organizations: int
     total_sites: int
-    sites_by_rag: Dict[str, int] = {}
-    total_checklists_today: int
     total_users: int
     total_active_checklists: int
     total_open_defects: int
