@@ -17,7 +17,7 @@ def send_test_weekly_email(
     """Send a test weekly performance report email"""
 
     try:
-        # Create sample data
+        # Create sample data matching template expectations
         week_end = date.today() - timedelta(days=1)
         week_start = week_end - timedelta(days=6)
 
@@ -25,6 +25,44 @@ def send_test_weekly_email(
             'completion_rate': 85.5,
             'tasks_completed': 247,
             'total_tasks': 289,
+            'top_sites': [
+                {
+                    'site_name': 'Main Office - Building A',
+                    'tasks_completed': 145,
+                    'tasks_total': 156,
+                    'performance_percentage': 93,
+                    'performance_class': 'positive',
+                    'performance_color': '#10b981'
+                },
+                {
+                    'site_name': 'Warehouse North',
+                    'tasks_completed': 78,
+                    'tasks_total': 89,
+                    'performance_percentage': 88,
+                    'performance_class': 'positive',
+                    'performance_color': '#10b981'
+                }
+            ],
+            'attention_sites': [
+                {
+                    'site_name': 'Warehouse South',
+                    'tasks_completed': 24,
+                    'tasks_total': 44,
+                    'performance_percentage': 55,
+                    'performance_class': 'negative',
+                    'performance_color': '#ef4444'
+                }
+            ],
+            'category_stats': [
+                {'category_name': 'Health & Safety', 'completion_rate': 92},
+                {'category_name': 'Fire Safety', 'completion_rate': 88},
+                {'category_name': 'Cleaning', 'completion_rate': 78}
+            ],
+            'insights': [
+                'Fire Safety compliance improved by 12% this week',
+                'Warehouse South requires attention - only 55% completion',
+                '3 high-priority defects need immediate action'
+            ],
             'defects': [
                 {
                     'title': 'Fire extinguisher expired in Zone A',
@@ -56,7 +94,7 @@ def send_test_weekly_email(
         email_service.send_weekly_performance_email(
             recipient_email=to_email,
             recipient_name="Test User",
-            organization_name=f"Demo Site - Weekly Report",
+            organization_name="Demo Organization - Weekly Report",
             week_start=week_start.strftime('%Y-%m-%d'),
             week_end=week_end.strftime('%Y-%m-%d'),
             report_data=report_data
