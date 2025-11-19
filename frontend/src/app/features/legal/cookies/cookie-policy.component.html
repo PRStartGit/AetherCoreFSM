@@ -6,43 +6,156 @@
     }
 
     body {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         line-height: 1.8;
         color: #374151;
         background: #F9FAFB;
+        -webkit-font-smoothing: antialiased;
     }
 
-    .nav {
-        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
-        padding: 1rem 2rem;
+    /* Navigation */
+    nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: white;
+        border-bottom: 1px solid #E5E7EB;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .nav-container {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        height: 64px;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 2rem;
     }
 
-    .nav-logo {
-        color: white;
-        font-size: 1.5rem;
-        font-weight: bold;
+    .logo img {
+        height: 32px;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .nav-links a {
+        color: #374151;
         text-decoration: none;
-        letter-spacing: 1px;
+        font-weight: 500;
+        transition: color 0.2s;
+        cursor: pointer;
     }
 
-    .nav-button {
-        background: white;
-        color: #0369A1;
+    .nav-links a:hover {
+        color: #0EA5E9;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+        color: white;
         padding: 0.5rem 1.5rem;
         border-radius: 0.5rem;
-        text-decoration: none;
         font-weight: 600;
-        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
     }
 
-    .nav-button:hover {
-        background: #E0F2FE;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    .btn-primary:hover {
+        box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.3);
+        transform: translateY(-1px);
+    }
+
+    /* Mobile Menu */
+    .mobile-menu-button {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #374151;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    .mobile-menu-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9998;
+    }
+
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 280px;
+        background: white;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 9999;
+        overflow-y: auto;
+    }
+
+    .mobile-menu-open {
+        transform: translateX(0);
+    }
+
+    .mobile-menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    .mobile-menu-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #374151;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    .mobile-menu-links {
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem;
+    }
+
+    .mobile-menu-links a {
+        color: #374151;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 1rem 0;
+        border-bottom: 1px solid #F3F4F6;
+        transition: color 0.2s;
+        cursor: pointer;
+    }
+
+    .mobile-menu-links a:hover {
+        color: #0EA5E9;
+    }
+
+    .mobile-menu-links a.btn-primary {
+        border: none;
+        text-align: center;
+    }
+
+    .desktop-cta {
+        display: inline-block;
     }
 
     .header {
@@ -177,11 +290,90 @@
         color: #111827;
         margin-bottom: 0.5rem;
     }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+
+        .mobile-menu-button {
+            display: block;
+        }
+
+        .desktop-cta {
+            display: none;
+        }
+    }
 </style>
 
-<nav class="nav">
-    <a routerLink="/" class="nav-logo">ZYNTHIO</a>
-    <a routerLink="/" class="nav-button">← Back to Home</a>
+<!-- Mobile Menu Backdrop -->
+<div *ngIf="isMobileMenuOpen" class="mobile-menu-backdrop" (click)="closeMobileMenu()"></div>
+
+<!-- Mobile Menu Slide-in -->
+<div class="mobile-menu" [class.mobile-menu-open]="isMobileMenuOpen">
+    <div class="mobile-menu-header">
+        <svg width="120" height="36" viewBox="0 0 500 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="hygieneBlue2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#0369A1;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#0EA5E9;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <text x="30" y="85" font-family="'Century Gothic', 'Futura', 'Arial', sans-serif" font-size="72" font-weight="700" fill="url(#hygieneBlue2)" letter-spacing="0">Z</text>
+            <text x="75" y="85" font-family="'Century Gothic', 'Futura', 'Arial', sans-serif" font-size="72" font-weight="300" fill="#1F2937" letter-spacing="1">YNTHIO</text>
+        </svg>
+        <button class="mobile-menu-close" (click)="closeMobileMenu()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="mobile-menu-links">
+        <a href="/#features" (click)="closeMobileMenu()">Features</a>
+        <a href="/#pricing" (click)="closeMobileMenu()">Pricing</a>
+        <a href="/#about" (click)="closeMobileMenu()">About</a>
+        <a href="/#contact" (click)="closeMobileMenu()">Contact</a>
+        <a *ngIf="!isLoggedIn" (click)="navigateToLogin(); closeMobileMenu()">Login</a>
+        <a *ngIf="isLoggedIn" (click)="navigateToDashboard(); closeMobileMenu()">Dashboard</a>
+        <a href="/#trial" class="btn-primary" (click)="closeMobileMenu()" style="margin-top: 1rem;">Start Free Trial</a>
+    </div>
+</div>
+
+<!-- Navigation Bar -->
+<nav>
+    <div class="nav-container">
+        <div class="logo">
+            <a routerLink="/" style="display: block;">
+                <svg width="160" height="48" viewBox="0 0 500 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="hygieneBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#0369A1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#0EA5E9;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <text x="30" y="85" font-family="'Century Gothic', 'Futura', 'Arial', sans-serif" font-size="72" font-weight="700" fill="url(#hygieneBlue)" letter-spacing="0">Z</text>
+                    <text x="75" y="85" font-family="'Century Gothic', 'Futura', 'Arial', sans-serif" font-size="72" font-weight="300" fill="#1F2937" letter-spacing="1">YNTHIO</text>
+                </svg>
+            </a>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <div class="nav-links">
+            <a href="/#features">Features</a>
+            <a href="/#pricing">Pricing</a>
+            <a href="/#about">About</a>
+            <a href="/#contact">Contact</a>
+            <a *ngIf="!isLoggedIn" (click)="navigateToLogin()">Login</a>
+            <a *ngIf="isLoggedIn" (click)="navigateToDashboard()">Dashboard</a>
+        </div>
+
+        <!-- Mobile Hamburger Button -->
+        <button class="mobile-menu-button" (click)="toggleMobileMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Desktop CTA Button -->
+        <a href="/#trial" class="btn-primary desktop-cta">Start Free Trial</a>
+    </div>
 </nav>
 
 <div class="header">

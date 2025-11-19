@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
+import { UserRole } from '../../core/models';
 
 @Component({
   selector: 'app-landing-page',
@@ -142,10 +143,29 @@ export class LandingPageComponent implements OnInit {
   }
 
   /**
-   * Navigate to dashboard
+   * Navigate to dashboard based on user role
    */
   navigateToDashboard(): void {
-    this.router.navigate(['/login']);
+    const user = this.authService.getUser();
+    if (!user) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    // Navigate to appropriate dashboard based on user role
+    switch (user.role) {
+      case UserRole.SUPER_ADMIN:
+        this.router.navigate(['/super-admin']);
+        break;
+      case UserRole.ORG_ADMIN:
+        this.router.navigate(['/org-admin']);
+        break;
+      case UserRole.SITE_USER:
+        this.router.navigate(['/site-user']);
+        break;
+      default:
+        this.router.navigate(['/login']);
+    }
   }
 
   /**
