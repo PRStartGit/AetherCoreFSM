@@ -161,4 +161,19 @@ export class AuthService {
   changePassword(data: { old_password: string; new_password: string }): Observable<any> {
     return this.http.post(`${this.API_URL}/change-password`, data);
   }
+
+  register(data: {
+    company_name: string;
+    org_id: string;
+    contact_person: string;
+    contact_email: string;
+    contact_phone?: string;
+    address?: string;
+    admin_first_name: string;
+    admin_last_name: string;
+    admin_email: string;
+    admin_password: string;
+  }): Observable<any> {
+    return this.http.post(`${this.API_URL}/register`, data);
+  }
 }

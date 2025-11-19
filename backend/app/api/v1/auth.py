@@ -413,7 +413,7 @@ def register_trial(
         is_trial=True,
         subscription_tier="basic",
         subscription_start_date=datetime.utcnow(),
-        subscription_end_date=datetime.utcnow() + timedelta(days=30)  # 30-day trial
+        subscription_end_date=datetime.utcnow() + timedelta(days=180)  # 6-month trial
     )
 
     db.add(new_org)
