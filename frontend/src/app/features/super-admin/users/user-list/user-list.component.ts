@@ -62,11 +62,11 @@ export class UserListComponent implements OnInit {
   }
 
   navigateToCreate(): void {
-    this.router.navigate(['/super-admin/users/new']);
+    this.router.navigate([this.getBaseRoute() + '/new']);
   }
 
   navigateToEdit(user: User): void {
-    this.router.navigate(['/super-admin/users', user.id]);
+    this.router.navigate([this.getBaseRoute(), user.id]);
   }
 
   deleteUser(user: User): void {
@@ -113,6 +113,12 @@ export class UserListComponent implements OnInit {
     if (!orgId) return 'N/A';
     const org = this.organizations.find(o => o.id === orgId);
     return org ? org.name : 'Unknown';
+  }
+
+
+  getBaseRoute(): string {
+    const currentUser = this.authService.getUser();
+    return currentUser?.role === 'super_admin' ? '/super-admin/users' : '/org-admin/users';
   }
 
   sendPasswordReset(user: User): void {

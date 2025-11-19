@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService, UserCreate, UserUpdate } from '../../../../core/services/user.service';
+import { AuthService } from '../../../../core/auth/auth.service';
 import { OrganizationService } from '../../../../core/services/organization.service';
 import { SiteService } from '../../../../core/services/site.service';
 import { User, Organization, Site, UserRole } from '../../../../core/models';
@@ -32,7 +33,8 @@ export class UserFormComponent implements OnInit {
     private organizationService: OrganizationService,
     private siteService: SiteService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) {
     this.userForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -47,6 +49,18 @@ export class UserFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOrganizations();
+
+    // For org admins, auto-set their organization and filter roles
+    if (this.isOrgAdmin) {
+      const currentUser = this.authService.getUser();
+      if (currentUser?.organization_id) {
+        this.userForm.patchValue({ organization_id: currentUser.organization_id });
+        this.userForm.get('organization_id')?.disable();
+        this.loadSites(currentUser.organization_id);
+      }
+      // Org admins cannot create super admins
+      this.roles = this.roles.filter(r => r.value !== UserRole.SUPER_ADMIN);
+    }
 
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== 'new') {
@@ -154,6 +168,10 @@ export class UserFormComponent implements OnInit {
     this.error = null;
 
     const formValue = this.userForm.value;
+    // Get organization_id from raw value if form field is disabled (for org admins)
+    const organizationId = this.userForm.get('organization_id')?.disabled
+      ? this.userForm.get('organization_id')?.getRawValue()
+      : formValue.organization_id;
 
     if (this.isEditMode && this.userId) {
       const updateData: UserUpdate = {
@@ -171,7 +189,7 @@ export class UserFormComponent implements OnInit {
 
       this.userService.update(this.userId, updateData).subscribe({
         next: () => {
-          this.router.navigate(['/super-admin/users']);
+          this.router.navigate([this.getBaseRoute()]);
         },
         error: (err) => {
           this.error = 'Failed to update user';
@@ -188,7 +206,7 @@ export class UserFormComponent implements OnInit {
         password: tempPassword,
         full_name: formValue.full_name,
         role: formValue.role,
-        organization_id: formValue.organization_id,
+        organization_id: organizationId,
         site_ids: formValue.site_ids || [],
         is_active: formValue.is_active
       };
@@ -196,7 +214,7 @@ export class UserFormComponent implements OnInit {
       this.userService.create(createData).subscribe({
         next: () => {
           alert('User created successfully! A password reset email will be sent to the user.');
-          this.router.navigate(['/super-admin/users']);
+          this.router.navigate([this.getBaseRoute()]);
         },
         error: (err) => {
           this.error = 'Failed to create user';
@@ -208,7 +226,7 @@ export class UserFormComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/super-admin/users']);
+    this.router.navigate([this.getBaseRoute()]);
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -246,6 +264,23 @@ export class UserFormComponent implements OnInit {
     } else {
       this.userForm.get('site_ids')?.setValue(siteIds.filter((id: number) => id !== siteId));
     }
+  }
+
+  getBaseRoute(): string {
+    const currentUser = this.authService.getUser();
+    return currentUser?.role === 'super_admin' ? '/super-admin/users' : '/org-admin/users';
+  }
+
+  get currentUserRole(): string {
+    return this.authService.getUser()?.role || '';
+  }
+
+  get isOrgAdmin(): boolean {
+    return this.currentUserRole === 'org_admin';
+  }
+
+  get isSuperAdmin(): boolean {
+    return this.currentUserRole === 'super_admin';
   }
 
   generateRandomPassword(): string {
