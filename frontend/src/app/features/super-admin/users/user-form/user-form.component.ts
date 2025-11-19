@@ -55,7 +55,6 @@ export class UserFormComponent implements OnInit {
       const currentUser = this.authService.getUser();
       if (currentUser?.organization_id) {
         this.userForm.patchValue({ organization_id: currentUser.organization_id });
-        this.userForm.get('organization_id')?.disable();
         this.loadSites(currentUser.organization_id);
       }
       // Org admins cannot create super admins
@@ -82,12 +81,30 @@ export class UserFormComponent implements OnInit {
   }
 
   loadOrganizations(): void {
+    // Org admins can only see their own organization
+    if (this.isOrgAdmin) {
+      const currentUser = this.authService.getUser();
+      if (currentUser?.organization_id) {
+        // Load just the current users organization
+        this.organizationService.getById(currentUser.organization_id).subscribe({
+          next: (org) => {
+            this.organizations = [org];
+          },
+          error: (err) => {
+            console.error("Error loading organization:", err);
+          }
+        });
+      }
+      return;
+    }
+
+    // Super admins can see all organizations
     this.organizationService.getAll().subscribe({
       next: (orgs) => {
         this.organizations = orgs;
       },
       error: (err) => {
-        console.error('Error loading organizations:', err);
+        console.error("Error loading organizations:", err);
       }
     });
   }
@@ -168,10 +185,6 @@ export class UserFormComponent implements OnInit {
     this.error = null;
 
     const formValue = this.userForm.value;
-    // Get organization_id from raw value if form field is disabled (for org admins)
-    const organizationId = this.userForm.get('organization_id')?.disabled
-      ? this.userForm.get('organization_id')?.getRawValue()
-      : formValue.organization_id;
 
     if (this.isEditMode && this.userId) {
       const updateData: UserUpdate = {
@@ -206,7 +219,7 @@ export class UserFormComponent implements OnInit {
         password: tempPassword,
         full_name: formValue.full_name,
         role: formValue.role,
-        organization_id: organizationId,
+        organization_id: formValue.organization_id,
         site_ids: formValue.site_ids || [],
         is_active: formValue.is_active
       };
