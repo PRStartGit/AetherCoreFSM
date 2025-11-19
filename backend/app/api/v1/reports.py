@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from app.core.email import email_service
 from app.core.dependencies import get_current_super_admin
 from app.models.user import User
+from app.models.checklist import ChecklistStatus
 from datetime import date, timedelta
 import logging
 
@@ -18,7 +19,7 @@ def send_test_weekly_email(
 
     try:
         # Create sample data matching template expectations
-        week_end = date.today() - timedelta(days=1)
+        week_end = date.today()  # Current week ending today
         week_start = week_end - timedelta(days=6)
 
         report_data = {
@@ -144,8 +145,8 @@ def send_weekly_report_for_site(
         if not site.report_recipients:
             return {"status": "error", "message": "No report recipients configured for this site"}
         
-        # Calculate week range
-        week_end = date.today() - timedelta(days=1)
+        # Calculate week range - current week ending today
+        week_end = date.today()
         week_start = week_end - timedelta(days=6)
         
         # Get checklists for the week
@@ -156,7 +157,7 @@ def send_weekly_report_for_site(
         ).all()
         
         total_checklists = len(checklists)
-        completed_checklists = len([c for c in checklists if c.status == 'COMPLETED'])
+        completed_checklists = len([c for c in checklists if c.status == ChecklistStatus.COMPLETED])
         completion_rate = (completed_checklists / total_checklists * 100) if total_checklists > 0 else 0
         
         # Get defects
@@ -178,7 +179,7 @@ def send_weekly_report_for_site(
         for cat in categories:
             cat_checklists = [c for c in checklists if c.category_id == cat.id]
             cat_total = len(cat_checklists)
-            cat_completed = len([c for c in cat_checklists if c.status == 'COMPLETED'])
+            cat_completed = len([c for c in cat_checklists if c.status == ChecklistStatus.COMPLETED])
             cat_rate = (cat_completed / cat_total * 100) if cat_total > 0 else 0
             if cat_total > 0:
                 category_stats.append({
@@ -263,23 +264,24 @@ def send_daily_report_for_site(
         if not site.report_recipients:
             return {"status": "error", "message": "No report recipients configured for this site"}
         
-        # Today's date
-        today = date.today()
-        
-        # Get today's checklists
+        # Yesterday's date for daily report
+        yesterday = date.today() - timedelta(days=1)
+
+        # Get yesterday's checklists
         checklists = db.query(Checklist).filter(
             Checklist.site_id == site_id,
-            Checklist.checklist_date == today
+            Checklist.checklist_date == yesterday
         ).all()
-        
+
         total_checklists = len(checklists)
-        completed_checklists = len([c for c in checklists if c.status == 'COMPLETED'])
+        completed_checklists = len([c for c in checklists if c.status == ChecklistStatus.COMPLETED])
         completion_rate = (completed_checklists / total_checklists * 100) if total_checklists > 0 else 0
-        
-        # Get today's defects
+
+        # Get yesterday's defects
         defects = db.query(Defect).filter(
             Defect.site_id == site_id,
-            Defect.created_at >= datetime.combine(today, datetime.min.time())
+            Defect.created_at >= datetime.combine(yesterday, datetime.min.time()),
+            Defect.created_at < datetime.combine(yesterday + timedelta(days=1), datetime.min.time())
         ).all()
         
         defects_data = [{
@@ -289,20 +291,20 @@ def send_daily_report_for_site(
             'description': d.description or ''
         } for d in defects]
         
-        # Get category stats for today
+        # Get category stats for yesterday
         categories = db.query(Category).filter(Category.organization_id == site.organization_id).all()
         category_stats = []
         for cat in categories:
             cat_checklists = [c for c in checklists if c.category_id == cat.id]
             cat_total = len(cat_checklists)
-            cat_completed = len([c for c in cat_checklists if c.status == 'COMPLETED'])
+            cat_completed = len([c for c in cat_checklists if c.status == ChecklistStatus.COMPLETED])
             cat_rate = (cat_completed / cat_total * 100) if cat_total > 0 else 0
             if cat_total > 0:
                 category_stats.append({
                     'category_name': cat.name,
                     'completion_rate': round(cat_rate, 1)
                 })
-        
+
         report_data = {
             'completion_rate': round(completion_rate, 1),
             'tasks_completed': completed_checklists,
@@ -311,9 +313,9 @@ def send_daily_report_for_site(
             'category_stats': sorted(category_stats, key=lambda x: x['completion_rate'], reverse=True),
             'insights': [],
             'recommendations': [
-                f"Completed {completed_checklists} out of {total_checklists} checklists today",
+                f"Completed {completed_checklists} out of {total_checklists} checklists yesterday",
                 f"Overall completion rate: {round(completion_rate, 1)}%",
-                f"{len(defects_data)} defects reported today"
+                f"{len(defects_data)} defects reported yesterday"
             ],
             'top_sites': [],
             'attention_sites': []
@@ -327,20 +329,20 @@ def send_daily_report_for_site(
                     recipient_email=recipient,
                     recipient_name="Site Manager",
                     organization_name=site.name + " - Daily Report",
-                    week_start=today.strftime('%Y-%m-%d'),
-                    week_end=today.strftime('%Y-%m-%d'),
+                    week_start=yesterday.strftime('%Y-%m-%d'),
+                    week_end=yesterday.strftime('%Y-%m-%d'),
                     report_data=report_data
                 )
-        
+
         logger.info(f"Daily report sent for site {site_id} to {len(recipients)} recipients")
-        
+
         return {
             "status": "success",
             "message": f"Daily report sent to {len(recipients)} recipients",
             "site_name": site.name,
             "recipients": recipients,
             "completion_rate": round(completion_rate, 1),
-            "report_date": today.strftime('%Y-%m-%d')
+            "report_date": yesterday.strftime('%Y-%m-%d')
         }
         
     except Exception as e:

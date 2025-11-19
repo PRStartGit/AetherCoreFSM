@@ -248,18 +248,34 @@ class EmailService:
         report_data: Dict[str, Any]
     ) -> bool:
         """Send weekly performance report email"""
+        from datetime import datetime
+        
+        # Determine if this is a daily or weekly report
+        is_daily = week_start == week_end
+        
+        # Set subject based on report type
+        if is_daily:
+            date_obj = datetime.strptime(week_start, '%Y-%m-%d')
+            day_suffix = lambda d: 'th' if 11<=d<=13 else {1:'st',2:'nd',3:'rd'}.get(d%10, 'th')
+            day = date_obj.day
+            formatted_date = date_obj.strftime(f'%A, {day}{day_suffix(day)} %B %Y')
+            subject = f"Daily Performance Report - {formatted_date}"
+        else:
+            subject = f"Weekly Performance Report - {week_start} to {week_end}"
+        
         context = {
             'recipient_name': recipient_name,
             'organization_name': organization_name,
             'week_start': week_start,
             'week_end': week_end,
             'report_date': week_end,
+            'is_daily': is_daily,
             **report_data  # Include all report metrics
         }
 
         return self.send_template_email(
             to_email=recipient_email,
-            subject=f"Weekly Performance Report - {week_start} to {week_end}",
+            subject=subject,
             template_name='weekly_performance_overall',
             context=context,
             to_name=recipient_name
