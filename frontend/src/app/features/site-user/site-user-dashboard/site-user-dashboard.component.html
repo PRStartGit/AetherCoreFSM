@@ -52,6 +52,14 @@
     </div>
   </div>
 
+  <!-- Site Selector (for multi-site users) -->
+  <div *ngIf="userSites.length > 1" class="site-selector">
+    <label for="site-select">Select Site:</label>
+    <select id="site-select" [(ngModel)]="selectedSiteId" (ngModelChange)="onSiteChange($event)" class="site-dropdown">
+      <option *ngFor="let site of userSites" [value]="site.id">{{ site.name }}</option>
+    </select>
+  </div>
+
   <!-- Loading State -->
   <div *ngIf="loading" class="loading-container">
     <mat-spinner></mat-spinner>

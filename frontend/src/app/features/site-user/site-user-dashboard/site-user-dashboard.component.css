@@ -1064,3 +1064,43 @@ mat-card-content {
   font-weight: 600;
   font-size: 14px;
 }
+
+/* Site Selector Styling */
+.site-selector {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.site-selector label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.site-dropdown {
+  flex: 1;
+  max-width: 300px;
+  padding: 10px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.site-dropdown:hover {
+  border-color: #4CAF50;
+}
+
+.site-dropdown:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}

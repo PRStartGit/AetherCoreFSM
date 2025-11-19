@@ -5,6 +5,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { ChecklistService } from '../../../core/services/checklist.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { DefectService } from '../../../core/services/defect.service';
+import { SiteService } from '../../../core/services/site.service';
 import { TaskService } from '../../../core/services/task.service';
 import { User } from '../../../core/models/user.model';
 import { Checklist, ChecklistStatus, Category, Defect, DefectStatus, ChecklistItem, Task } from '../../../core/models/monitoring.model';
@@ -54,22 +55,66 @@ export class SiteUserDashboardComponent implements OnInit {
   checklistItems: Map<number, ChecklistItemWithTask[]> = new Map();
   loadingItems: Set<number> = new Set();
 
+  // Site selection for multi-site users
+  selectedSiteId: number | null = null;
+  userSites: any[] = [];
+
   constructor(
     private authService: AuthService,
     private checklistService: ChecklistService,
     private categoryService: CategoryService,
     private defectService: DefectService,
     private taskService: TaskService,
-    private router: Router
+    private router: Router,
+    private siteService: SiteService
   ) {}
 
   ngOnInit(): void {
     this.authService.authState$.subscribe(state => {
       this.currentUser = state.user;
       if (this.currentUser) {
-        this.loadCategories();
+        this.loadUserSites();
       }
     });
+  }
+
+  loadUserSites(): void {
+    if (!this.currentUser?.site_ids || this.currentUser.site_ids.length === 0) {
+      this.error = 'No sites assigned to your account. Please contact your administrator.';
+      this.loading = false;
+      return;
+    }
+
+    // Load site information for all assigned sites
+    const siteRequests = this.currentUser.site_ids.map(siteId =>
+      this.siteService.getById(siteId)
+    );
+
+    forkJoin(siteRequests).subscribe({
+      next: (sites) => {
+        this.userSites = sites;
+        // Select first site by default
+        this.selectedSiteId = this.userSites[0].id;
+        this.loadCategories();
+      },
+      error: (err) => {
+        console.error('Error loading sites:', err);
+        // Fallback: create basic site objects
+        if (this.currentUser?.site_ids) {
+          this.userSites = this.currentUser.site_ids.map((id, index) => ({
+            id: id,
+            name: `Site ${index + 1}`
+          }));
+          this.selectedSiteId = this.userSites[0].id;
+          this.loadCategories();
+        }
+      }
+    });
+  }
+
+  onSiteChange(siteId: number): void {
+    this.selectedSiteId = siteId;
+    this.loadChecklists();
   }
 
   loadCategories(): void {
@@ -93,10 +138,10 @@ export class SiteUserDashboardComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    const siteId = this.currentUser?.site_ids?.[0];
+    const siteId = this.selectedSiteId;
 
     if (!siteId) {
-      this.error = 'No site assigned to user';
+      this.error = 'Please select a site to view checklists';
       this.loading = false;
       return;
     }
@@ -125,7 +170,6 @@ export class SiteUserDashboardComponent implements OnInit {
       }
     });
   }
-
   processChecklists(checklists: Checklist[], todayStr: string): void {
     this.openTasks = [];
     this.missedTasks = [];
