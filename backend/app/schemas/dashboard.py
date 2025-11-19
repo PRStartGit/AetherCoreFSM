@@ -6,6 +6,8 @@ class SuperAdminDashboard(BaseModel):
     """Super admin dashboard data."""
     total_organizations: int
     total_sites: int
+    sites_by_rag: Dict[str, int] = {}
+    total_checklists_today: int
     total_users: int
     total_active_checklists: int
     total_open_defects: int
@@ -20,12 +22,14 @@ class OrgAdminDashboard(BaseModel):
     """Organization admin dashboard data."""
     organization_name: str
     total_sites: int
+    sites_by_rag: Dict[str, int] = {}
+    total_checklists_today: int
     total_users: int
     overall_rag_status: str
     completion_rate: float
-    open_defects_count: int
+    total_open_defects: int
     overdue_checklists: int
-    site_performance: List[Dict[str, Any]] = []
+    site_details: List[Dict[str, Any]] = []
     recent_activity: List[Dict[str, Any]] = []
 
 

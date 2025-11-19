@@ -179,16 +179,30 @@ def get_org_admin_dashboard(
         Checklist.checklist_date < datetime.utcnow().date()
     ).count()
 
+    # Count sites by RAG status
+    sites_by_rag = {"green": 0, "amber": 0, "red": 0}
+
+    # Checklists today
+    today = datetime.utcnow().date()
+    total_checklists_today = db.query(Checklist).join(Site).filter(
+        Site.organization_id == org_id,
+        Checklist.checklist_date == today
+    ).count()
+
     # Site performance
     sites = db.query(Site).filter(
         Site.organization_id == org_id,
         Site.is_active == True
     ).all()
 
-    site_performance = []
+    site_details = []
     for site in sites:
         rag_data = calculate_site_rag_status(site.id, db)
-        site_performance.append({
+        # Count RAG status
+        if rag_data["rag_status"] in sites_by_rag:
+            sites_by_rag[rag_data["rag_status"]] += 1
+
+        site_details.append({
             "site_id": site.id,
             "site_name": site.name,
             "rag_status": rag_data["rag_status"],
@@ -212,13 +226,15 @@ def get_org_admin_dashboard(
 
     return OrgAdminDashboard(
         organization_name=organization.name,
+        sites_by_rag=sites_by_rag,
+        total_checklists_today=total_checklists_today,
         total_sites=total_sites,
         total_users=total_users,
         overall_rag_status=rag_summary["overall_rag"],
         completion_rate=rag_summary["average_completion_rate"],
-        open_defects_count=rag_summary["total_open_defects"],
+        total_open_defects=rag_summary["total_open_defects"],
         overdue_checklists=overdue_checklists,
-        site_performance=site_performance,
+        site_details=site_details,
         recent_activity=recent_activity
     )
 

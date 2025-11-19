@@ -164,9 +164,27 @@ const routes: Routes = [
         data: { roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN] }
       },
       {
-        path: 'site-user',
-        component: SiteUserDashboardComponent,
+        path: 'org-admin/users',
+        component: UserListComponent,
         canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN] }
+      },
+      {
+        path: 'org-admin/users/new',
+        component: UserFormComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN] }
+      },
+      {
+        path: 'org-admin/users/:id',
+        component: UserFormComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN] }
+      },
+      {
+        path: 'site-user',
+        canActivate: [RoleGuard],
+        component: SiteUserDashboardComponent,
         data: { roles: [UserRole.SITE_USER] }
       },
       {

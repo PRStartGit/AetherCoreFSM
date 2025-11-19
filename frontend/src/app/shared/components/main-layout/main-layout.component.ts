@@ -61,6 +61,7 @@ export class MainLayoutComponent implements OnInit {
           { label: 'Dashboard', icon: icons.dashboard, route: '/super-admin' },
           { label: 'Organizations', icon: icons.organizations, route: '/super-admin/organizations' },
           { label: 'Sites', icon: icons.sites, route: '/org-admin/sites' },
+          { label: 'Users', icon: icons.users, route: '/org-admin/users' },
           { label: 'Users', icon: icons.users, route: '/super-admin/users' },
           { label: 'Categories', icon: icons.category, route: '/categories' },
           { label: 'Tasks', icon: icons.tasks, route: '/tasks' },
@@ -73,6 +74,7 @@ export class MainLayoutComponent implements OnInit {
         this.navigationItems = [
           { label: 'Dashboard', icon: icons.dashboard, route: '/org-admin' },
           { label: 'Sites', icon: icons.sites, route: '/org-admin/sites' },
+          { label: 'Users', icon: icons.users, route: '/org-admin/users' },
           { label: 'Categories', icon: icons.category, route: '/categories' },
           { label: 'Tasks', icon: icons.tasks, route: '/tasks' },
           { label: 'Checklists', icon: icons.checklist, route: '/checklists' },
