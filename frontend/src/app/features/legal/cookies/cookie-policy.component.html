@@ -12,10 +12,43 @@
         background: #F9FAFB;
     }
 
+    .nav {
+        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .nav-logo {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-decoration: none;
+        letter-spacing: 1px;
+    }
+
+    .nav-button {
+        background: white;
+        color: #0369A1;
+        padding: 0.5rem 1.5rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .nav-button:hover {
+        background: #E0F2FE;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
     .header {
         background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
         color: white;
-        padding: 3rem 2rem;
+        padding: 2rem 2rem;
         text-align: center;
     }
 
@@ -145,6 +178,11 @@
         margin-bottom: 0.5rem;
     }
 </style>
+
+<nav class="nav">
+    <a routerLink="/" class="nav-logo">ZYNTHIO</a>
+    <a routerLink="/" class="nav-button">← Back to Home</a>
+</nav>
 
 <div class="header">
     <h1>Cookie Policy</h1>
