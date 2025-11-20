@@ -27,6 +27,14 @@ celery_app.conf.update(
 
 # Celery Beat schedule for periodic tasks
 celery_app.conf.beat_schedule = {
+    'send-daily-reports': {
+        'task': 'app.celery_tasks.send_daily_reports',
+        'schedule': crontab(hour=9, minute=0),  # Run at 9:00 AM every day
+    },
+    'send-weekly-reports': {
+        'task': 'app.celery_tasks.send_weekly_reports',
+        'schedule': crontab(hour=9, minute=15),  # Run at 9:15 AM every day, check which sites need weekly reports
+    },
     'generate-daily-checklists': {
         'task': 'app.celery_tasks.generate_daily_checklists',
         'schedule': crontab(hour=0, minute=1),  # Run at 00:01 every day

@@ -427,3 +427,100 @@ def delete_checklist(
     db.commit()
 
     return None
+
+
+@router.post("/checklists/event-based", status_code=status.HTTP_201_CREATED)
+def create_event_based_checklist(
+    category_id: int,
+    site_id: int,
+    event_type: str = None,  # Optional: "batch", "delivery", or "manual"
+    event_metadata: dict = None,  # Optional: Additional event data like batch number, delivery ID, etc.
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Create an event-based checklist for PER_BATCH, PER_DELIVERY, or AS_NEEDED frequencies.
+    
+    This endpoint allows manual or programmatic creation of checklists that are triggered
+    by specific events rather than time-based schedules.
+    
+    Parameters:
+    - category_id: The category to create a checklist for
+    - site_id: The site where the checklist should be created
+    - event_type: Optional identifier for the event type (e.g., "batch", "delivery", "manual")
+    - event_metadata: Optional JSON metadata about the event (e.g., {"batch_id": "B123", "product": "Chicken"})
+    """
+    from datetime import date
+    
+    # Verify category exists and is event-based
+    category = db.query(Category).filter(Category.id == category_id).first()
+    if not category:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Category not found"
+        )
+    
+    if category.frequency not in [ChecklistFrequency.PER_BATCH, ChecklistFrequency.PER_DELIVERY, ChecklistFrequency.AS_NEEDED]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Category must have PER_BATCH, PER_DELIVERY, or AS_NEEDED frequency. Current: {category.frequency}"
+        )
+    
+    # Verify site exists
+    site = db.query(Site).filter(Site.id == site_id).first()
+    if not site:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Site not found"
+        )
+    
+    # Verify user has access to this site (if not super admin)
+    if current_user.role not in [UserRole.SUPER_ADMIN] and site.organization_id != current_user.organization_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have access to this site"
+        )
+    
+    # Create new checklist
+    today = date.today()
+    new_checklist = Checklist(
+        checklist_date=today,
+        category_id=category.id,
+        site_id=site.id,
+        status=ChecklistStatus.PENDING
+    )
+    db.add(new_checklist)
+    db.flush()
+    
+    # Get all active tasks for this category
+    tasks = db.query(Task).filter(
+        Task.category_id == category.id,
+        Task.is_active == True
+    ).order_by(Task.order_index).all()
+    
+    # Create checklist items for each task
+    for task in tasks:
+        checklist_item = ChecklistItem(
+            checklist_id=new_checklist.id,
+            task_id=task.id,
+            item_name=task.name,
+            is_completed=False
+        )
+        db.add(checklist_item)
+    
+    # Set totals
+    new_checklist.total_items = len(tasks)
+    new_checklist.completed_items = 0
+    
+    db.commit()
+    db.refresh(new_checklist)
+    
+    return {
+        "message": "Event-based checklist created successfully",
+        "checklist_id": new_checklist.id,
+        "category": category.name,
+        "frequency": category.frequency,
+        "total_items": new_checklist.total_items,
+        "event_type": event_type,
+        "event_metadata": event_metadata
+    }

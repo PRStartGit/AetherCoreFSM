@@ -401,6 +401,11 @@ def register_trial(
             detail="Email address already in use."
         )
 
+    # Get active promotion to determine trial period
+    from app.models.promotion import Promotion
+    active_promotion = db.query(Promotion).filter(Promotion.is_active == True).first()
+    trial_days = active_promotion.trial_days if active_promotion else 30  # Default to 30 days
+    
     # Create organization
     new_org = Organization(
         name=registration.company_name,
@@ -413,7 +418,7 @@ def register_trial(
         is_trial=True,
         subscription_tier="basic",
         subscription_start_date=datetime.utcnow(),
-        subscription_end_date=datetime.utcnow() + timedelta(days=180)  # 6-month trial
+        subscription_end_date=datetime.utcnow() + timedelta(days=trial_days)  # Dynamic trial period
     )
 
     db.add(new_org)

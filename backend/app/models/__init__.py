@@ -14,6 +14,7 @@ from app.models.organization_module import OrganizationModule
 from app.models.password_reset_token import PasswordResetToken
 from app.models.task_field import TaskField
 from app.models.task_field_response import TaskFieldResponse
+from app.models.promotion import Promotion
 
 __all__ = [
     "User",

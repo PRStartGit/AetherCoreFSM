@@ -10,7 +10,6 @@ class ChecklistFrequency(str, enum.Enum):
     DAILY = "daily"
     WEEKLY = "weekly"
     MONTHLY = "monthly"
-    QUARTERLY = "quarterly"
     SIX_MONTHLY = "six_monthly"
     YEARLY = "yearly"
 
@@ -26,7 +25,7 @@ class Category(Base):
     is_active = Column(Boolean, default=True)
 
     # Scheduling
-    frequency = Column(SQLEnum(ChecklistFrequency, values_callable=lambda x: [e.value for e in x]), nullable=False, default=ChecklistFrequency.DAILY)
+    frequency = Column(SQLEnum(ChecklistFrequency), nullable=False, default=ChecklistFrequency.DAILY)
     opens_at = Column(Time, nullable=True)  # e.g., 00:00 for "AM Checks", 17:00 for "PM Checks"
     closes_at = Column(Time, nullable=True)  # e.g., 12:00 for "AM Checks", 23:59 for "PM Checks"
 

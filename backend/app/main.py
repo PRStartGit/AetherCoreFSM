@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.core.database import engine, Base
+import os
+from pathlib import Path
 
 # Create FastAPI app
 app = FastAPI(
@@ -31,6 +34,13 @@ app.add_middleware(
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
+# Ensure uploads directory exists
+uploads_dir = Path("/app/uploads")
+uploads_dir.mkdir(parents=True, exist_ok=True)
+
+# Mount static files for uploads
+app.mount("/uploads", StaticFiles(directory="/app/uploads"), name="uploads")
+
 
 @app.get("/")
 async def root():
@@ -49,7 +59,7 @@ async def health_check():
 
 
 # Import and include routers
-from app.api.v1 import auth, organizations, sites, users, categories, tasks, task_fields, checklists, defects, dashboards, reports, utils
+from app.api.v1 import auth, organizations, sites, users, categories, tasks, task_fields, checklists, defects, dashboards, reports, promotions, utils
 
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX, tags=["Authentication"])
 app.include_router(organizations.router, prefix=settings.API_V1_PREFIX, tags=["Organizations"])
@@ -63,3 +73,4 @@ app.include_router(defects.router, prefix=settings.API_V1_PREFIX, tags=["Defects
 app.include_router(dashboards.router, prefix=settings.API_V1_PREFIX, tags=["Dashboards"])
 app.include_router(reports.router, prefix=settings.API_V1_PREFIX, tags=["Reports"])
 app.include_router(utils.router, prefix=settings.API_V1_PREFIX, tags=["Utils"])
+app.include_router(promotions.router, prefix=settings.API_V1_PREFIX, tags=["Promotions"])
