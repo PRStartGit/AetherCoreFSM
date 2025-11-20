@@ -3,6 +3,7 @@ export enum ChecklistFrequency {
   DAILY = 'daily',
   WEEKLY = 'weekly',
   MONTHLY = 'monthly',
+  QUARTERLY = 'quarterly',
   SIX_MONTHLY = 'six_monthly',
   YEARLY = 'yearly'
 }
