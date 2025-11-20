@@ -203,7 +203,23 @@ export class SiteUserDashboardComponent implements OnInit {
         const opensAtMinutes = hours * 60 + minutes;
 
         if (currentTime < opensAtMinutes) {
-          console.log(`Checklist ${checklist.id} (${category.name}) hasn't opened yet (opens at ${category.opens_at}), skipping`);
+          console.log(`Checklist ${checklist.id} (${category.name}) hasn't opened yet (opens at ${category.opens_at}), adding to openingLaterTasks`);
+
+          // Add to "Opening today" section instead of skipping
+          const card: ChecklistCard = {
+            id: checklist.id,
+            categoryName: category.name,
+            totalItems: checklist.total_items || 0,
+            completedItems: checklist.completed_items || 0,
+            completionPercentage: checklist.completion_percentage || 0,
+            status: checklist.status,
+            dueDate: checklist.checklist_date,
+            isActive: false, // Not yet active
+            opensAt: category.opens_at,
+            closesAt: category.closes_at
+          };
+
+          this.openingLaterTasks.push(card);
           return;
         }
       }
@@ -267,6 +283,7 @@ export class SiteUserDashboardComponent implements OnInit {
 
     console.log('Checklist categorization complete:');
     console.log('- Open (pending/in-progress - due today):', this.openTasks.length);
+    console.log('- Opening today (scheduled for later):', this.openingLaterTasks.length);
     console.log('- Future (pending/in-progress - due later):', this.futureTasks.length);
     console.log('- Missed (overdue):', this.missedTasks.length);
     console.log('- Completed:', this.completedTasks.length);
