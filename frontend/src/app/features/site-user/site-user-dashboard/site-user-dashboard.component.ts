@@ -150,11 +150,11 @@ export class SiteUserDashboardComponent implements OnInit {
     const today = new Date();
     const todayStr = today.toISOString().split('T')[0];
 
-    // Get end of current month
-    const futureDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    // Get 6 months ahead (includes quarterly/monthly tasks)
+    const futureDate = new Date(today.getFullYear(), today.getMonth() + 6, today.getDate());
     const futureDateStr = futureDate.toISOString().split('T')[0];
 
-    // Load checklists from today to end of current month
+    // Load checklists from today to 6 months ahead (includes quarterly/monthly tasks)
     console.log('Loading checklists from', todayStr, 'to', futureDateStr);
     this.checklistService.getAll(siteId, undefined, undefined, todayStr, futureDateStr).subscribe({
       next: (checklists) => {
