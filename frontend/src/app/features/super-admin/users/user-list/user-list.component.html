@@ -54,16 +54,16 @@
           <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
             Role
           </th>
-          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden lg:table-cell">
             Organization
           </th>
           <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
             Status
           </th>
-          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden md:table-cell">
             Created
           </th>
-          <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+          <th class="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
             Actions
           </th>
         </tr>
@@ -81,31 +81,33 @@
               {{ getRoleName(user.role) }}
             </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap">
+          <td class="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
             <div class="text-sm text-gray-600">{{ getOrganizationName(user.organization_id) }}</div>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <span [class]="'inline-block px-3 py-1 rounded-lg text-sm font-semibold ' + (user.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
+            <span [class]="'inline-block px-2 py-1 rounded-lg text-xs font-semibold ' + (user.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
               {{ user.is_active ? 'Active' : 'Inactive' }}
             </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 hidden md:table-cell">
             {{ formatDate(user.created_at) }}
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-            <div class="flex justify-end gap-2">
+          <td class="px-4 py-4 whitespace-nowrap text-right">
+            <div class="flex justify-end gap-1">
               <button (click)="sendPasswordReset(user)"
-                      class="text-purple-600 hover:text-purple-900 font-semibold"
-                      title="Send Password Reset Email">
-                Reset Password
+                      class="p-2 text-purple-600 hover:bg-purple-100 rounded-lg transition-colors"
+                      title="Reset Password">
+                <i class="fa-solid fa-key text-sm"></i>
               </button>
               <button (click)="navigateToEdit(user)"
-                      class="text-blue-600 hover:text-blue-900 font-semibold">
-                Edit
+                      class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+                      title="Edit">
+                <i class="fa-solid fa-pen text-sm"></i>
               </button>
               <button (click)="deleteUser(user)"
-                      class="text-red-600 hover:text-red-900 font-semibold">
-                Delete
+                      class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                      title="Delete">
+                <i class="fa-solid fa-trash text-sm"></i>
               </button>
             </div>
           </td>
