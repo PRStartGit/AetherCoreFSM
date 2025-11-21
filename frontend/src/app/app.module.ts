@@ -34,6 +34,7 @@ import { AuthInterceptor } from './core/auth/auth.interceptor';
 
 // Components
 import { LoginComponent } from './core/auth/login/login.component';
+import { RegisterComponent } from './core/auth/register/register.component';
 import { MainLayoutComponent } from './shared/components/main-layout/main-layout.component';
 import { SuperAdminDashboardComponent } from './features/super-admin/super-admin-dashboard/super-admin-dashboard.component';
 import { OrgAdminDashboardComponent } from './features/org-admin/org-admin-dashboard/org-admin-dashboard.component';
@@ -69,6 +70,7 @@ import { PromotionListComponent } from './features/super-admin/promotions/promot
   declarations: [
     AppComponent,
     LoginComponent,
+    RegisterComponent,
     MainLayoutComponent,
     SuperAdminDashboardComponent,
     OrgAdminDashboardComponent,
