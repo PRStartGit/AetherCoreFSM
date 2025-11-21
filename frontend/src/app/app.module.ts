@@ -63,6 +63,7 @@ import { DynamicTaskFormComponent } from './features/checklists/dynamic-task-for
 import { TermsOfServiceComponent } from './features/legal/terms/terms-of-service.component';
 import { PrivacyPolicyComponent } from './features/legal/privacy/privacy-policy.component';
 import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.component';
+import { PromotionListComponent } from './features/super-admin/promotions/promotion-list/promotion-list.component';
 
 @NgModule({
   declarations: [
@@ -94,7 +95,8 @@ import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.co
     LandingPageComponent,
     TermsOfServiceComponent,
     PrivacyPolicyComponent,
-    CookiePolicyComponent
+    CookiePolicyComponent,
+    PromotionListComponent
   ],
   imports: [
     BrowserModule,

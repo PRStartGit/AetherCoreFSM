@@ -1,0 +1,92 @@
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Promo Settings</h1>
+      <p class="text-gray-600 mt-1">Manage trial promotions for new organizations</p>
+    </div>
+    <button (click)="openCreateForm()"
+            class="px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-medium">
+      Add Promotion
+    </button>
+  </div>
+
+  <div *ngIf="error" class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="text-center py-12">
+    <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-blue-600"></div>
+  </div>
+
+  <div *ngIf="!loading" class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trial Days</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
+          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let promo of promotions" class="hover:bg-gray-50">
+          <td class="px-6 py-4">
+            <div class="font-medium text-gray-900">{{ promo.name }}</div>
+            <div *ngIf="promo.description" class="text-sm text-gray-500">{{ promo.description }}</div>
+          </td>
+          <td class="px-6 py-4 text-gray-900">{{ promo.trial_days }} days</td>
+          <td class="px-6 py-4">
+            <span *ngIf="promo.is_active" class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Active</span>
+            <span *ngIf="!promo.is_active" class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">Inactive</span>
+          </td>
+          <td class="px-6 py-4 text-gray-500">{{ formatDate(promo.created_at) }}</td>
+          <td class="px-6 py-4 text-right space-x-2">
+            <button *ngIf="!promo.is_active" (click)="activatePromotion(promo)"
+                    class="text-green-600 hover:text-green-800 text-sm font-medium">Activate</button>
+            <button (click)="openEditForm(promo)" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Edit</button>
+            <button (click)="deletePromotion(promo)" class="text-red-600 hover:text-red-800 text-sm font-medium">Delete</button>
+          </td>
+        </tr>
+        <tr *ngIf="promotions.length === 0">
+          <td colspan="5" class="px-6 py-8 text-center text-gray-500">No promotions found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Form -->
+  <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+      <h2 class="text-xl font-semibold mb-4">{{ editingPromotion ? 'Edit' : 'Create' }} Promotion</h2>
+      <form (ngSubmit)="submitForm()">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <input type="text" [(ngModel)]="formData.name" name="name" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea [(ngModel)]="formData.description" name="description" rows="2"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Trial Days</label>
+            <input type="number" [(ngModel)]="formData.trial_days" name="trial_days" required min="1"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div class="flex items-center">
+            <input type="checkbox" [(ngModel)]="formData.is_active" name="is_active" id="is_active"
+                   class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+            <label for="is_active" class="ml-2 text-sm text-gray-700">Set as active promotion</label>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" (click)="closeForm()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

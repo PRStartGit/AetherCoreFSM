@@ -25,6 +25,7 @@ import { LandingPageComponent } from './features/landing-page/landing-page.compo
 import { TermsOfServiceComponent } from './features/legal/terms/terms-of-service.component';
 import { PrivacyPolicyComponent } from './features/legal/privacy/privacy-policy.component';
 import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.component';
+import { PromotionListComponent } from './features/super-admin/promotions/promotion-list/promotion-list.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { UserRole } from './core/models';
@@ -94,6 +95,12 @@ const routes: Routes = [
       {
         path: 'super-admin/users/:id',
         component: UserFormComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN] }
+      },
+      {
+        path: 'super-admin/promotions',
+        component: PromotionListComponent,
         canActivate: [RoleGuard],
         data: { roles: [UserRole.SUPER_ADMIN] }
       },

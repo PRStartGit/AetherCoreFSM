@@ -62,6 +62,7 @@ export class MainLayoutComponent implements OnInit {
           { label: 'Organizations', icon: icons.organizations, route: '/super-admin/organizations' },
           { label: 'Sites', icon: icons.sites, route: '/org-admin/sites' },
           { label: 'Users', icon: icons.users, route: '/super-admin/users' },
+          { label: 'Promo Settings', icon: 'fa-solid fa-percent', route: '/super-admin/promotions' },
           { label: 'Categories', icon: icons.category, route: '/categories' },
           { label: 'Tasks', icon: icons.tasks, route: '/tasks' },
           { label: 'Checklists', icon: icons.checklist, route: '/checklists' },
