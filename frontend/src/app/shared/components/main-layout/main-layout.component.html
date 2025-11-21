@@ -5,36 +5,47 @@
 
 <!-- Sidebar - Responsive -->
 <div [class.translate-x-0]="isMobileMenuOpen"
-     class="w-60 bg-gray-800 h-screen fixed left-0 top-0 z-50 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
-  <div class="p-3 border-b border-gray-700">
-    <a routerLink="/dashboard" class="block cursor-pointer">
-      <img src="/assets/images/zynthio-logo-white.svg" alt="Zynthio" class="h-12 w-auto">
+     [class.md:w-16]="sidebarCollapsed"
+     [class.md:w-60]="!sidebarCollapsed"
+     class="w-60 bg-gray-800 h-screen fixed left-0 top-0 z-50 flex flex-col transform -translate-x-full md:translate-x-0 transition-all duration-300 ease-in-out">
+  <div class="p-3 border-b border-gray-700 flex items-center justify-center" [class.md:px-2]="sidebarCollapsed">
+    <a routerLink="/dashboard" class="block cursor-pointer" [class.md:w-8]="sidebarCollapsed">
+      <img src="/assets/images/zynthio-logo-white.svg" alt="Zynthio" [class.h-8]="sidebarCollapsed" [class.h-12]="!sidebarCollapsed" class="w-auto">
     </a>
-    <p class="text-gray-400 text-xs mt-1">Site Safety Management</p>
+    <p *ngIf="!sidebarCollapsed" class="text-gray-400 text-xs mt-1 md:block hidden">Site Safety Management</p>
   </div>
   <nav class="mt-1 px-2 flex-1 overflow-y-auto py-2">
     <a *ngFor="let item of navigationItems"
        [routerLink]="item.route"
        (click)="closeMobileMenu()"
        routerLinkActive="nav-item-active"
+       [title]="sidebarCollapsed ? item.label : ''"
+       [class.md:justify-center]="sidebarCollapsed"
+       [class.md:px-0]="sidebarCollapsed"
        class="nav-item flex items-center gap-3 py-2.5 px-3 text-gray-300 text-sm font-medium hover:bg-gray-700 hover:text-white cursor-pointer rounded-lg mb-1 transition-all duration-200">
       <i [class]="item.icon + ' text-base w-5 text-center'"></i>
-      <span>{{ item.label }}</span>
+      <span [class.md:hidden]="sidebarCollapsed">{{ item.label }}</span>
     </a>
   </nav>
 
   <!-- User info at bottom -->
   <div class="px-2 py-3 border-t border-gray-700" *ngIf="user">
-    <div class="flex items-center justify-between gap-2 px-2 py-1.5 hover:bg-gray-700 rounded-lg transition-all duration-200">
-      <div class="flex items-center gap-2 min-w-0 flex-1">
+    <div class="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-700 rounded-lg transition-all duration-200"
+         [class.md:flex-col]="sidebarCollapsed"
+         [class.md:justify-center]="sidebarCollapsed"
+         [class.justify-between]="!sidebarCollapsed">
+      <div class="flex items-center gap-2 min-w-0"
+           [class.md:flex-col]="sidebarCollapsed"
+           [class.flex-1]="!sidebarCollapsed">
         <div class="w-8 h-8 rounded-full bg-gradient-to-br from-hygiene-600 to-cyan-600 flex items-center justify-center text-white text-sm font-bold shadow-lg flex-shrink-0">
           {{ user.full_name?.charAt(0) || 'U' }}
         </div>
-        <div class="text-white text-xs min-w-0 flex-1">
+        <div class="text-white text-xs min-w-0 flex-1" [class.md:hidden]="sidebarCollapsed">
           <div class="font-semibold truncate">{{ user.full_name }}</div>
         </div>
       </div>
       <button (click)="logout()"
+              [title]="sidebarCollapsed ? 'Logout' : ''"
               class="flex items-center justify-center w-8 h-8 text-gray-300 hover:text-red-400 hover:bg-gray-800 rounded-lg transition-all duration-200">
         <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
       </button>
@@ -43,12 +54,21 @@
 </div>
 
 <!-- Top Bar - Responsive -->
-<div class="fixed top-0 left-0 md:left-60 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 z-10">
+<div class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 z-10 transition-all duration-300"
+     [class.md:left-16]="sidebarCollapsed"
+     [class.md:left-60]="!sidebarCollapsed">
   <div class="flex items-center gap-4">
     <!-- Hamburger Menu Button (Mobile Only) -->
     <button (click)="toggleMobileMenu()"
             class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors">
       <i class="fa-solid fa-bars text-gray-700 text-xl"></i>
+    </button>
+
+    <!-- Sidebar Toggle Button (Desktop/Tablet Only) -->
+    <button (click)="toggleSidebar()"
+            class="hidden md:flex w-10 h-10 items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
+            [title]="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'">
+      <i [class]="sidebarCollapsed ? 'fa-solid fa-angles-right' : 'fa-solid fa-angles-left'" class="text-gray-700 text-lg"></i>
     </button>
   </div>
   <div class="flex items-center gap-2 md:gap-4">
@@ -117,7 +137,9 @@
 <app-system-message-banner></app-system-message-banner>
 
 <!-- Main Content - Responsive -->
-<div class="md:ml-60 pt-16">
+<div class="pt-16 transition-all duration-300"
+     [class.md:ml-16]="sidebarCollapsed"
+     [class.md:ml-60]="!sidebarCollapsed">
   <router-outlet></router-outlet>
 </div>
 

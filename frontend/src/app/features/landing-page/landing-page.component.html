@@ -697,6 +697,14 @@
 
         h1 {
             font-size: 2.5rem;
+            line-height: 1.3;
+            margin-bottom: 1.25rem;
+        }
+
+        .subheadline {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            margin-bottom: 1.75rem;
         }
 
         .cta-buttons {
@@ -999,7 +1007,7 @@
                 <li>Unlimited users</li>
             </ul>
 
-            <a href="#trial" class="btn-secondary" style="display: block; text-align: center;">Start Free Trial</a>
+            <a (click)="navigateToRegister()" class="btn-secondary" style="display: block; text-align: center; cursor: pointer;">Start Free Trial</a>
         </div>
 
         <div class="pricing-card popular">
@@ -1016,7 +1024,7 @@
                 <li>Advanced analytics</li>
             </ul>
 
-            <a href="#trial" class="btn-primary" style="display: block; text-align: center;">Start Free Trial</a>
+            <a (click)="navigateToRegister()" class="btn-primary" style="display: block; text-align: center; cursor: pointer;">Start Free Trial</a>
         </div>
 
         <div class="pricing-card">
@@ -1070,7 +1078,7 @@
 <section class="final-cta">
     <h2>Ready to go digital?</h2>
     <p>Join 500+ venues using Zynthio for food safety compliance</p>
-    <a href="#trial" class="btn-white">Start Your Free Trial</a>
+    <a (click)="navigateToRegister()" class="btn-white" style="cursor: pointer;">Start Your Free Trial</a>
 </section>
 
 <!-- Footer -->

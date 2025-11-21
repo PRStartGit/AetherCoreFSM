@@ -15,6 +15,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   UserRole = UserRole;
   sidenavOpened = true;
   isMobileMenuOpen = false;
+  sidebarCollapsed = false;
   showBroadcastModal = false;
   showNotifications = false;
   notifications: SystemMessage[] = [];
@@ -57,6 +58,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   closeMobileMenu(): void {
     this.isMobileMenuOpen = false;
+  }
+
+  toggleSidebar(): void {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 
   updateNavigation(): void {

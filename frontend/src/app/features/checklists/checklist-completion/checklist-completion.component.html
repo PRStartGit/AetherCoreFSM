@@ -57,7 +57,26 @@
                   {{ getFieldForResponse(item.id, response)?.field_label }}
                 </div>
                 <div class="response-value">
-                  {{ getResponseValue(response, getFieldForResponse(item.id, response)!) }}
+                  <!-- Show photo if response has file_url -->
+                  <div *ngIf="response.file_url" class="photo-preview">
+                    <img [src]="response.file_url" alt="Response photo" class="response-photo" />
+                  </div>
+                  <!-- Show repeating group data with photos -->
+                  <div *ngIf="response.json_value && Array.isArray(response.json_value)" class="repeating-group-responses">
+                    <div *ngFor="let item of response.json_value; let idx = index" class="repeating-item">
+                      <strong>{{ getFieldForResponse(item.id, response)?.field_label || 'Item' }} {{ idx + 1 }}:</strong>
+                      <div *ngIf="item.temperature !== null && item.temperature !== undefined">
+                        Temperature: {{ item.temperature }}°C
+                      </div>
+                      <div *ngIf="item.photo" class="photo-preview">
+                        <img [src]="item.photo" alt="Photo {{ idx + 1 }}" class="response-photo" />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Show regular text value if no photo/repeating group -->
+                  <span *ngIf="!response.file_url && (!response.json_value || !Array.isArray(response.json_value))">
+                    {{ getResponseValue(response, getFieldForResponse(item.id, response)!) }}
+                  </span>
                 </div>
               </div>
             </div>
