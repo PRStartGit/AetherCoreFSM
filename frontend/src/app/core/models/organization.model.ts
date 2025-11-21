@@ -8,6 +8,7 @@ export interface Organization {
   address?: string;
   subscription_tier: string;
   subscription_status: string;
+  subscription_end_date?: string;
   custom_price_per_site?: number;
   is_active: boolean;
   created_at: string;
@@ -33,6 +34,7 @@ export interface OrganizationUpdate {
   address?: string;
   subscription_tier?: string;
   subscription_status?: string;
+  subscription_end_date?: string;
   custom_price_per_site?: number;
   is_active?: boolean;
 }

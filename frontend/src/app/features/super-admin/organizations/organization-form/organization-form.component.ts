@@ -38,6 +38,7 @@ export class OrganizationFormComponent implements OnInit {
       address: [''],
       subscription_tier: ['basic', Validators.required],
       custom_price_per_site: [null, [Validators.min(0)]],
+      subscription_end_date: [null],
       is_active: [true]
     });
   }
@@ -66,6 +67,7 @@ export class OrganizationFormComponent implements OnInit {
           address: org.address,
           subscription_tier: org.subscription_tier,
           custom_price_per_site: org.custom_price_per_site,
+          subscription_end_date: org.subscription_end_date ? org.subscription_end_date.split('T')[0] : null,
           is_active: org.is_active
         });
         // Disable org_id editing for existing organizations
