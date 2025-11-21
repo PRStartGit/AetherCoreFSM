@@ -143,6 +143,13 @@ export class LandingPageComponent implements OnInit {
   }
 
   /**
+   * Navigate to register page
+   */
+  navigateToRegister(): void {
+    this.router.navigate(['/register']);
+  }
+
+  /**
    * Navigate to dashboard based on user role
    */
   navigateToDashboard(): void {

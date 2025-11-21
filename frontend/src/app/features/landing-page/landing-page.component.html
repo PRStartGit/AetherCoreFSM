@@ -752,7 +752,7 @@
         <a href="#contact" (click)="closeMobileMenu()">Contact</a>
         <a *ngIf="!isLoggedIn" (click)="navigateToLogin(); closeMobileMenu()">Login</a>
         <a *ngIf="isLoggedIn" (click)="navigateToDashboard(); closeMobileMenu()">Dashboard</a>
-        <a routerLink="/register" class="btn-primary" (click)="closeMobileMenu()" style="margin-top: 1rem;">Start Free Trial</a>
+        <a (click)="navigateToRegister(); closeMobileMenu()" class="btn-primary" style="margin-top: 1rem; cursor: pointer;">Start Free Trial</a>
     </div>
 </div>
 
@@ -788,7 +788,7 @@
         </button>
 
         <!-- Desktop CTA Button -->
-        <a routerLink="/register" class="btn-primary desktop-cta">Start Free Trial</a>
+        <a (click)="navigateToRegister()" class="btn-primary desktop-cta" style="cursor: pointer;">Start Free Trial</a>
     </div>
 </nav>
 
@@ -809,7 +809,7 @@
             </p>
 
             <div class="cta-buttons">
-                <a routerLink="/register" class="btn-primary">Start 6-Month Free Trial</a>
+                <a (click)="navigateToRegister()" class="btn-primary" style="cursor: pointer;">Start 6-Month Free Trial</a>
                 <a href="#demo" class="btn-secondary">Watch Demo</a>
             </div>
 
@@ -1049,7 +1049,7 @@
     <h2>SPECIAL OFFER FOR FIFE BUSINESSES</h2>
     <div class="price" style="font-size: 2.5rem; margin-bottom: 0.5rem;">6 Months FREE Trial</div>
     <p>No credit card required • Full Professional plan access</p>
-    <a routerLink="/register" class="btn-white">Claim Your Free Trial →</a>
+    <a (click)="navigateToRegister()" class="btn-white" style="cursor: pointer;">Claim Your Free Trial →</a>
 </section>
 
 <!-- Testimonial -->
