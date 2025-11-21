@@ -21,7 +21,7 @@ export class ChecklistService {
     let params = new HttpParams();
     if (siteId) params = params.set('site_id', siteId.toString());
     if (categoryId) params = params.set('category_id', categoryId.toString());
-    if (status) params = params.set('status', status);
+    if (status) params = params.set('status_filter', status);
     if (startDate) params = params.set('start_date', startDate);
     if (endDate) params = params.set('end_date', endDate);
 
