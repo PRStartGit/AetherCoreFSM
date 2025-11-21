@@ -196,14 +196,17 @@ export class DynamicTaskFormComponent implements OnInit {
       next: (result) => {
         this.snackBar.open('Form submitted successfully!', 'Close', { duration: 3000 });
         this.submitting = false;
+        // Restore scroll position before and after emit to prevent mobile jump
+        window.scrollTo(0, scrollY);
         this.formSubmitted.emit(result);
-        // Restore scroll position after DOM update to prevent mobile jump
-        setTimeout(() => window.scrollTo(0, scrollY), 50);
+        setTimeout(() => window.scrollTo(0, scrollY), 100);
+        setTimeout(() => window.scrollTo(0, scrollY), 300);
       },
       error: (error) => {
         console.error('Error submitting form:', error);
         this.snackBar.open('Failed to submit form', 'Close', { duration: 3000 });
         this.submitting = false;
+        window.scrollTo(0, scrollY);
       }
     });
   }
