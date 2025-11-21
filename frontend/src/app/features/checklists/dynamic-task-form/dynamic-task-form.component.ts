@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { TaskFieldService } from '../../../core/services/task-field.service';
 import { TaskField, TaskFieldType } from '../../../core/models/monitoring.model';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-dynamic-task-form',
@@ -18,6 +20,7 @@ import { TaskField, TaskFieldType } from '../../../core/models/monitoring.model'
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    HttpClientModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -48,7 +51,8 @@ export class DynamicTaskFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private taskFieldService: TaskFieldService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private http: HttpClient
   ) {
     this.dynamicForm = this.fb.group({});
   }
@@ -240,23 +244,40 @@ export class DynamicTaskFormComponent implements OnInit {
   onPhotoSelected(event: any, field: TaskField): void {
     const file = event.target?.files?.[0];
     if (file) {
-      // For now, just store the filename. In production, you'd upload to cloud storage
-      const filename = `photo_${Date.now()}_${file.name}`;
-      this.dynamicForm.get(`field_${field.id}`)?.setValue(filename);
-
-      // TODO: Implement actual file upload to cloud storage (S3, etc.)
-      console.log('Photo selected:', file.name);
+      this.uploadPhoto(file).subscribe({
+        next: (response: any) => {
+          this.dynamicForm.get(`field_${field.id}`)?.setValue(response.file_url);
+          this.snackBar.open('Photo uploaded successfully', 'Close', { duration: 2000 });
+        },
+        error: (error) => {
+          console.error('Photo upload failed:', error);
+          this.snackBar.open('Failed to upload photo', 'Close', { duration: 3000 });
+        }
+      });
     }
   }
 
   onPhotoSelectedRepeating(event: any, fieldId: number, index: number, subFieldType: string): void {
     const file = event.target?.files?.[0];
     if (file) {
-      const filename = `photo_${Date.now()}_${file.name}`;
       const controlName = `field_${fieldId}_${index}_${subFieldType}`;
-      this.dynamicForm.get(controlName)?.setValue(filename);
-      console.log('Photo selected for repeating field:', file.name);
+      this.uploadPhoto(file).subscribe({
+        next: (response: any) => {
+          this.dynamicForm.get(controlName)?.setValue(response.file_url);
+          this.snackBar.open('Photo uploaded successfully', 'Close', { duration: 2000 });
+        },
+        error: (error) => {
+          console.error('Photo upload failed:', error);
+          this.snackBar.open('Failed to upload photo', 'Close', { duration: 3000 });
+        }
+      });
     }
+  }
+
+  private uploadPhoto(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`${environment.apiUrl}/utils/upload-photo`, formData);
   }
 
   updateRepeatingGroups(countFieldId: number, count: number): void {

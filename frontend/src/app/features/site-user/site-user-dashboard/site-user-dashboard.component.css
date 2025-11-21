@@ -821,22 +821,29 @@ mat-card-content {
   /* Stat Cards - Smaller on Mobile */
   .stat-card {
     min-width: unset;
-    padding: 12px;
-    gap: 8px;
+    padding: 14px 12px;
+    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .stat-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .stat-content {
+    align-items: center;
   }
 
   .stat-number {
-    font-size: 20px;
+    font-size: 22px;
   }
 
   .stat-label {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   /* Task Sections */
@@ -967,11 +974,21 @@ mat-card-content {
   }
 
   .stat-card {
-    padding: 10px;
+    padding: 12px 10px;
+  }
+
+  .stat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
   }
 
   .stat-number {
-    font-size: 18px;
+    font-size: 20px;
+  }
+
+  .stat-label {
+    font-size: 9px;
   }
 
   .task-section h2 {
