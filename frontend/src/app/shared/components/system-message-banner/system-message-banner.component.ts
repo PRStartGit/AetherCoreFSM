@@ -52,8 +52,8 @@ import { SystemMessageService, SystemMessage } from '../../../core/services/syst
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px;
-      font-size: 14px;
+      padding: 6px 12px;
+      font-size: 13px;
       animation: slideDown 0.3s ease-out;
     }
 
@@ -81,13 +81,13 @@ import { SystemMessageService, SystemMessage } from '../../../core/services/syst
     .message-content {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       flex: 1;
       min-width: 0;
     }
 
     .message-content i {
-      font-size: 16px;
+      font-size: 13px;
       flex-shrink: 0;
     }
 
@@ -105,8 +105,8 @@ import { SystemMessageService, SystemMessage } from '../../../core/services/syst
       background: rgba(255, 255, 255, 0.2);
       border: none;
       color: white;
-      width: 28px;
-      height: 28px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       cursor: pointer;
       display: flex;
@@ -114,6 +114,7 @@ import { SystemMessageService, SystemMessage } from '../../../core/services/syst
       justify-content: center;
       transition: background 0.2s;
       flex-shrink: 0;
+      font-size: 11px;
     }
 
     .dismiss-btn:hover {
