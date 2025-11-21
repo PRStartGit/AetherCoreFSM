@@ -405,6 +405,259 @@
             <li><strong>Mark required fields</strong> - Ensure critical data is always captured</li>
           </ul>
         </div>
+
+        <!-- Detailed Tutorial: Opening Checks -->
+        <div class="faq-item tutorial-highlight">
+          <h3>Tutorial: Creating Opening Checks with Multiple Yes/No Questions</h3>
+          <p>This step-by-step guide shows how to create an "Opening Checks" task where staff answer multiple Yes/No questions when opening the premises.</p>
+
+          <div class="tutorial-steps">
+            <div class="tutorial-step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Create the Category (if needed)</h4>
+                <p>First, ensure you have an "Opening Checks" category:</p>
+                <ul>
+                  <li>Go to <strong>Categories</strong> → <strong>New Category</strong></li>
+                  <li>Name: <code>Opening Checks</code></li>
+                  <li>Frequency: <code>Daily</code></li>
+                  <li>Description: <code>Tasks to complete when opening the premises</code></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="tutorial-step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Create the Task</h4>
+                <p>Go to <strong>Tasks</strong> → <strong>New Task</strong> and fill in:</p>
+                <div class="example-box compact">
+                  <div class="mock-form">
+                    <div class="mock-field">
+                      <label>Name</label>
+                      <input type="text" value="Daily Opening Safety Checks" disabled>
+                    </div>
+                    <div class="mock-field">
+                      <label>Description</label>
+                      <textarea disabled>Complete all safety checks before opening for business. All items must be checked and any issues reported immediately.</textarea>
+                    </div>
+                    <div class="mock-field">
+                      <label>Category</label>
+                      <input type="text" value="Opening Checks (Daily)" disabled>
+                    </div>
+                    <div class="mock-checkbox">
+                      <input type="checkbox" checked disabled>
+                      <strong>Enable Dynamic Form Fields</strong>
+                    </div>
+                  </div>
+                </div>
+                <p>Click <strong>Next: Configure Fields</strong></p>
+              </div>
+            </div>
+
+            <div class="tutorial-step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Add Yes/No Fields</h4>
+                <p>In the Form Builder, add each check as a separate Yes/No field:</p>
+                <div class="example-box">
+                  <p class="example-title">Example Opening Checks Form</p>
+                  <div class="mock-form builder-mock">
+                    <!-- Field 1 -->
+                    <div class="mock-field-item">
+                      <div class="drag-handle">☰</div>
+                      <div class="field-config">
+                        <div class="field-row">
+                          <div>
+                            <label>Field Label</label>
+                            <input type="text" value="Fire exits clear and unobstructed?" disabled>
+                          </div>
+                          <div>
+                            <label>Field Type</label>
+                            <select disabled><option>✓/✗ Yes/No</option></select>
+                          </div>
+                        </div>
+                        <div class="mock-checkbox small"><input type="checkbox" checked disabled><span>Required</span></div>
+                      </div>
+                    </div>
+                    <!-- Field 2 -->
+                    <div class="mock-field-item">
+                      <div class="drag-handle">☰</div>
+                      <div class="field-config">
+                        <div class="field-row">
+                          <div>
+                            <label>Field Label</label>
+                            <input type="text" value="Hand wash stations stocked?" disabled>
+                          </div>
+                          <div>
+                            <label>Field Type</label>
+                            <select disabled><option>✓/✗ Yes/No</option></select>
+                          </div>
+                        </div>
+                        <div class="mock-checkbox small"><input type="checkbox" checked disabled><span>Required</span></div>
+                      </div>
+                    </div>
+                    <!-- Field 3 -->
+                    <div class="mock-field-item">
+                      <div class="drag-handle">☰</div>
+                      <div class="field-config">
+                        <div class="field-row">
+                          <div>
+                            <label>Field Label</label>
+                            <input type="text" value="First aid kit accessible and stocked?" disabled>
+                          </div>
+                          <div>
+                            <label>Field Type</label>
+                            <select disabled><option>✓/✗ Yes/No</option></select>
+                          </div>
+                        </div>
+                        <div class="mock-checkbox small"><input type="checkbox" checked disabled><span>Required</span></div>
+                      </div>
+                    </div>
+                    <!-- Field 4 -->
+                    <div class="mock-field-item">
+                      <div class="drag-handle">☰</div>
+                      <div class="field-config">
+                        <div class="field-row">
+                          <div>
+                            <label>Field Label</label>
+                            <input type="text" value="All equipment working correctly?" disabled>
+                          </div>
+                          <div>
+                            <label>Field Type</label>
+                            <select disabled><option>✓/✗ Yes/No</option></select>
+                          </div>
+                        </div>
+                        <div class="mock-checkbox small"><input type="checkbox" checked disabled><span>Required</span></div>
+                      </div>
+                    </div>
+                    <!-- Field 5 -->
+                    <div class="mock-field-item">
+                      <div class="drag-handle">☰</div>
+                      <div class="field-config">
+                        <div class="field-row">
+                          <div>
+                            <label>Field Label</label>
+                            <input type="text" value="Floors clean and dry (no slip hazards)?" disabled>
+                          </div>
+                          <div>
+                            <label>Field Type</label>
+                            <select disabled><option>✓/✗ Yes/No</option></select>
+                          </div>
+                        </div>
+                        <div class="mock-checkbox small"><input type="checkbox" checked disabled><span>Required</span></div>
+                      </div>
+                    </div>
+                    <!-- Field 6 - Notes -->
+                    <div class="mock-field-item">
+                      <div class="drag-handle">☰</div>
+                      <div class="field-config">
+                        <div class="field-row">
+                          <div>
+                            <label>Field Label</label>
+                            <input type="text" value="Additional notes or issues" disabled>
+                          </div>
+                          <div>
+                            <label>Field Type</label>
+                            <select disabled><option>📝 Text</option></select>
+                          </div>
+                        </div>
+                        <div class="mock-checkbox small"><input type="checkbox" disabled><span>Required</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tutorial-step">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h4>Save and Test</h4>
+                <p>Click <strong>Save Fields</strong> then <strong>Done</strong>. Your task is now ready!</p>
+                <p>When staff complete this task, they'll see:</p>
+                <div class="example-box compact">
+                  <p class="example-title">What Staff Will See</p>
+                  <div class="mock-form staff-view">
+                    <div class="mock-yesno-field">
+                      <label>Fire exits clear and unobstructed? <span class="required">*</span></label>
+                      <div class="yesno-buttons">
+                        <button class="yes-btn selected">Yes</button>
+                        <button class="no-btn">No</button>
+                      </div>
+                    </div>
+                    <div class="mock-yesno-field">
+                      <label>Hand wash stations stocked? <span class="required">*</span></label>
+                      <div class="yesno-buttons">
+                        <button class="yes-btn selected">Yes</button>
+                        <button class="no-btn">No</button>
+                      </div>
+                    </div>
+                    <div class="mock-yesno-field">
+                      <label>First aid kit accessible and stocked? <span class="required">*</span></label>
+                      <div class="yesno-buttons">
+                        <button class="yes-btn">Yes</button>
+                        <button class="no-btn selected">No</button>
+                      </div>
+                    </div>
+                    <div class="mock-field">
+                      <label>Additional notes or issues</label>
+                      <textarea disabled placeholder="Enter any issues found...">First aid kit needs plasters restocked</textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pro-tips">
+            <h4><i class="fa-solid fa-lightbulb"></i> Pro Tips</h4>
+            <ul>
+              <li><strong>Group related checks</strong> - Create separate tasks for different areas (Kitchen Opening, Front of House Opening)</li>
+              <li><strong>Add a notes field</strong> - Always include a text field for staff to report issues</li>
+              <li><strong>Use clear questions</strong> - Phrase questions so "Yes" means everything is OK</li>
+              <li><strong>Consider adding photo fields</strong> - For evidence of issues or compliance</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- More Examples -->
+        <div class="faq-item">
+          <h3>More Example Tasks You Can Create</h3>
+          <div class="example-cards">
+            <div class="example-card">
+              <h4><i class="fa-solid fa-temperature-half"></i> Temperature Log</h4>
+              <p>Multiple temperature fields for different fridges/freezers</p>
+              <ul>
+                <li>Walk-in Fridge (🌡️ Temperature)</li>
+                <li>Prep Fridge (🌡️ Temperature)</li>
+                <li>Freezer (🌡️ Temperature)</li>
+                <li>Photo Evidence (📷 Photo)</li>
+              </ul>
+            </div>
+            <div class="example-card">
+              <h4><i class="fa-solid fa-broom"></i> Cleaning Checklist</h4>
+              <p>Yes/No checks with condition dropdown</p>
+              <ul>
+                <li>Surfaces wiped down (✓/✗ Yes/No)</li>
+                <li>Floors mopped (✓/✗ Yes/No)</li>
+                <li>Bins emptied (✓/✗ Yes/No)</li>
+                <li>Overall cleanliness (📋 Good/Fair/Poor)</li>
+              </ul>
+            </div>
+            <div class="example-card">
+              <h4><i class="fa-solid fa-truck"></i> Delivery Check</h4>
+              <p>Record delivery details and quality</p>
+              <ul>
+                <li>Supplier name (📝 Text)</li>
+                <li>Delivery temperature (🌡️ Temperature)</li>
+                <li>Packaging intact (✓/✗ Yes/No)</li>
+                <li>Quality acceptable (✓/✗ Yes/No)</li>
+                <li>Delivery photo (📷 Photo)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- Managing Sites (Admin only) -->

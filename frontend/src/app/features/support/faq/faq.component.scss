@@ -488,3 +488,205 @@
   padding-top: 1rem;
   border-top: 1px solid #e5e7eb;
 }
+
+// Tutorial styles
+.tutorial-highlight {
+  border: 2px solid #0891b2;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+.tutorial-steps {
+  margin-top: 1.5rem;
+}
+
+.tutorial-step {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px dashed #d1d5db;
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
+.step-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0891b2, #06b6d4);
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+
+  h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+
+  code {
+    background: #e5e7eb;
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #374151;
+  }
+}
+
+.example-box.compact {
+  padding: 1rem;
+
+  .mock-form {
+    padding: 1rem;
+  }
+}
+
+.staff-view {
+  background: #f9fafb;
+}
+
+.mock-yesno-field {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+
+  label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.yesno-buttons {
+  display: flex;
+  gap: 0.5rem;
+
+  button {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: default;
+    transition: all 0.2s;
+
+    &.yes-btn {
+      background: #f0fdf4;
+      border: 2px solid #bbf7d0;
+      color: #15803d;
+
+      &.selected {
+        background: #22c55e;
+        border-color: #22c55e;
+        color: white;
+      }
+    }
+
+    &.no-btn {
+      background: #fef2f2;
+      border: 2px solid #fecaca;
+      color: #dc2626;
+
+      &.selected {
+        background: #ef4444;
+        border-color: #ef4444;
+        color: white;
+      }
+    }
+  }
+}
+
+.pro-tips {
+  background: #fefce8;
+  border: 1px solid #fde047;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1.5rem;
+
+  h4 {
+    color: #854d0e;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+
+    i {
+      color: #eab308;
+      margin-right: 0.5rem;
+    }
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: #713f12;
+
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.example-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.example-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem;
+
+  h4 {
+    font-size: 1rem;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+
+    i {
+      color: #0891b2;
+      margin-right: 0.5rem;
+    }
+  }
+
+  > p {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 0.75rem;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    font-size: 0.85rem;
+
+    li {
+      margin-bottom: 0.375rem;
+      color: #4b5563;
+    }
+  }
+}
