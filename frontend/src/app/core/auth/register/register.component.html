@@ -1,8 +1,19 @@
-<div class="min-h-screen bg-gradient-to-br from-cyan-50 to-gray-100 flex items-center justify-center p-4">
+<!-- Header -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+    <a routerLink="/" class="flex items-center gap-2">
+      <img src="/assets/images/zynthio-logo.svg" alt="Zynthio" class="h-10">
+    </a>
+    <nav class="flex items-center gap-4">
+      <a routerLink="/login" class="text-gray-600 hover:text-gray-900">Sign In</a>
+    </nav>
+  </div>
+</header>
+
+<div class="min-h-screen bg-gradient-to-br from-cyan-50 to-gray-100 flex items-center justify-center p-4 pt-8">
   <div class="w-full max-w-2xl">
-    <!-- Logo/Header -->
+    <!-- Page Title -->
     <div class="text-center mb-8">
-      <img src="/assets/images/zynthio-logo.svg" alt="Zynthio Logo" class="h-16 mx-auto mb-4">
       <h1 class="text-2xl font-bold text-gray-900">Start Your Free Trial</h1>
       <p class="text-gray-600 mt-2">No credit card required. Get full access for 6 months.</p>
     </div>
@@ -151,7 +162,7 @@
       </form>
     </div>
 
-    <!-- Footer -->
+    <!-- Terms Note -->
     <p class="text-center text-sm text-gray-600 mt-6">
       By signing up, you agree to our
       <a routerLink="/terms" class="text-blue-600 hover:underline">Terms of Service</a> and
@@ -159,3 +170,20 @@
     </p>
   </div>
 </div>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-8">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-2">
+        <img src="/assets/images/zynthio-logo.svg" alt="Zynthio" class="h-8 brightness-0 invert">
+        <span class="text-sm text-gray-400">© 2024 Zynthio. All rights reserved.</span>
+      </div>
+      <nav class="flex gap-6 text-sm">
+        <a routerLink="/terms" class="text-gray-400 hover:text-white">Terms</a>
+        <a routerLink="/privacy" class="text-gray-400 hover:text-white">Privacy</a>
+        <a routerLink="/cookies" class="text-gray-400 hover:text-white">Cookies</a>
+      </nav>
+    </div>
+  </div>
+</footer>
