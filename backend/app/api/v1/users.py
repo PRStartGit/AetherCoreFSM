@@ -3,7 +3,10 @@ from sqlalchemy.orm import Session
 from typing import List
 import secrets
 import string
+import logging
 from app.core.database import get_db
+
+logger = logging.getLogger(__name__)
 from app.core.dependencies import get_current_org_admin, get_current_user
 from app.core.security import get_password_hash
 from app.core.email import send_welcome_email
@@ -87,7 +90,7 @@ def create_user(
         )
 
         # Log email attempt
-        print(f"Attempting to send welcome email to {new_user.email} (role: {new_user.role.value})")
+        logger.info(f"Attempting to send welcome email to {new_user.email} (role: {new_user.role.value})")
 
         # Send welcome email with temporary password
         email_sent = send_welcome_email(
@@ -101,14 +104,14 @@ def create_user(
         )
 
         if email_sent:
-            print(f"✅ Welcome email sent successfully to {new_user.email}")
+            logger.info(f"Welcome email sent successfully to {new_user.email}")
         else:
-            print(f"⚠️ Welcome email failed to send to {new_user.email} (no exception raised)")
+            logger.warning(f"Welcome email failed to send to {new_user.email} (no exception raised)")
     except Exception as e:
         # Log error but don't fail user creation
         import traceback
-        print(f"❌ Failed to send welcome email to {new_user.email}: {str(e)}")
-        print(f"Traceback: {traceback.format_exc()}")
+        logger.error(f"Failed to send welcome email to {new_user.email}: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
 
     # Log user registration
     try:
@@ -122,7 +125,7 @@ def create_user(
             organization_name=organization_name
         )
     except Exception as e:
-        print(f"Failed to log user registration: {e}")
+        logger.error(f"Failed to log user registration: {e}")
 
     return new_user
 
