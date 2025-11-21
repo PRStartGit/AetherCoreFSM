@@ -1,0 +1,481 @@
+<div class="faq-container">
+  <!-- Header -->
+  <div class="faq-header">
+    <h1><i class="fa-solid fa-circle-question"></i> Help & FAQ</h1>
+    <p>Everything you need to know about using Zynthio</p>
+  </div>
+
+  <div class="faq-content">
+    <!-- Sidebar Navigation -->
+    <nav class="faq-nav">
+      <ul>
+        <ng-container *ngFor="let section of sections">
+          <li *ngIf="canViewSection(section)"
+              [class.active]="activeSection === section.id"
+              (click)="setActiveSection(section.id)">
+            <i [class]="section.icon"></i>
+            <span>{{ section.title }}</span>
+          </li>
+        </ng-container>
+      </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="faq-main">
+
+      <!-- Getting Started -->
+      <section *ngIf="activeSection === 'getting-started'" class="faq-section">
+        <h2><i class="fa-solid fa-rocket"></i> Getting Started</h2>
+
+        <div class="faq-item">
+          <h3>What is Zynthio?</h3>
+          <p>Zynthio is a digital food safety and compliance management system designed for hospitality businesses. It helps you:</p>
+          <ul>
+            <li>Complete daily, weekly, and monthly safety checklists</li>
+            <li>Record temperature checks and other compliance data</li>
+            <li>Report and track equipment defects</li>
+            <li>Generate EHO-ready reports automatically</li>
+          </ul>
+        </div>
+
+        <div class="faq-item">
+          <h3>How do I navigate the dashboard?</h3>
+          <p>After logging in, you'll see your dashboard with:</p>
+          <ul>
+            <li><strong>Sidebar menu</strong> - Access all features (Checklists, Defects, etc.)</li>
+            <li><strong>Today's Tasks</strong> - Checklists due for completion today</li>
+            <li><strong>Quick Stats</strong> - Overview of compliance status</li>
+          </ul>
+        </div>
+
+        <div class="faq-item">
+          <h3>What do the different user roles mean?</h3>
+          <div class="info-box">
+            <p><strong>Site User:</strong> Can complete checklists and report defects for their assigned site(s).</p>
+            <p *ngIf="isAdmin()"><strong>Org Admin:</strong> Can manage sites, users, create tasks and categories for their organization.</p>
+            <p *ngIf="userRole === UserRole.SUPER_ADMIN"><strong>Super Admin:</strong> Full system access including managing all organizations.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Completing Checklists -->
+      <section *ngIf="activeSection === 'checklists'" class="faq-section">
+        <h2><i class="fa-solid fa-clipboard-check"></i> Completing Checklists</h2>
+
+        <div class="faq-item">
+          <h3>How do I complete a checklist?</h3>
+          <ol>
+            <li>Go to <strong>Checklists</strong> from the sidebar menu</li>
+            <li>Find the checklist you need to complete (Daily, Weekly, or Monthly)</li>
+            <li>Click the <strong>Complete</strong> button</li>
+            <li>Work through each task, filling in required information</li>
+            <li>Submit each task as you complete it</li>
+          </ol>
+        </div>
+
+        <div class="faq-item">
+          <h3>Example: Completing a Temperature Check Task</h3>
+          <div class="example-box">
+            <p class="example-title">When you open a temperature check task, you'll see:</p>
+            <div class="mock-form">
+              <div class="mock-field">
+                <label>Fridge Temperature (°C) <span class="required">*</span></label>
+                <input type="text" placeholder="e.g., 4.5" disabled>
+                <p class="hint">Enter the temperature reading from your fridge thermometer</p>
+              </div>
+              <div class="mock-field">
+                <label>Photo Evidence</label>
+                <div class="mock-upload">
+                  <i class="fa-solid fa-camera"></i>
+                  <span>Take or upload photo</span>
+                </div>
+              </div>
+              <button class="mock-btn" disabled>Submit Task</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <h3>What happens if a reading is out of range?</h3>
+          <p>If you enter a value outside the acceptable range (e.g., fridge temperature above 8°C), the system will:</p>
+          <ul>
+            <li>Highlight the field in <span class="text-warning">amber</span> or <span class="text-danger">red</span></li>
+            <li>Prompt you to take corrective action</li>
+            <li>Log the incident for your records</li>
+          </ul>
+        </div>
+
+        <div class="faq-item">
+          <h3>Can I complete checklists on my mobile phone?</h3>
+          <p>Yes! Zynthio is fully mobile-responsive. Simply log in from your phone's browser and complete checklists on the go.</p>
+        </div>
+      </section>
+
+      <!-- Reporting Defects -->
+      <section *ngIf="activeSection === 'defects'" class="faq-section">
+        <h2><i class="fa-solid fa-triangle-exclamation"></i> Reporting Defects</h2>
+
+        <div class="faq-item">
+          <h3>How do I report an equipment defect?</h3>
+          <ol>
+            <li>Go to <strong>Defects</strong> from the sidebar</li>
+            <li>Click <strong>Report New Defect</strong></li>
+            <li>Select the equipment type and describe the issue</li>
+            <li>Add photos if possible</li>
+            <li>Set the priority level</li>
+            <li>Submit the report</li>
+          </ol>
+        </div>
+
+        <div class="faq-item">
+          <h3>What are the priority levels?</h3>
+          <div class="priority-list">
+            <div class="priority-item priority-low">
+              <strong>Low:</strong> Minor issue, can be fixed during routine maintenance
+            </div>
+            <div class="priority-item priority-medium">
+              <strong>Medium:</strong> Should be addressed within a few days
+            </div>
+            <div class="priority-item priority-high">
+              <strong>High:</strong> Urgent - needs immediate attention
+            </div>
+            <div class="priority-item priority-critical">
+              <strong>Critical:</strong> Safety hazard - equipment should not be used
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <h3>How do I update or resolve a defect?</h3>
+          <p>Click on any defect to view details. From there you can:</p>
+          <ul>
+            <li>Add comments or updates</li>
+            <li>Change the status (Open, In Progress, Resolved)</li>
+            <li>Upload additional photos</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Managing Categories (Admin only) -->
+      <section *ngIf="activeSection === 'categories' && isAdmin()" class="faq-section">
+        <h2><i class="fa-solid fa-tag"></i> Managing Categories</h2>
+
+        <div class="faq-item">
+          <h3>What are categories?</h3>
+          <p>Categories group related tasks together and determine their frequency. Examples:</p>
+          <ul>
+            <li><strong>Opening Checks</strong> (Daily) - Tasks to complete when opening</li>
+            <li><strong>Temperature Monitoring</strong> (Daily) - Fridge/freezer temperature logs</li>
+            <li><strong>Deep Clean</strong> (Weekly) - Thorough cleaning tasks</li>
+            <li><strong>Equipment Maintenance</strong> (Monthly) - Routine equipment checks</li>
+          </ul>
+        </div>
+
+        <div class="faq-item">
+          <h3>How do I create a new category?</h3>
+          <ol>
+            <li>Go to <strong>Categories</strong> from the sidebar</li>
+            <li>Click <strong>New Category</strong></li>
+            <li>Enter a name and description</li>
+            <li>Select the frequency (Daily, Weekly, or Monthly)</li>
+            <li>Click <strong>Create</strong></li>
+          </ol>
+
+          <div class="example-box">
+            <p class="example-title">Example: Creating a Category</p>
+            <div class="mock-form">
+              <div class="mock-field">
+                <label>Category Name <span class="required">*</span></label>
+                <input type="text" value="Temperature Monitoring" disabled>
+              </div>
+              <div class="mock-field">
+                <label>Frequency <span class="required">*</span></label>
+                <select disabled>
+                  <option selected>Daily</option>
+                </select>
+              </div>
+              <div class="mock-field">
+                <label>Description</label>
+                <textarea disabled>Record temperatures of all fridges and freezers</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Creating Tasks (Admin only) -->
+      <section *ngIf="activeSection === 'tasks' && isAdmin()" class="faq-section">
+        <h2><i class="fa-solid fa-list-check"></i> Creating Tasks</h2>
+
+        <div class="faq-item">
+          <h3>What is a task?</h3>
+          <p>A task is a specific action item within a category that staff need to complete. Tasks appear in checklists based on their category's frequency.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>How do I create a new task?</h3>
+          <ol>
+            <li>Go to <strong>Tasks</strong> from the sidebar</li>
+            <li>Click <strong>New Task</strong></li>
+            <li>Fill in the task details</li>
+            <li>Optionally enable Dynamic Form Fields for data collection</li>
+            <li>Click <strong>Create</strong> (or <strong>Next: Configure Fields</strong> if using dynamic forms)</li>
+          </ol>
+        </div>
+
+        <div class="faq-item">
+          <h3>Example: Creating a Task</h3>
+          <div class="example-box">
+            <p class="example-title">New Task Form</p>
+            <div class="mock-form">
+              <div class="mock-field">
+                <label>Name <span class="required">*</span></label>
+                <input type="text" value="Check Fridge Temperature" disabled>
+                <p class="hint">e.g., Check fire extinguishers</p>
+              </div>
+              <div class="mock-field">
+                <label>Description</label>
+                <textarea disabled>Record the temperature of the main kitchen fridge using the digital thermometer.</textarea>
+              </div>
+              <div class="mock-field">
+                <label>Category <span class="required">*</span></label>
+                <select disabled>
+                  <option selected>Temperature Monitoring (Daily)</option>
+                </select>
+                <p class="hint">Frequency is inherited from the selected category</p>
+              </div>
+              <div class="mock-field">
+                <label>Assign to Sites</label>
+                <div class="mock-multiselect">
+                  <div class="selected-site">Main Kitchen</div>
+                  <div class="selected-site">Prep Area</div>
+                </div>
+                <p class="hint">Hold Ctrl/Cmd to select multiple sites. Leave empty to assign to all sites</p>
+              </div>
+              <div class="mock-checkbox">
+                <input type="checkbox" checked disabled>
+                <div>
+                  <strong>Enable Dynamic Form Fields</strong>
+                  <p class="hint">Configure custom form fields for data collection</p>
+                </div>
+              </div>
+              <div class="mock-checkbox">
+                <input type="checkbox" checked disabled>
+                <strong>Active</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <h3>What does "Assign to Sites" mean?</h3>
+          <p>You can assign tasks to specific sites or leave it empty to apply to all sites. This is useful when:</p>
+          <ul>
+            <li>Different sites have different equipment</li>
+            <li>Some tasks only apply to certain locations</li>
+            <li>You want to test a task at one site before rolling out</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Dynamic Form Fields (Admin only) -->
+      <section *ngIf="activeSection === 'dynamic-forms' && isAdmin()" class="faq-section">
+        <h2><i class="fa-solid fa-sliders"></i> Dynamic Form Fields</h2>
+
+        <div class="faq-item">
+          <h3>What are Dynamic Form Fields?</h3>
+          <p>Dynamic form fields allow you to create custom data collection forms for tasks. Instead of just marking a task as "done", staff can enter specific data like temperatures, readings, or select from predefined options.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Available Field Types</h3>
+          <div class="field-types-grid">
+            <div class="field-type">
+              <span class="icon">📝</span>
+              <strong>Text</strong>
+              <p>Free-form text input</p>
+            </div>
+            <div class="field-type">
+              <span class="icon">🔢</span>
+              <strong>Number</strong>
+              <p>Numeric values</p>
+            </div>
+            <div class="field-type">
+              <span class="icon">🌡️</span>
+              <strong>Temperature</strong>
+              <p>Temperature readings with range validation</p>
+            </div>
+            <div class="field-type">
+              <span class="icon">✓/✗</span>
+              <strong>Yes/No</strong>
+              <p>Simple yes or no answers</p>
+            </div>
+            <div class="field-type">
+              <span class="icon">📋</span>
+              <strong>Dropdown</strong>
+              <p>Select from predefined options</p>
+            </div>
+            <div class="field-type">
+              <span class="icon">📷</span>
+              <strong>Photo</strong>
+              <p>Upload or take a photo</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <h3>How do I add form fields to a task?</h3>
+          <ol>
+            <li>Create or edit a task</li>
+            <li>Check <strong>"Enable Dynamic Form Fields"</strong></li>
+            <li>Click <strong>"Next: Configure Fields"</strong> (or <strong>"Edit Form Fields"</strong> for existing tasks)</li>
+            <li>Use the Form Builder to add fields</li>
+          </ol>
+        </div>
+
+        <div class="faq-item">
+          <h3>Example: Configuring Form Fields</h3>
+          <div class="example-box">
+            <p class="example-title">Dynamic Form Builder</p>
+            <div class="mock-form builder-mock">
+              <p class="builder-header">Configure custom fields for this task</p>
+
+              <!-- Field 1 -->
+              <div class="mock-field-item">
+                <div class="drag-handle">☰</div>
+                <div class="field-config">
+                  <div class="field-row">
+                    <div>
+                      <label>Field Label *</label>
+                      <input type="text" value="Fridge Temperature (°C)" disabled>
+                    </div>
+                    <div>
+                      <label>Field Type *</label>
+                      <select disabled>
+                        <option selected>🌡️ Temperature</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="mock-checkbox small">
+                    <input type="checkbox" checked disabled>
+                    <span>Required field</span>
+                  </div>
+                </div>
+                <button class="delete-btn" disabled>🗑️</button>
+              </div>
+
+              <!-- Field 2 -->
+              <div class="mock-field-item">
+                <div class="drag-handle">☰</div>
+                <div class="field-config">
+                  <div class="field-row">
+                    <div>
+                      <label>Field Label *</label>
+                      <input type="text" value="Condition" disabled>
+                    </div>
+                    <div>
+                      <label>Field Type *</label>
+                      <select disabled>
+                        <option selected>📋 Dropdown</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label>Options (comma-separated) *</label>
+                    <input type="text" value="Good, Acceptable, Needs Attention" disabled>
+                  </div>
+                </div>
+                <button class="delete-btn" disabled>🗑️</button>
+              </div>
+
+              <div class="builder-actions">
+                <button class="mock-btn secondary" disabled>+ Add Field</button>
+                <button class="mock-btn primary" disabled>💾 Save Fields</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <h3>Tips for creating effective forms</h3>
+          <ul>
+            <li><strong>Keep it simple</strong> - Only ask for essential information</li>
+            <li><strong>Use appropriate field types</strong> - Temperature fields validate ranges automatically</li>
+            <li><strong>Order matters</strong> - Drag fields to arrange them logically</li>
+            <li><strong>Mark required fields</strong> - Ensure critical data is always captured</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Managing Sites (Admin only) -->
+      <section *ngIf="activeSection === 'sites' && isAdmin()" class="faq-section">
+        <h2><i class="fa-solid fa-location-dot"></i> Managing Sites</h2>
+
+        <div class="faq-item">
+          <h3>What is a site?</h3>
+          <p>A site represents a physical location (e.g., a restaurant, kitchen, or branch). Each site has its own:</p>
+          <ul>
+            <li>Set of checklists</li>
+            <li>Assigned users</li>
+            <li>Report schedule</li>
+          </ul>
+        </div>
+
+        <div class="faq-item">
+          <h3>How do I add a new site?</h3>
+          <ol>
+            <li>Go to <strong>Sites</strong> from the sidebar</li>
+            <li>Click <strong>Add Site</strong></li>
+            <li>Enter site details (name, address, contact info)</li>
+            <li>Configure report settings</li>
+            <li>Click <strong>Create</strong></li>
+          </ol>
+        </div>
+
+        <div class="faq-item">
+          <h3>Automated Reports</h3>
+          <p>Each site can receive automated email reports:</p>
+          <ul>
+            <li><strong>Daily Reports</strong> - Sent every morning at 9:00 AM with the previous day's summary</li>
+            <li><strong>Weekly Reports</strong> - Comprehensive weekly overview</li>
+          </ul>
+          <p>Configure report recipients in the site settings.</p>
+        </div>
+      </section>
+
+      <!-- Managing Users (Admin only) -->
+      <section *ngIf="activeSection === 'users' && isAdmin()" class="faq-section">
+        <h2><i class="fa-solid fa-users"></i> Managing Users</h2>
+
+        <div class="faq-item">
+          <h3>How do I add a new user?</h3>
+          <ol>
+            <li>Go to <strong>Users</strong> from the sidebar</li>
+            <li>Click <strong>Add User</strong></li>
+            <li>Enter user details and email address</li>
+            <li>Select their role (Site User or Org Admin)</li>
+            <li>Assign them to site(s)</li>
+            <li>Click <strong>Create</strong></li>
+          </ol>
+          <p>The user will receive an email with login instructions.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Can users be assigned to multiple sites?</h3>
+          <p>Yes! When creating or editing a user, you can select multiple sites. This is useful for:</p>
+          <ul>
+            <li>Managers who oversee multiple locations</li>
+            <li>Relief staff who work at different sites</li>
+            <li>Area supervisors</li>
+          </ul>
+        </div>
+
+        <div class="faq-item">
+          <h3>How do I deactivate a user?</h3>
+          <p>Edit the user and uncheck the <strong>"Active"</strong> checkbox. Deactivated users cannot log in but their historical data is preserved.</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>

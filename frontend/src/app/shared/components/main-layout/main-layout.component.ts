@@ -67,7 +67,8 @@ export class MainLayoutComponent implements OnInit {
           { label: 'Tasks', icon: icons.tasks, route: '/tasks' },
           { label: 'Checklists', icon: icons.checklist, route: '/checklists' },
           { label: 'Defects', icon: icons.defects, route: '/defects' },
-          { label: 'Profile', icon: icons.profile, route: '/profile' }
+          { label: 'Profile', icon: icons.profile, route: '/profile' },
+          { label: 'Support', icon: 'fa-solid fa-circle-question', route: '/support/faq' }
         ];
         break;
       case UserRole.ORG_ADMIN:
@@ -79,7 +80,8 @@ export class MainLayoutComponent implements OnInit {
           { label: 'Tasks', icon: icons.tasks, route: '/tasks' },
           { label: 'Checklists', icon: icons.checklist, route: '/checklists' },
           { label: 'Defects', icon: icons.defects, route: '/defects' },
-          { label: 'Profile', icon: icons.profile, route: '/profile' }
+          { label: 'Profile', icon: icons.profile, route: '/profile' },
+          { label: 'Support', icon: 'fa-solid fa-circle-question', route: '/support/faq' }
         ];
         break;
       case UserRole.SITE_USER:
@@ -87,7 +89,8 @@ export class MainLayoutComponent implements OnInit {
           { label: 'Dashboard', icon: icons.dashboard, route: '/site-user' },
           { label: 'Checklists', icon: icons.checklist, route: '/checklists' },
           { label: 'Defects', icon: icons.defects, route: '/defects' },
-          { label: 'Profile', icon: icons.profile, route: '/profile' }
+          { label: 'Profile', icon: icons.profile, route: '/profile' },
+          { label: 'Support', icon: 'fa-solid fa-circle-question', route: '/support/faq' }
         ];
         break;
     }

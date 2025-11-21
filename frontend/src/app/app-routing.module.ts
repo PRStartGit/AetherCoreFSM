@@ -27,6 +27,7 @@ import { TermsOfServiceComponent } from './features/legal/terms/terms-of-service
 import { PrivacyPolicyComponent } from './features/legal/privacy/privacy-policy.component';
 import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.component';
 import { PromotionListComponent } from './features/super-admin/promotions/promotion-list/promotion-list.component';
+import { FaqComponent } from './features/support/faq/faq.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { UserRole } from './core/models';
@@ -202,6 +203,11 @@ const routes: Routes = [
       {
         path: 'profile',
         component: ProfileComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'support/faq',
+        component: FaqComponent,
         canActivate: [AuthGuard]
       }
     ]

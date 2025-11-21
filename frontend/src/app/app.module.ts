@@ -65,6 +65,7 @@ import { TermsOfServiceComponent } from './features/legal/terms/terms-of-service
 import { PrivacyPolicyComponent } from './features/legal/privacy/privacy-policy.component';
 import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.component';
 import { PromotionListComponent } from './features/super-admin/promotions/promotion-list/promotion-list.component';
+import { FaqComponent } from './features/support/faq/faq.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +99,8 @@ import { PromotionListComponent } from './features/super-admin/promotions/promot
     TermsOfServiceComponent,
     PrivacyPolicyComponent,
     CookiePolicyComponent,
-    PromotionListComponent
+    PromotionListComponent,
+    FaqComponent
   ],
   imports: [
     BrowserModule,
