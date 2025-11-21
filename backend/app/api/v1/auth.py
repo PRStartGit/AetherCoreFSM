@@ -13,10 +13,10 @@ from app.core.dependencies import get_current_user
 from app.models.user import UserRole
 from app.api.v1.activity_logs import log_activity
 from app.models.activity_log import LogType
-import os
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+from app.core.email import send_org_admin_welcome_email
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -266,125 +266,6 @@ def reset_password(
     return {"message": "Password has been successfully reset. You can now login with your new password."}
 
 
-def send_welcome_email(email: str, org_id: str, password: str, company_name: str) -> bool:
-    """
-    Send welcome email to new trial user.
-    Returns True if email sent successfully, False otherwise.
-    """
-    try:
-        smtp_host = os.getenv('SMTP_HOST', 'smtp.gmail.com')
-        smtp_port = int(os.getenv('SMTP_PORT', '587'))
-        smtp_user = os.getenv('SMTP_USER', '')
-        smtp_password = os.getenv('SMTP_PASSWORD', '')
-        from_email = os.getenv('FROM_EMAIL', 'hello@zynthio.com')
-        from_name = os.getenv('FROM_NAME', 'Zynthio')
-
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = 'Welcome to Zynthio - Your Trial Account is Ready!'
-        msg['From'] = f'{from_name} <{from_email}>'
-        msg['To'] = email
-
-        # Email body
-        html = f'''
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-        .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-        .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
-        .button {{ display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }}
-        .footer {{ text-align: center; margin-top: 30px; color: #666; font-size: 12px; }}
-        .credentials {{ background: white; padding: 15px; border-left: 4px solid #667eea; margin: 20px 0; }}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Welcome to Zynthio!</h1>
-            <p>Your Safety Management Platform</p>
-        </div>
-        <div class="content">
-            <h2>Hello {company_name},</h2>
-            <p>Thank you for signing up for Zynthio! Your trial account has been created and is ready to use.</p>
-
-            <div class="credentials">
-                <h3>Your Login Credentials:</h3>
-                <p><strong>Organization ID:</strong> {org_id}</p>
-                <p><strong>Email:</strong> {email}</p>
-                <p><strong>Password:</strong> {password}</p>
-                <p><strong>URL:</strong> <a href="https://zynthio.com">https://zynthio.com</a></p>
-            </div>
-
-            <p>As an Organization Admin, you can:</p>
-            <ul>
-                <li>Create and manage sites</li>
-                <li>Add team members</li>
-                <li>Configure safety checklists</li>
-                <li>View reports and analytics</li>
-                <li>Monitor compliance across your organization</li>
-            </ul>
-
-            <center>
-                <a href="https://zynthio.com" class="button">Login to Zynthio</a>
-            </center>
-
-            <p><strong>Important:</strong> We recommend changing your password after your first login for security.</p>
-
-            <p>If you have any questions or need assistance getting started, feel free to reach out to our support team.</p>
-
-            <p>Best regards,<br>The Zynthio Team</p>
-        </div>
-        <div class="footer">
-            <p>This email was sent from Zynthio Site Monitoring Platform</p>
-            <p>2025 Zynthio. All rights reserved.</p>
-        </div>
-    </div>
-</body>
-</html>
-'''
-
-        text = f'''
-Welcome to Zynthio!
-
-Thank you for signing up! Your trial account has been created.
-
-Login Credentials:
-------------------
-Organization ID: {org_id}
-Email: {email}
-Password: {password}
-URL: https://zynthio.com
-
-As an Organization Admin, you can manage sites, add team members, configure safety checklists, and monitor compliance.
-
-We recommend changing your password after your first login.
-
-Best regards,
-The Zynthio Team
-'''
-
-        # Attach parts
-        part1 = MIMEText(text, 'plain')
-        part2 = MIMEText(html, 'html')
-        msg.attach(part1)
-        msg.attach(part2)
-
-        # Send email
-        server = smtplib.SMTP(smtp_host, smtp_port)
-        server.starttls()
-        server.login(smtp_user, smtp_password)
-        server.send_message(msg)
-        server.quit()
-
-        print(f"Welcome email sent to {email}")
-        return True
-    except Exception as e:
-        print(f"Failed to send welcome email: {str(e)}")
-        return False
-
-
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register_trial(
     registration: RegistrationRequest,
@@ -458,12 +339,19 @@ def register_trial(
     db.refresh(admin_user)
 
     # Send welcome email (non-blocking, continue even if email fails)
-    send_welcome_email(
-        email=registration.admin_email,
-        org_id=new_org.org_id,
-        password=registration.admin_password,
-        company_name=registration.company_name
-    )
+    try:
+        send_org_admin_welcome_email(
+            admin_email=registration.admin_email,
+            contact_person=registration.contact_person,
+            organization_name=registration.company_name,
+            org_id=new_org.org_id,
+            subscription_tier=new_org.subscription_tier,
+            temporary_password=registration.admin_password,
+            reset_password_url="https://zynthio.com/login"
+        )
+        logger.info(f"Welcome email sent to {registration.admin_email}")
+    except Exception as e:
+        logger.error(f"Failed to send welcome email: {e}")
 
     print(f"\n{'='*80}")
     print(f"NEW TRIAL REGISTRATION")
