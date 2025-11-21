@@ -7,7 +7,8 @@ import { User } from '../models';
 export interface UserCreate {
   email: string;
   password: string;
-  full_name: string;
+  first_name: string;
+  last_name: string;
   role: string;
   organization_id?: number;
   site_ids?: number[];
@@ -16,7 +17,8 @@ export interface UserCreate {
 
 export interface UserUpdate {
   email?: string;
-  full_name?: string;
+  first_name?: string;
+  last_name?: string;
   role?: string;
   is_active?: boolean;
   site_ids?: number[];
@@ -48,15 +50,11 @@ export class UserService {
   }
 
   create(user: UserCreate): Observable<User> {
-    const nameParts = user.full_name.trim().split(' ');
-    const firstName = nameParts[0] || '';
-    const lastName = nameParts.slice(1).join(' ') || '';
-
     const payload = {
       email: user.email,
       password: user.password,
-      first_name: firstName,
-      last_name: lastName,
+      first_name: user.first_name,
+      last_name: user.last_name,
       role: user.role,
       organization_id: user.organization_id,
       site_ids: user.site_ids || [],
@@ -72,16 +70,12 @@ export class UserService {
     const payload: any = {};
 
     if (user.email !== undefined) payload.email = user.email;
+    if (user.first_name !== undefined) payload.first_name = user.first_name;
+    if (user.last_name !== undefined) payload.last_name = user.last_name;
     if (user.role !== undefined) payload.role = user.role;
     if (user.is_active !== undefined) payload.is_active = user.is_active;
     if (user.site_ids !== undefined) payload.site_ids = user.site_ids;
     if (user.password !== undefined && user.password) payload.password = user.password;
-
-    if (user.full_name !== undefined) {
-      const nameParts = user.full_name.trim().split(' ');
-      payload.first_name = nameParts[0] || '';
-      payload.last_name = nameParts.slice(1).join(' ') || '';
-    }
 
     return this.http.put<any>(`${this.API_URL}/${id}`, payload).pipe(
       map(response => this.transformUserResponse(response))

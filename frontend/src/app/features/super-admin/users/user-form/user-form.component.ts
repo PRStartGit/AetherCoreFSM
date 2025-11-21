@@ -38,7 +38,8 @@ export class UserFormComponent implements OnInit {
   ) {
     this.userForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      full_name: ['', [Validators.required, Validators.maxLength(100)]],
+      first_name: ['', [Validators.required, Validators.maxLength(50)]],
+      last_name: ['', [Validators.required, Validators.maxLength(50)]],
       password: [''],
       role: [UserRole.SITE_USER, Validators.required],
       organization_id: [null],
@@ -128,7 +129,8 @@ export class UserFormComponent implements OnInit {
       next: (user) => {
         this.userForm.patchValue({
           email: user.email,
-          full_name: user.full_name,
+          first_name: user.first_name,
+          last_name: user.last_name,
           role: user.role,
           organization_id: user.organization_id,
           site_ids: user.site_ids || [],
@@ -189,7 +191,8 @@ export class UserFormComponent implements OnInit {
     if (this.isEditMode && this.userId) {
       const updateData: UserUpdate = {
         email: formValue.email,
-        full_name: formValue.full_name,
+        first_name: formValue.first_name,
+        last_name: formValue.last_name,
         role: formValue.role,
         is_active: formValue.is_active,
         site_ids: formValue.site_ids || []
@@ -217,7 +220,8 @@ export class UserFormComponent implements OnInit {
       const createData: UserCreate = {
         email: formValue.email,
         password: tempPassword,
-        full_name: formValue.full_name,
+        first_name: formValue.first_name,
+        last_name: formValue.last_name,
         role: formValue.role,
         organization_id: formValue.organization_id,
         site_ids: formValue.site_ids || [],
@@ -249,10 +253,16 @@ export class UserFormComponent implements OnInit {
 
   getFieldError(fieldName: string): string {
     const field = this.userForm.get(fieldName);
-    if (field?.hasError('required')) return `${fieldName} is required`;
+    const labels: {[key: string]: string} = {
+      'first_name': 'First name',
+      'last_name': 'Last name',
+      'email': 'Email'
+    };
+    const label = labels[fieldName] || fieldName;
+    if (field?.hasError('required')) return `${label} is required`;
     if (field?.hasError('email')) return 'Invalid email format';
-    if (field?.hasError('minlength')) return `${fieldName} must be at least 8 characters`;
-    if (field?.hasError('maxlength')) return `${fieldName} is too long`;
+    if (field?.hasError('minlength')) return `${label} must be at least 8 characters`;
+    if (field?.hasError('maxlength')) return `${label} is too long`;
     return '';
   }
 
