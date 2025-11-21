@@ -25,6 +25,8 @@ export class SitesFormComponent implements OnInit {
   postcode = '';
   postcodeLookupLoading = false;
   postcodeLookupError: string | null = null;
+  addressList: any[] = [];
+  selectedAddressIndex: number | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -242,30 +244,21 @@ export class SitesFormComponent implements OnInit {
 
     this.postcodeLookupLoading = true;
     this.postcodeLookupError = null;
+    this.addressList = [];
+    this.selectedAddressIndex = null;
 
-    // Clean the postcode (remove spaces)
     const cleanedPostcode = this.postcode.replace(/\s/g, '');
 
-    // Call our backend proxy endpoint (avoids CORS issues with Authorization header)
     this.http.get<any>(`/api/v1/utils/postcode-lookup/${cleanedPostcode}`).subscribe({
       next: (response) => {
-        if (response.status === 200 && response.result) {
-          const result = response.result;
+        if (response.status === 200 && response.addresses && response.addresses.length > 0) {
+          this.addressList = response.addresses;
+          this.siteForm.patchValue({ postcode: response.postcode });
 
-          // Extract address components from postcode data
-          const address = result.admin_ward || result.parish || '';
-          const city = result.admin_district || '';
-          const country = result.country || 'UK';
-          const postcode = this.postcode.toUpperCase();
-
-          // Populate the separate address fields
-          this.siteForm.patchValue({
-            address: address,
-            city: city,
-            postcode: postcode,
-            country: country
-          });
-
+          // Auto-select if only one address
+          if (this.addressList.length === 1) {
+            this.selectAddress(0);
+          }
           this.postcodeLookupLoading = false;
         } else {
           this.postcodeLookupError = 'Postcode not found';
@@ -278,5 +271,28 @@ export class SitesFormComponent implements OnInit {
         console.error('Postcode lookup error:', err);
       }
     });
+  }
+
+  selectAddress(index: number): void {
+    this.selectedAddressIndex = index;
+    const addr = this.addressList[index];
+
+    // Build address from lines
+    const addressParts = [addr.line_1, addr.line_2, addr.line_3].filter(l => l && l.trim());
+    const address = addressParts.join(', ');
+
+    this.siteForm.patchValue({
+      address: address,
+      city: addr.town_or_city || '',
+      country: addr.country || 'UK'
+    });
+  }
+
+  getAddressDisplay(addr: any): string {
+    if (addr.formatted && addr.formatted.length > 0) {
+      return addr.formatted.filter((l: string) => l && l.trim()).join(', ');
+    }
+    const parts = [addr.line_1, addr.line_2, addr.town_or_city].filter(l => l && l.trim());
+    return parts.join(', ');
   }
 }

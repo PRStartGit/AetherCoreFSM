@@ -19,6 +19,8 @@ export class OrganizationFormComponent implements OnInit {
   postcodeLookupLoading = false;
   postcodeLookupError: string | null = null;
   postcode: string = '';
+  addressList: any[] = [];
+  selectedAddressIndex: number | null = null;
 
   subscriptionTiers = ['platform_admin', 'free', 'basic', 'professional', 'enterprise'];
 
@@ -154,32 +156,20 @@ export class OrganizationFormComponent implements OnInit {
 
     this.postcodeLookupLoading = true;
     this.postcodeLookupError = null;
+    this.addressList = [];
+    this.selectedAddressIndex = null;
 
-    // Clean the postcode (remove spaces)
     const cleanedPostcode = this.postcode.replace(/\s/g, '');
 
-    // Call our backend proxy endpoint (avoids CORS issues with Authorization header)
     this.http.get<any>(`/api/v1/utils/postcode-lookup/${cleanedPostcode}`).subscribe({
       next: (response) => {
-        if (response.status === 200 && response.result) {
-          const result = response.result;
+        if (response.status === 200 && response.addresses && response.addresses.length > 0) {
+          this.addressList = response.addresses;
 
-          // Extract address components from postcode data
-          const city = result.admin_district || result.parish || '';
-          const region = result.region || '';
-          const country = result.country || 'United Kingdom';
-          const postcode = this.postcode.toUpperCase();
-
-          // Build a well-formatted address string
-          // Format: City, Region, Postcode, Country
-          const addressParts = [];
-          if (city) addressParts.push(city);
-          if (region && region !== city) addressParts.push(region);
-          addressParts.push(postcode);
-          if (country) addressParts.push(country);
-
-          const address = addressParts.join(', ');
-          this.organizationForm.patchValue({ address });
+          // Auto-select if only one address
+          if (this.addressList.length === 1) {
+            this.selectAddress(0);
+          }
           this.postcodeLookupLoading = false;
         } else {
           this.postcodeLookupError = 'Postcode not found';
@@ -192,5 +182,25 @@ export class OrganizationFormComponent implements OnInit {
         console.error('Postcode lookup error:', err);
       }
     });
+  }
+
+  selectAddress(index: number): void {
+    this.selectedAddressIndex = index;
+    const addr = this.addressList[index];
+
+    // Build full address string
+    const parts = [addr.line_1, addr.line_2, addr.line_3, addr.town_or_city, addr.county, addr.postcode, addr.country]
+      .filter(l => l && l.trim());
+    const address = parts.join(', ');
+
+    this.organizationForm.patchValue({ address });
+  }
+
+  getAddressDisplay(addr: any): string {
+    if (addr.formatted && addr.formatted.length > 0) {
+      return addr.formatted.filter((l: string) => l && l.trim()).join(', ');
+    }
+    const parts = [addr.line_1, addr.line_2, addr.town_or_city].filter(l => l && l.trim());
+    return parts.join(', ');
   }
 }
