@@ -1,32 +1,54 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../../../core/auth/auth.service';
 import { User, UserRole } from '../../../core/models';
 import { Router } from '@angular/router';
+import { SystemMessageService, SystemMessage } from '../../../core/services/system-message.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.css']
 })
-export class MainLayoutComponent implements OnInit {
+export class MainLayoutComponent implements OnInit, OnDestroy {
   user: User | null = null;
   UserRole = UserRole;
   sidenavOpened = true;
   isMobileMenuOpen = false;
   showBroadcastModal = false;
+  showNotifications = false;
+  notifications: SystemMessage[] = [];
+  unreadCount = 0;
+  private subscription?: Subscription;
 
   navigationItems: any[] = [];
 
   constructor(
     public authService: AuthService,
-    private router: Router
+    private router: Router,
+    private systemMessageService: SystemMessageService
   ) {}
 
   ngOnInit(): void {
     this.authService.authState$.subscribe(state => {
       this.user = state.user;
       this.updateNavigation();
+      if (this.user) {
+        this.loadNotifications();
+      }
     });
+    this.subscription = this.systemMessageService.messages$.subscribe(messages => {
+      this.notifications = messages;
+      this.unreadCount = messages.length;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+  }
+
+  loadNotifications(): void {
+    this.systemMessageService.loadMessages();
   }
 
   toggleMobileMenu(): void {
@@ -108,5 +130,15 @@ export class MainLayoutComponent implements OnInit {
 
   closeBroadcastModal(): void {
     this.showBroadcastModal = false;
+  }
+
+  toggleNotifications(): void {
+    this.showNotifications = !this.showNotifications;
+  }
+
+  dismissNotification(id: number): void {
+    this.systemMessageService.dismissMessage(id).subscribe(() => {
+      this.loadNotifications();
+    });
   }
 }
