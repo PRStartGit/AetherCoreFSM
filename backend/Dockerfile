@@ -32,6 +32,7 @@ COPY --from=builder /root/.local /root/.local
 
 # Make sure scripts in .local are usable
 ENV PATH=/root/.local/bin:$PATH
+ENV PYTHONUNBUFFERED=1
 
 # Copy application code
 COPY . .
