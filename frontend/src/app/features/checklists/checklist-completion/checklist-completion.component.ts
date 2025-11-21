@@ -27,6 +27,7 @@ export class ChecklistCompletionComponent implements OnInit {
   error: string | null = null;
   checklistId: number = 0;
   itemResponses: Map<number, ChecklistItemResponses> = new Map();
+  Array = Array; // Expose Array to template
 
   constructor(
     private route: ActivatedRoute,
