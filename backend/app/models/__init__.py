@@ -15,6 +15,7 @@ from app.models.password_reset_token import PasswordResetToken
 from app.models.task_field import TaskField
 from app.models.task_field_response import TaskFieldResponse
 from app.models.promotion import Promotion
+from app.models.system_message import SystemMessage, MessageDismissal, VisibilityScope
 
 __all__ = [
     "User",

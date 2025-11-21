@@ -23,6 +23,26 @@
     <!-- Main Content Area -->
     <main class="faq-main">
 
+      <!-- System Messages -->
+      <section *ngIf="activeSection === 'system-messages'" class="faq-section">
+        <h2><i class="fa-solid fa-bullhorn"></i> System Messages</h2>
+
+        <div *ngIf="systemMessages.length === 0" class="faq-item">
+          <p class="no-messages">No active system messages at this time.</p>
+        </div>
+
+        <div *ngFor="let msg of systemMessages" class="faq-item system-message-item">
+          <div class="message-header">
+            <span class="message-badge" [class.super-admin]="!msg.organization_id" [class.org-admin]="msg.organization_id">
+              {{ msg.organization_id ? 'Organization' : 'System' }}
+            </span>
+            <span class="message-date">{{ msg.created_at | date:'medium' }}</span>
+          </div>
+          <p class="message-content">{{ msg.message_content }}</p>
+          <p class="message-expiry">Expires: {{ msg.expiry_date | date:'mediumDate' }}</p>
+        </div>
+      </section>
+
       <!-- Getting Started -->
       <section *ngIf="activeSection === 'getting-started'" class="faq-section">
         <h2><i class="fa-solid fa-rocket"></i> Getting Started</h2>

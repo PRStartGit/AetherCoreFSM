@@ -13,6 +13,7 @@ export class MainLayoutComponent implements OnInit {
   UserRole = UserRole;
   sidenavOpened = true;
   isMobileMenuOpen = false;
+  showBroadcastModal = false;
 
   navigationItems: any[] = [];
 
@@ -95,5 +96,17 @@ export class MainLayoutComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
+  }
+
+  canBroadcast(): boolean {
+    return this.user?.role === UserRole.SUPER_ADMIN || this.user?.role === UserRole.ORG_ADMIN;
+  }
+
+  openBroadcastModal(): void {
+    this.showBroadcastModal = true;
+  }
+
+  closeBroadcastModal(): void {
+    this.showBroadcastModal = false;
   }
 }

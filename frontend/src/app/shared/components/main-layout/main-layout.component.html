@@ -52,6 +52,14 @@
     </button>
   </div>
   <div class="flex items-center gap-2 md:gap-4">
+    <!-- Broadcast Icon (Admin only) -->
+    <button *ngIf="canBroadcast()"
+            (click)="openBroadcastModal()"
+            class="w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center"
+            title="Send Broadcast Message">
+      <i class="fa-solid fa-bullhorn text-gray-700 text-lg md:text-xl"></i>
+    </button>
+
     <!-- Help/FAQ Icon -->
     <a routerLink="/support/faq" class="w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center" title="Help & FAQ">
       <i class="fa-solid fa-circle-question text-gray-700 text-lg md:text-xl"></i>
@@ -70,7 +78,18 @@
   </div>
 </div>
 
+<!-- System Message Banner -->
+<app-system-message-banner></app-system-message-banner>
+
 <!-- Main Content - Responsive -->
 <div class="md:ml-60 pt-16">
   <router-outlet></router-outlet>
 </div>
+
+<!-- Broadcast Modal -->
+<app-broadcast-modal
+  *ngIf="showBroadcastModal"
+  [userRole]="user?.role || ''"
+  (close)="closeBroadcastModal()"
+  (messageSent)="closeBroadcastModal()">
+</app-broadcast-modal>

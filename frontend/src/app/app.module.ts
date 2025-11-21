@@ -66,6 +66,8 @@ import { PrivacyPolicyComponent } from './features/legal/privacy/privacy-policy.
 import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.component';
 import { PromotionListComponent } from './features/super-admin/promotions/promotion-list/promotion-list.component';
 import { FaqComponent } from './features/support/faq/faq.component';
+import { SystemMessageBannerComponent } from './shared/components/system-message-banner/system-message-banner.component';
+import { BroadcastModalComponent } from './shared/components/broadcast-modal/broadcast-modal.component';
 
 @NgModule({
   declarations: [
@@ -134,7 +136,9 @@ import { FaqComponent } from './features/support/faq/faq.component';
     MatTooltipModule,
     // Standalone Components
     TaskFieldBuilderComponent,
-    DynamicTaskFormComponent
+    DynamicTaskFormComponent,
+    SystemMessageBannerComponent,
+    BroadcastModalComponent
   ],
   providers: [
     {

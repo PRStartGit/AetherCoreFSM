@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/auth/auth.service';
 import { UserRole } from '../../../core/models';
+import { SystemMessageService, SystemMessage } from '../../../core/services/system-message.service';
 
 interface FaqSection {
   id: string;
@@ -21,6 +22,7 @@ export class FaqComponent implements OnInit {
   activeSection: string = 'getting-started';
 
   sections: FaqSection[] = [
+    { id: 'system-messages', title: 'System Messages', icon: 'fa-solid fa-bullhorn', roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN, UserRole.SITE_USER], expanded: false },
     { id: 'getting-started', title: 'Getting Started', icon: 'fa-solid fa-rocket', roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN, UserRole.SITE_USER], expanded: true },
     { id: 'checklists', title: 'Completing Checklists', icon: 'fa-solid fa-clipboard-check', roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN, UserRole.SITE_USER], expanded: false },
     { id: 'defects', title: 'Reporting Defects', icon: 'fa-solid fa-triangle-exclamation', roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN, UserRole.SITE_USER], expanded: false },
@@ -31,11 +33,23 @@ export class FaqComponent implements OnInit {
     { id: 'users', title: 'Managing Users', icon: 'fa-solid fa-users', roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN], expanded: false },
   ];
 
-  constructor(private authService: AuthService) {}
+  systemMessages: SystemMessage[] = [];
+
+  constructor(
+    private authService: AuthService,
+    private systemMessageService: SystemMessageService
+  ) {}
 
   ngOnInit(): void {
     this.authService.authState$.subscribe(state => {
       this.userRole = state.user?.role || null;
+    });
+    this.loadSystemMessages();
+  }
+
+  loadSystemMessages(): void {
+    this.systemMessageService.getMessages(true).subscribe(messages => {
+      this.systemMessages = messages;
     });
   }
 
