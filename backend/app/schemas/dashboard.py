@@ -9,6 +9,7 @@ class SuperAdminDashboard(BaseModel):
     total_users: int
     total_active_checklists: int
     total_open_defects: int
+    active_subscriptions: int = 0
     recent_activity: List[Dict[str, Any]] = []
     subscription_summary: Dict[str, Any] = {}
     rag_summary: Dict[str, int] = {}

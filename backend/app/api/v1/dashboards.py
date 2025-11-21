@@ -47,6 +47,17 @@ def get_super_admin_dashboard(
         "trial": db.query(Organization).filter(Organization.is_trial == True).count()
     }
 
+    # Active subscriptions (subscription_end_date > now OR subscription_end_date is NULL with is_active)
+    from sqlalchemy import or_
+    now = datetime.utcnow()
+    active_subscriptions = db.query(Organization).filter(
+        Organization.is_active == True,
+        or_(
+            Organization.subscription_end_date > now,
+            Organization.subscription_end_date.is_(None)
+        )
+    ).count()
+
     # Platform-wide RAG status aggregation
     rag_summary = {
         "green": 0,
@@ -129,6 +140,7 @@ def get_super_admin_dashboard(
         total_users=total_users,
         total_active_checklists=total_active_checklists,
         total_open_defects=total_open_defects,
+        active_subscriptions=active_subscriptions,
         subscription_summary=subscription_summary,
         recent_activity=recent_activity,
         rag_summary=rag_summary,
