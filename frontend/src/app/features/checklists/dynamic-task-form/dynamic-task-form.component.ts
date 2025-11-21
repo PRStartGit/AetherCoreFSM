@@ -12,7 +12,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { TaskFieldService } from '../../../core/services/task-field.service';
 import { TaskField, TaskFieldType } from '../../../core/models/monitoring.model';
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-dynamic-task-form',
@@ -277,7 +276,7 @@ export class DynamicTaskFormComponent implements OnInit {
   private uploadPhoto(file: File) {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post(`${environment.apiUrl}/utils/upload-photo`, formData);
+    return this.http.post('/api/v1/utils/upload-photo', formData);
   }
 
   updateRepeatingGroups(countFieldId: number, count: number): void {
