@@ -7,6 +7,8 @@ export enum UserRole {
 export interface User {
   id: number;
   email: string;
+  first_name: string;
+  last_name: string;
   full_name: string;
   role: UserRole;
   organization_id: number | null;

@@ -85,6 +85,8 @@ export class UserService {
   private transformUserResponse(response: any): User {
     return {
       ...response,
+      first_name: response.first_name || '',
+      last_name: response.last_name || '',
       full_name: response.full_name || `${response.first_name || ''} ${response.last_name || ''}`.trim()
     };
   }
