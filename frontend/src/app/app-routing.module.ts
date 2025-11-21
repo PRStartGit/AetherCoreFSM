@@ -27,6 +27,7 @@ import { TermsOfServiceComponent } from './features/legal/terms/terms-of-service
 import { PrivacyPolicyComponent } from './features/legal/privacy/privacy-policy.component';
 import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.component';
 import { PromotionListComponent } from './features/super-admin/promotions/promotion-list/promotion-list.component';
+import { LogsComponent } from './features/super-admin/logs/logs.component';
 import { FaqComponent } from './features/support/faq/faq.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
@@ -107,6 +108,12 @@ const routes: Routes = [
       {
         path: 'super-admin/promotions',
         component: PromotionListComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN] }
+      },
+      {
+        path: 'super-admin/logs',
+        component: LogsComponent,
         canActivate: [RoleGuard],
         data: { roles: [UserRole.SUPER_ADMIN] }
       },

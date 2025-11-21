@@ -16,6 +16,7 @@ from app.models.task_field import TaskField
 from app.models.task_field_response import TaskFieldResponse
 from app.models.promotion import Promotion
 from app.models.system_message import SystemMessage, MessageDismissal, VisibilityScope
+from app.models.activity_log import ActivityLog, LogType
 
 __all__ = [
     "User",

@@ -52,6 +52,14 @@
     </button>
   </div>
   <div class="flex items-center gap-2 md:gap-4">
+    <!-- Logs Icon (Super Admin only) -->
+    <a *ngIf="user?.role === UserRole.SUPER_ADMIN"
+       routerLink="/super-admin/logs"
+       class="w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center"
+       title="Activity Logs">
+      <i class="fa-solid fa-clock-rotate-left text-gray-700 text-lg md:text-xl"></i>
+    </a>
+
     <!-- Broadcast Icon (Admin only) -->
     <button *ngIf="canBroadcast()"
             (click)="openBroadcastModal()"
