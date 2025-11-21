@@ -11,6 +11,8 @@ from app.schemas.auth import LoginRequest, Token, PasswordResetRequest, Password
 from app.schemas.user import UserResponse
 from app.core.dependencies import get_current_user
 from app.models.user import UserRole
+from app.api.v1.activity_logs import log_activity
+from app.models.activity_log import LogType
 import os
 import smtplib
 from email.mime.text import MIMEText
@@ -82,6 +84,20 @@ def login(
             "organization_id": user.organization_id
         }
     )
+
+    # Log successful login
+    try:
+        log_activity(
+            db=db,
+            log_type=LogType.LOGIN,
+            message=f"User logged in: {user.email}",
+            user_id=user.id,
+            user_email=user.email,
+            organization_id=user.organization_id,
+            organization_name=organization.name if organization else None
+        )
+    except Exception as e:
+        print(f"Failed to log login activity: {e}")
 
     return {
         "access_token": access_token,
@@ -457,6 +473,20 @@ def register_trial(
     print(f"Admin: {admin_user.full_name} ({admin_user.email})")
     print(f"Trial ends: {new_org.subscription_end_date}")
     print(f"{'='*80}\n")
+
+    # Log organization registration
+    try:
+        log_activity(
+            db=db,
+            log_type=LogType.ORG_REGISTRATION,
+            message=f"New organization registered: {new_org.name} ({new_org.org_id})",
+            user_id=admin_user.id,
+            user_email=admin_user.email,
+            organization_id=new_org.id,
+            organization_name=new_org.name
+        )
+    except Exception as e:
+        print(f"Failed to log registration activity: {e}")
 
     return {
         "message": "Registration successful! Check your email for login credentials.",

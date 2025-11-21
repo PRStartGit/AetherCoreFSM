@@ -7,6 +7,8 @@ from app.core.database import get_db
 from app.core.dependencies import get_current_org_admin, get_current_user
 from app.core.security import get_password_hash
 from app.core.email import send_welcome_email
+from app.api.v1.activity_logs import log_activity
+from app.models.activity_log import LogType
 from app.models.user import User, UserRole
 from app.models.user_site import UserSite
 from app.models.organization import Organization
@@ -107,6 +109,20 @@ def create_user(
         import traceback
         print(f"❌ Failed to send welcome email to {new_user.email}: {str(e)}")
         print(f"Traceback: {traceback.format_exc()}")
+
+    # Log user registration
+    try:
+        log_activity(
+            db=db,
+            log_type=LogType.REGISTRATION,
+            message=f"New user created: {new_user.email} ({new_user.role.value})",
+            user_id=new_user.id,
+            user_email=new_user.email,
+            organization_id=new_user.organization_id,
+            organization_name=organization_name
+        )
+    except Exception as e:
+        print(f"Failed to log user registration: {e}")
 
     return new_user
 

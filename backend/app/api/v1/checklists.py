@@ -5,6 +5,8 @@ from datetime import date, timedelta
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import User, UserRole
+from app.api.v1.activity_logs import log_activity
+from app.models.activity_log import LogType
 from app.models.checklist import Checklist, ChecklistStatus
 from app.models.checklist_item import ChecklistItem
 from app.schemas.checklist import (
@@ -396,10 +398,30 @@ def update_checklist_item(
     checklist.calculate_completion()
 
     # Update checklist status
+    was_completed = checklist.status == ChecklistStatus.COMPLETED
     if checklist.completion_percentage == 100:
         checklist.status = ChecklistStatus.COMPLETED
         checklist.completed_at = datetime.utcnow()
         checklist.completed_by_id = current_user.id
+
+        # Log checklist completion (only if just completed)
+        if not was_completed:
+            try:
+                site_name = checklist.site.name if checklist.site else "Unknown"
+                category_name = checklist.category.name if checklist.category else "Unknown"
+                org_name = checklist.site.organization.name if checklist.site and checklist.site.organization else None
+                org_id = checklist.site.organization_id if checklist.site else None
+                log_activity(
+                    db=db,
+                    log_type=LogType.CHECKLIST_COMPLETED,
+                    message=f"Checklist completed: {category_name} at {site_name}",
+                    user_id=current_user.id,
+                    user_email=current_user.email,
+                    organization_id=org_id,
+                    organization_name=org_name
+                )
+            except Exception as e:
+                print(f"Failed to log checklist completion: {e}")
     elif checklist.completion_percentage > 0:
         checklist.status = ChecklistStatus.IN_PROGRESS
 
