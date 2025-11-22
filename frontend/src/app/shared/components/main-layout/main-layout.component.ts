@@ -18,6 +18,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   sidebarCollapsed = false;
   showBroadcastModal = false;
   showNotifications = false;
+  showProfileDropdown = false;
   notifications: SystemMessage[] = [];
   unreadCount = 0;
   private subscription?: Subscription;
@@ -139,6 +140,12 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   toggleNotifications(): void {
     this.showNotifications = !this.showNotifications;
+    this.showProfileDropdown = false; // Close profile dropdown when opening notifications
+  }
+
+  toggleProfileDropdown(): void {
+    this.showProfileDropdown = !this.showProfileDropdown;
+    this.showNotifications = false; // Close notifications when opening profile dropdown
   }
 
   dismissNotification(id: number): void {
