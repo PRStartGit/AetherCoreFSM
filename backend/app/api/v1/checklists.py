@@ -279,7 +279,8 @@ def list_checklists(
             "category": {
                 "id": checklist.category.id,
                 "name": checklist.category.name,
-                "closes_at": checklist.category.closes_at.strftime('%H:%M:%S') if checklist.category.closes_at else None
+                "closes_at": checklist.category.closes_at.strftime('%H:%M:%S') if checklist.category.closes_at else None,
+                "opens_at": checklist.category.opens_at.strftime("%H:%M:%S") if checklist.category.opens_at else None,
             } if checklist.category else None
         }
         result.append(checklist_dict)
