@@ -318,19 +318,31 @@
     }
 
     .stat-number {
-        font-size: 3rem;
+        font-size: 3.5rem;
         font-weight: 800;
+        color: #0EA5E9;
         background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
+        line-height: 1;
+        display: block;
+    }
+
+    /* Fallback for browsers that don't support gradient text */
+    @supports not (background-clip: text) {
+        .stat-number {
+            color: #0EA5E9;
+            background: none;
+        }
     }
 
     .stat-label {
         color: #6B7280;
-        font-weight: 500;
-        font-size: 1rem;
+        font-weight: 600;
+        font-size: 1.0625rem;
+        display: block;
     }
 
     /* Benefits Section */
@@ -1451,19 +1463,23 @@
 <section class="stats-banner">
     <div class="stats-grid">
         <div class="stat-item">
+            <i class="fas fa-clock" style="color: #0EA5E9; font-size: 2rem; margin-bottom: 1rem;"></i>
             <div class="stat-number">10hrs</div>
             <div class="stat-label">Saved per week</div>
         </div>
         <div class="stat-item">
+            <i class="fas fa-users" style="color: #0EA5E9; font-size: 2rem; margin-bottom: 1rem;"></i>
             <div class="stat-number">500+</div>
             <div class="stat-label">Happy customers</div>
         </div>
         <div class="stat-item">
+            <i class="fas fa-server" style="color: #0EA5E9; font-size: 2rem; margin-bottom: 1rem;"></i>
             <div class="stat-number">99.9%</div>
             <div class="stat-label">Uptime</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">5★</div>
+            <i class="fas fa-star" style="color: #F59E0B; font-size: 2rem; margin-bottom: 1rem;"></i>
+            <div class="stat-number">5<i class="fas fa-star" style="font-size: 2rem; margin-left: 0.25rem;"></i></div>
             <div class="stat-label">Average rating</div>
         </div>
     </div>
@@ -1781,34 +1797,34 @@
     </div>
 </section>
 
-<!-- Trust Badges -->
+<!-- Security Features -->
 <section class="trust-badges-section">
     <div class="trust-badges-container">
-        <div class="trust-badges-title">Trusted & Secure Food Safety Compliance</div>
+        <div class="trust-badges-title">Enterprise-Grade Security & Reliability</div>
         <div class="badges-grid">
+            <div class="badge-item">
+                <div class="badge-icon">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <div class="badge-text">Cloud-Based<br>Platform</div>
+            </div>
             <div class="badge-item">
                 <div class="badge-icon">
                     <i class="fas fa-shield-alt"></i>
                 </div>
-                <div class="badge-text">GDPR<br>Compliant</div>
+                <div class="badge-text">SSL Encrypted<br>Connection</div>
             </div>
             <div class="badge-item">
                 <div class="badge-icon">
-                    <i class="fas fa-lock"></i>
+                    <i class="fas fa-database"></i>
                 </div>
-                <div class="badge-text">256-bit<br>Encryption</div>
+                <div class="badge-text">Daily Automated<br>Backups</div>
             </div>
             <div class="badge-item">
                 <div class="badge-icon">
-                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-map-marker-alt"></i>
                 </div>
-                <div class="badge-text">FSA<br>Approved</div>
-            </div>
-            <div class="badge-item">
-                <div class="badge-icon">
-                    <i class="fas fa-server"></i>
-                </div>
-                <div class="badge-text">UK Data<br>Centers</div>
+                <div class="badge-text">UK-Based<br>Servers</div>
             </div>
         </div>
     </div>
