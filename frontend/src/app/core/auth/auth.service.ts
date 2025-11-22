@@ -151,11 +151,11 @@ export class AuthService {
   }
 
   requestPasswordReset(data: { organization_id: string; email: string }): Observable<any> {
-    return this.http.post(`${this.API_URL}/auth/forgot-password`, data);
+    return this.http.post(`${this.API_URL}/forgot-password`, data);
   }
 
   resetPassword(data: { token: string; new_password: string }): Observable<any> {
-    return this.http.post(`${this.API_URL}/auth/reset-password`, data);
+    return this.http.post(`${this.API_URL}/reset-password`, data);
   }
 
   changePassword(data: { old_password: string; new_password: string }): Observable<any> {
