@@ -13,8 +13,9 @@ from app.core.dependencies import get_current_user
 from app.models.user import UserRole
 from app.api.v1.activity_logs import log_activity
 from app.models.activity_log import LogType
-from app.core.email import send_org_admin_welcome_email
+from app.core.email import send_org_admin_welcome_email, send_password_reset_email
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -197,8 +198,28 @@ def request_password_reset(
             db.add(token_record)
             db.commit()
 
-            # Log reset link to console (no email service yet)
-            reset_link = f"http://localhost:4200/reset-password?token={reset_token}"
+            # Get frontend URL from environment or use default
+            frontend_url = os.getenv('FRONTEND_URL', 'http://165.22.122.116')
+            reset_link = f"{frontend_url}/reset-password?token={reset_token}"
+
+            # Send password reset email
+            try:
+                email_sent = send_password_reset_email(
+                    user_email=user.email,
+                    user_name=user.full_name or user.email,
+                    reset_url=reset_link,
+                    reset_code=reset_token[:8],  # Show first 8 chars as verification code
+                    expiry_hours=1
+                )
+
+                if email_sent:
+                    logger.info(f"Password reset email sent to {user.email}")
+                else:
+                    logger.warning(f"Failed to send password reset email to {user.email}")
+            except Exception as e:
+                logger.error(f"Error sending password reset email: {str(e)}")
+
+            # Also log to console for debugging
             print(f"\n{'='*80}")
             print(f"PASSWORD RESET REQUESTED")
             print(f"{'='*80}")
