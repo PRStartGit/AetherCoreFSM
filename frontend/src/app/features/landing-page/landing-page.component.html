@@ -798,20 +798,24 @@
     .fife-banner h2 {
         font-size: 3.5rem;
         font-weight: 800;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
         color: white;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
     }
 
     .fife-banner .price {
         color: white;
         -webkit-text-fill-color: white;
-        margin: 1rem 0;
+        margin: 1.5rem 0;
+        line-height: 1.1;
     }
 
     .fife-banner p {
         font-size: 1.25rem;
         color: #D1D5DB;
         margin-bottom: 2.5rem;
+        line-height: 1.8;
     }
 
     .btn-white {
@@ -1213,6 +1217,10 @@
             padding: 3rem 1rem 2rem;
         }
 
+        .hero::before {
+            display: none;
+        }
+
         .hero-grid {
             grid-template-columns: 1fr;
             gap: 2rem;
@@ -1455,17 +1463,26 @@
             padding: 4rem 1rem;
         }
 
+        .fife-banner::before {
+            display: none;
+        }
+
         .fife-banner h2 {
             font-size: 1.75rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
+            line-height: 1.3;
         }
 
         .fife-banner .price {
             font-size: 2.5rem !important;
+            line-height: 1.2;
+            margin: 1.25rem 0;
         }
 
         .fife-banner p {
             font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
         }
 
         .fife-banner i.fa-gift {
