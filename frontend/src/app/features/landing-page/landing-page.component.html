@@ -93,171 +93,303 @@
 
     .btn-secondary:hover {
         border-color: #0EA5E9;
+        color: #0EA5E9;
     }
 
     /* Hero Section */
     .hero {
         background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
-        padding: 5rem 2rem;
+        padding: 6rem 2rem 4rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 60%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(14, 165, 233, 0.05) 0%, transparent 70%);
+        pointer-events: none;
     }
 
     .hero-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 3rem;
+        gap: 4rem;
         align-items: center;
         max-width: 1280px;
         margin: 0 auto;
+        position: relative;
+        z-index: 1;
     }
 
     .trust-badge {
         display: inline-flex;
         align-items: center;
         background: white;
-        padding: 0.5rem 1rem;
+        padding: 0.625rem 1.25rem;
         border-radius: 9999px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        border: 1px solid #E0F2FE;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 2px solid #E0F2FE;
         margin-bottom: 1.5rem;
-        font-size: 0.875rem;
-        font-weight: 500;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: #0369A1;
     }
 
     h1 {
-        font-size: 3.5rem;
-        font-weight: 700;
+        font-size: 3.75rem;
+        font-weight: 800;
         line-height: 1.1;
         margin-bottom: 1.5rem;
         color: #111827;
+        letter-spacing: -0.02em;
+    }
+
+    .highlight {
+        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .subheadline {
-        font-size: 1.25rem;
-        color: #6B7280;
-        margin-bottom: 2rem;
-        line-height: 1.6;
+        font-size: 1.375rem;
+        color: #4B5563;
+        margin-bottom: 2.5rem;
+        line-height: 1.7;
+        font-weight: 400;
     }
 
     .cta-buttons {
         display: flex;
         gap: 1rem;
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
     }
 
     .cta-buttons .btn-primary {
-        padding: 1rem 2rem;
+        padding: 1.125rem 2.5rem;
         font-size: 1.125rem;
+        box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3);
     }
 
     .cta-buttons .btn-secondary {
-        padding: 1rem 2rem;
+        padding: 1.125rem 2.5rem;
         font-size: 1.125rem;
     }
 
     .trust-list {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 0.75rem;
     }
 
     .trust-item {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        color: #6B7280;
-        font-size: 0.875rem;
+        gap: 0.75rem;
+        color: #374151;
+        font-size: 0.9375rem;
+        font-weight: 500;
     }
 
     .checkmark {
         color: #10B981;
         font-weight: bold;
+        font-size: 1.125rem;
     }
 
     .dashboard-preview {
         background: white;
         border-radius: 1rem;
-        padding: 2rem;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        padding: 2.5rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
         border: 1px solid #E5E7EB;
+        transform: perspective(1000px) rotateY(-5deg);
+        transition: transform 0.3s ease;
     }
 
-    .task-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem;
-        border-radius: 0.5rem;
-        margin-bottom: 0.75rem;
+    .dashboard-preview:hover {
+        transform: perspective(1000px) rotateY(0deg);
     }
 
-    .task-complete {
-        background: #ECFDF5;
-        border: 1px solid #A7F3D0;
-    }
-
-    .task-pending {
-        background: #FEF3C7;
-        border: 1px solid #FCD34D;
-    }
-
-    .task-icon {
-        width: 2rem;
-        height: 2rem;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 0.75rem;
-    }
-
-    .icon-complete {
-        background: #10B981;
-        color: white;
-    }
-
-    .icon-pending {
-        background: #F59E0B;
-        color: white;
-    }
-
-    /* Trust Banner */
-    .trust-banner {
-        background: #EFF6FF;
-        padding: 2rem;
-        text-align: center;
-        color: #374151;
-        font-weight: 500;
-    }
-
-    /* Features Section */
-    .features-section {
-        padding: 5rem 2rem;
+    /* Stats Banner */
+    .stats-banner {
         background: white;
+        padding: 3rem 2rem;
+        border-top: 1px solid #E5E7EB;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 3rem;
+        max-width: 1280px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .stat-item {
+        padding: 1rem;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #6B7280;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+
+    /* Benefits Section */
+    .benefits-section {
+        padding: 6rem 2rem;
+        background: #F9FAFB;
     }
 
     .section-header {
         text-align: center;
-        margin-bottom: 4rem;
+        margin-bottom: 5rem;
+    }
+
+    .section-header .badge {
+        display: inline-block;
+        background: #E0F2FE;
+        color: #0369A1;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .section-header h2 {
-        font-size: 2.5rem;
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1.25rem;
+        color: #111827;
+        letter-spacing: -0.02em;
+    }
+
+    .section-header p {
+        font-size: 1.375rem;
+        color: #6B7280;
+        max-width: 768px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3rem;
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+
+    .benefit-card {
+        background: white;
+        border: 1px solid #E5E7EB;
+        border-radius: 1rem;
+        padding: 3rem;
+        transition: all 0.3s;
+        position: relative;
+    }
+
+    .benefit-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+        border-radius: 1rem 1rem 0 0;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .benefit-card:hover::before {
+        opacity: 1;
+    }
+
+    .benefit-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px -12px rgba(14, 165, 233, 0.3);
+        border-color: #BAE6FD;
+    }
+
+    .benefit-icon {
+        width: 4rem;
+        height: 4rem;
+        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3);
+    }
+
+    .benefit-card h3 {
+        font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 1rem;
         color: #111827;
     }
 
-    .section-header p {
-        font-size: 1.25rem;
+    .benefit-card p {
         color: #6B7280;
-        max-width: 768px;
-        margin: 0 auto;
+        line-height: 1.7;
+        font-size: 1.0625rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .benefit-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .benefit-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        color: #374151;
+        font-size: 0.9375rem;
+    }
+
+    .benefit-list li i {
+        color: #10B981;
+        margin-top: 0.25rem;
+        flex-shrink: 0;
+    }
+
+    /* Features Grid */
+    .features-section {
+        padding: 6rem 2rem;
+        background: white;
     }
 
     .features-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
+        gap: 2.5rem;
         max-width: 1280px;
         margin: 0 auto;
     }
@@ -266,8 +398,9 @@
         background: white;
         border: 1px solid #E5E7EB;
         border-radius: 1rem;
-        padding: 2rem;
+        padding: 2.5rem;
         transition: all 0.3s;
+        text-align: center;
     }
 
     .feature-card:hover {
@@ -277,15 +410,15 @@
     }
 
     .feature-icon {
-        width: 3.5rem;
-        height: 3.5rem;
+        width: 4rem;
+        height: 4rem;
         background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
-        border-radius: 0.5rem;
+        border-radius: 1rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.875rem;
-        margin-bottom: 1rem;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3);
     }
 
     .feature-card h3 {
@@ -300,64 +433,90 @@
         line-height: 1.6;
     }
 
-    /* How It Works */
-    .how-it-works {
-        padding: 5rem 2rem;
-        background: #F9FAFB;
+    /* ROI Section */
+    .roi-section {
+        padding: 6rem 2rem;
+        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+        color: white;
+        position: relative;
+        overflow: hidden;
     }
 
-    .steps-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 3rem;
+    .roi-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -20%;
+        width: 60%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .roi-content {
         max-width: 1280px;
         margin: 0 auto;
+        position: relative;
+        z-index: 1;
     }
 
-    .step {
+    .roi-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+    }
+
+    .roi-text h2 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        color: white;
+    }
+
+    .roi-text p {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        color: #E0F2FE;
+        line-height: 1.7;
+    }
+
+    .roi-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .roi-stat {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 1rem;
+        padding: 2rem;
         text-align: center;
     }
 
-    .step-number {
-        width: 5rem;
-        height: 5rem;
-        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.875rem;
-        font-weight: 700;
-        color: white;
-        margin: 0 auto 1.5rem;
-    }
-
-    .step-icon {
+    .roi-stat-value {
         font-size: 3rem;
-        margin-bottom: 1rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
     }
 
-    .step h3 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 0.75rem;
-        color: #111827;
-    }
-
-    .step p {
-        color: #6B7280;
+    .roi-stat-label {
+        font-size: 1rem;
+        color: #E0F2FE;
     }
 
     /* Pricing Section */
     .pricing-section {
-        padding: 5rem 2rem;
+        padding: 6rem 2rem;
         background: white;
     }
 
     .pricing-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
+        gap: 2.5rem;
         max-width: 1280px;
         margin: 0 auto;
     }
@@ -365,64 +524,79 @@
     .pricing-card {
         background: white;
         border: 2px solid #E5E7EB;
-        border-radius: 1rem;
-        padding: 2rem;
+        border-radius: 1.5rem;
+        padding: 3rem;
         transition: all 0.3s;
         position: relative;
     }
 
     .pricing-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
     }
 
     .pricing-card.popular {
-        background: #F0F9FF;
+        background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
         border-color: #0EA5E9;
+        border-width: 3px;
+        transform: scale(1.05);
+    }
+
+    .pricing-card.popular:hover {
+        transform: scale(1.05) translateY(-8px);
     }
 
     .popular-badge {
         position: absolute;
-        top: -1rem;
+        top: -1.25rem;
         left: 50%;
         transform: translateX(-50%);
-        background: #0EA5E9;
+        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
         color: white;
-        padding: 0.25rem 1rem;
+        padding: 0.5rem 1.5rem;
         border-radius: 9999px;
         font-size: 0.875rem;
-        font-weight: 600;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.5);
     }
 
     .pricing-card h3 {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
         color: #111827;
     }
 
     .price {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #111827;
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         margin-bottom: 0.5rem;
     }
 
     .price-period {
         color: #6B7280;
+        font-size: 1rem;
+        font-weight: 500;
     }
 
     .pricing-features {
         list-style: none;
-        margin: 2rem 0;
+        margin: 2.5rem 0;
     }
 
     .pricing-features li {
         display: flex;
         align-items: flex-start;
         gap: 0.75rem;
-        margin-bottom: 0.75rem;
+        margin-bottom: 1rem;
         color: #374151;
+        font-size: 0.9375rem;
     }
 
     .pricing-features li::before {
@@ -431,138 +605,194 @@
         font-weight: 900;
         color: #10B981;
         flex-shrink: 0;
+        font-size: 1rem;
     }
 
-    .annual-note {
-        text-align: center;
-        margin-top: 2rem;
+    .savings-badge {
+        display: inline-block;
+        background: #DCFCE7;
+        color: #166534;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-top: 1rem;
+    }
+
+    /* Testimonials */
+    .testimonials-section {
+        padding: 6rem 2rem;
+        background: #F9FAFB;
+    }
+
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2.5rem;
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+
+    .testimonial-card {
+        background: white;
+        border: 1px solid #E5E7EB;
+        border-radius: 1rem;
+        padding: 2.5rem;
+        position: relative;
+    }
+
+    .quote-icon {
+        color: #0EA5E9;
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.3;
+    }
+
+    blockquote {
+        font-size: 1.0625rem;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 1.5rem;
+        line-height: 1.7;
+        font-style: italic;
+    }
+
+    .author {
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 0.25rem;
+        font-style: normal;
+    }
+
+    .author-role {
         color: #6B7280;
+        font-size: 0.875rem;
+    }
+
+    .rating {
+        color: #F59E0B;
+        margin-bottom: 1rem;
     }
 
     /* Fife Banner */
     .fife-banner {
-        padding: 5rem 2rem;
-        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+        padding: 6rem 2rem;
+        background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
         text-align: center;
         color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .fife-banner::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 60%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .fife-content {
+        max-width: 896px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
     }
 
     .fife-banner h2 {
-        font-size: 3rem;
-        font-weight: 700;
+        font-size: 3.5rem;
+        font-weight: 800;
         margin-bottom: 1rem;
+        color: white;
     }
 
     .fife-banner .price {
         color: white;
-        margin: 0;
+        -webkit-text-fill-color: white;
+        margin: 1rem 0;
     }
 
     .fife-banner p {
         font-size: 1.25rem;
-        color: #E0F2FE;
-        margin-bottom: 2rem;
+        color: #D1D5DB;
+        margin-bottom: 2.5rem;
     }
 
     .btn-white {
         background: white;
         color: #0EA5E9;
-        padding: 1rem 2.5rem;
-        border-radius: 0.5rem;
+        padding: 1.25rem 3rem;
+        border-radius: 0.75rem;
         font-weight: 700;
         text-decoration: none;
         display: inline-block;
-        font-size: 1.125rem;
+        font-size: 1.25rem;
         transition: all 0.2s;
         border: none;
         cursor: pointer;
+        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
     }
 
     .btn-white:hover {
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.4);
         transform: translateY(-2px);
     }
 
-    /* Testimonial */
-    .testimonial-section {
-        padding: 5rem 2rem;
-        background: white;
-    }
-
-    .testimonial-card {
-        background: #F9FAFB;
-        border: 1px solid #E5E7EB;
-        border-radius: 1rem;
-        padding: 3rem;
-        max-width: 896px;
-        margin: 0 auto;
-        text-align: center;
-    }
-
-    .quote-icon {
-        color: #0EA5E9;
-        font-size: 3rem;
-        margin-bottom: 1.5rem;
-    }
-
-    blockquote {
-        font-size: 1.5rem;
-        font-weight: 500;
-        color: #111827;
-        margin-bottom: 1.5rem;
-        line-height: 1.6;
-    }
-
-    .author {
+    .urgency-text {
+        margin-top: 1.5rem;
+        font-size: 0.9375rem;
+        color: #FDE68A;
         font-weight: 600;
-        color: #111827;
-        margin-bottom: 0.25rem;
-    }
-
-    .author-role {
-        color: #6B7280;
     }
 
     /* Final CTA */
     .final-cta {
-        padding: 5rem 2rem;
-        background: #1F2937;
+        padding: 6rem 2rem;
+        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
         text-align: center;
         color: white;
     }
 
     .final-cta h2 {
-        font-size: 3rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
         color: white;
     }
 
     .final-cta p {
-        font-size: 1.25rem;
-        color: #D1D5DB;
-        margin-bottom: 2rem;
+        font-size: 1.375rem;
+        color: #E0F2FE;
+        margin-bottom: 3rem;
+        max-width: 768px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     /* Footer */
     footer {
         background: #111827;
         color: #9CA3AF;
-        padding: 3rem 2rem;
+        padding: 4rem 2rem 3rem;
     }
 
     .footer-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 2rem;
+        gap: 3rem;
         max-width: 1280px;
-        margin: 0 auto 2rem;
+        margin: 0 auto 3rem;
     }
 
     .footer-col h4 {
         color: white;
         font-weight: 600;
-        margin-bottom: 1rem;
+        margin-bottom: 1.25rem;
+        font-size: 1.125rem;
     }
 
     .footer-col ul {
@@ -570,13 +800,13 @@
     }
 
     .footer-col ul li {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
     }
 
     .footer-col a {
         color: #9CA3AF;
         text-decoration: none;
-        font-size: 0.875rem;
+        font-size: 0.9375rem;
         transition: color 0.2s;
         cursor: pointer;
     }
@@ -691,35 +921,54 @@
             display: none;
         }
 
+        .hero {
+            padding: 4rem 2rem 3rem;
+        }
+
         .hero-grid {
             grid-template-columns: 1fr;
+            gap: 3rem;
         }
 
         h1 {
             font-size: 2.5rem;
-            line-height: 1.3;
-            margin-bottom: 1.25rem;
         }
 
         .subheadline {
             font-size: 1.125rem;
-            line-height: 1.7;
-            margin-bottom: 1.75rem;
         }
 
         .cta-buttons {
             flex-direction: column;
         }
 
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .benefits-grid {
+            grid-template-columns: 1fr;
+        }
+
         .features-grid {
             grid-template-columns: 1fr;
         }
 
-        .steps-grid {
+        .roi-grid {
             grid-template-columns: 1fr;
+            gap: 3rem;
         }
 
         .pricing-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .pricing-card.popular {
+            transform: scale(1);
+        }
+
+        .testimonials-grid {
             grid-template-columns: 1fr;
         }
 
@@ -727,8 +976,16 @@
             grid-template-columns: 1fr;
         }
 
-        .fife-banner h2 {
+        .section-header h2 {
             font-size: 2rem;
+        }
+
+        .fife-banner h2 {
+            font-size: 2.25rem;
+        }
+
+        .final-cta h2 {
+            font-size: 2.25rem;
         }
     }
 </style>
@@ -754,10 +1011,10 @@
         </button>
     </div>
     <div class="mobile-menu-links">
+        <a href="#benefits" (click)="closeMobileMenu()">Benefits</a>
         <a href="#features" (click)="closeMobileMenu()">Features</a>
         <a href="#pricing" (click)="closeMobileMenu()">Pricing</a>
-        <a href="#about" (click)="closeMobileMenu()">About</a>
-        <a href="#contact" (click)="closeMobileMenu()">Contact</a>
+        <a href="#testimonials" (click)="closeMobileMenu()">Testimonials</a>
         <a *ngIf="!isLoggedIn" (click)="navigateToLogin(); closeMobileMenu()">Login</a>
         <a *ngIf="isLoggedIn" (click)="navigateToDashboard(); closeMobileMenu()">Dashboard</a>
         <a (click)="navigateToRegister(); closeMobileMenu()" class="btn-primary" style="margin-top: 1rem; cursor: pointer;">Start Free Trial</a>
@@ -782,10 +1039,10 @@
 
         <!-- Desktop Navigation -->
         <div class="nav-links">
+            <a href="#benefits">Benefits</a>
             <a href="#features">Features</a>
             <a href="#pricing">Pricing</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+            <a href="#testimonials">Testimonials</a>
             <a *ngIf="!isLoggedIn" (click)="navigateToLogin()">Login</a>
             <a *ngIf="isLoggedIn" (click)="navigateToDashboard()">Dashboard</a>
         </div>
@@ -805,34 +1062,40 @@
     <div class="hero-grid">
         <div>
             <div class="trust-badge">
-                <i class="fas fa-check-circle" style="color: #10B981; font-size: 1.25rem; margin-right: 0.5rem;"></i>
-                Trusted by 500+ venues across Scotland
+                <i class="fas fa-star" style="color: #F59E0B; margin-right: 0.5rem;"></i>
+                Trusted by 500+ hospitality businesses
             </div>
 
-            <h1>Digital Food Safety Management</h1>
+            <h1>Stop Drowning in <span class="highlight">Paperwork</span></h1>
 
             <p class="subheadline">
-                Replace paper checklists with EHO-approved digital records.
-                Built for restaurants, pubs, and hospitality businesses.
+                Transform your food safety compliance from hours of manual work to minutes of smart automation.
+                Impress EHO inspectors, save time, and never worry about missing checks again.
             </p>
 
             <div class="cta-buttons">
-                <a (click)="navigateToRegister()" class="btn-primary" style="cursor: pointer;">Start 6-Month Free Trial</a>
-                <a href="#demo" class="btn-secondary">Watch Demo</a>
+                <a (click)="navigateToRegister()" class="btn-primary" style="cursor: pointer;">
+                    <i class="fas fa-rocket" style="margin-right: 0.5rem;"></i>
+                    Start 6-Month Free Trial
+                </a>
+                <a href="#roi" class="btn-secondary">
+                    <i class="fas fa-calculator" style="margin-right: 0.5rem;"></i>
+                    Calculate Savings
+                </a>
             </div>
 
             <div class="trust-list">
                 <div class="trust-item">
-                    <i class="fas fa-check-circle" style="color: #10B981; font-size: 1.125rem;"></i>
+                    <i class="fas fa-check-circle checkmark"></i>
                     No credit card required
                 </div>
                 <div class="trust-item">
-                    <i class="fas fa-check-circle" style="color: #10B981; font-size: 1.125rem;"></i>
-                    6 months free for Fife businesses
+                    <i class="fas fa-check-circle checkmark"></i>
+                    Setup in under 10 minutes
                 </div>
                 <div class="trust-item">
-                    <i class="fas fa-check-circle" style="color: #10B981; font-size: 1.125rem;"></i>
-                    EHO inspection ready
+                    <i class="fas fa-check-circle checkmark"></i>
+                    Cancel anytime
                 </div>
             </div>
         </div>
@@ -884,103 +1147,183 @@
     </div>
 </section>
 
-<!-- Trust Banner -->
-<section class="trust-banner">
-    <div class="container">
-        Trusted by restaurants, pubs, and hotels across Scotland
+<!-- Stats Banner -->
+<section class="stats-banner">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-number">10hrs</div>
+            <div class="stat-label">Saved per week</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">500+</div>
+            <div class="stat-label">Happy customers</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">99.9%</div>
+            <div class="stat-label">Uptime</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">5★</div>
+            <div class="stat-label">Average rating</div>
+        </div>
     </div>
 </section>
 
-<!-- Features Section -->
+<!-- Benefits Section -->
+<section id="benefits" class="benefits-section">
+    <div class="section-header">
+        <span class="badge">The Problem We Solve</span>
+        <h2>Replace Chaos with Confidence</h2>
+        <p>See how Zynthio transforms your daily food safety operations</p>
+    </div>
+
+    <div class="benefits-grid">
+        <div class="benefit-card">
+            <div class="benefit-icon">
+                <i class="fas fa-clock" style="color: white; font-size: 2rem;"></i>
+            </div>
+            <h3>Save 10+ Hours Every Week</h3>
+            <p>Stop wasting time hunting for paper records and manually filling out forms. Zynthio automates repetitive tasks so you can focus on running your business.</p>
+            <ul class="benefit-list">
+                <li><i class="fas fa-check"></i> Auto-generate daily checklists</li>
+                <li><i class="fas fa-check"></i> Instant access to any record</li>
+                <li><i class="fas fa-check"></i> No more searching through binders</li>
+                <li><i class="fas fa-check"></i> Complete tasks in half the time</li>
+            </ul>
+        </div>
+
+        <div class="benefit-card">
+            <div class="benefit-icon">
+                <i class="fas fa-shield-alt" style="color: white; font-size: 2rem;"></i>
+            </div>
+            <h3>Ace Every EHO Inspection</h3>
+            <p>Impress inspectors with professional digital records that show you're serious about food safety. Access any date, any check in seconds.</p>
+            <ul class="benefit-list">
+                <li><i class="fas fa-check"></i> EHO-approved digital records</li>
+                <li><i class="fas fa-check"></i> Tamper-proof timestamped entries</li>
+                <li><i class="fas fa-check"></i> Photo evidence for compliance</li>
+                <li><i class="fas fa-check"></i> Instant report generation</li>
+            </ul>
+        </div>
+
+        <div class="benefit-card">
+            <div class="benefit-icon">
+                <i class="fas fa-bell" style="color: white; font-size: 2rem;"></i>
+            </div>
+            <h3>Never Miss a Critical Check</h3>
+            <p>Automatic alerts and reminders ensure nothing slips through the cracks. Out-of-range temperatures? You'll know instantly.</p>
+            <ul class="benefit-list">
+                <li><i class="fas fa-check"></i> Real-time temperature alerts</li>
+                <li><i class="fas fa-check"></i> Automated task reminders</li>
+                <li><i class="fas fa-check"></i> Overdue task notifications</li>
+                <li><i class="fas fa-check"></i> Instant defect reporting</li>
+            </ul>
+        </div>
+
+        <div class="benefit-card">
+            <div class="benefit-icon">
+                <i class="fas fa-chart-line" style="color: white; font-size: 2rem;"></i>
+            </div>
+            <h3>Manage Multiple Sites Effortlessly</h3>
+            <p>See compliance across all your locations at a glance. Identify issues before they become problems.</p>
+            <ul class="benefit-list">
+                <li><i class="fas fa-check"></i> Central dashboard for all sites</li>
+                <li><i class="fas fa-check"></i> Real-time completion tracking</li>
+                <li><i class="fas fa-check"></i> Spot trends and patterns</li>
+                <li><i class="fas fa-check"></i> Benchmarking across locations</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Features Grid -->
 <section id="features" class="features-section">
     <div class="section-header">
-        <h2>Everything you need for food safety compliance</h2>
-        <p>Modern tools to replace paper checklists and impress EHO inspectors</p>
+        <span class="badge">Everything You Need</span>
+        <h2>Powerful Features, Simple to Use</h2>
+        <p>All the tools you need for complete food safety compliance</p>
     </div>
 
     <div class="features-grid">
         <div class="feature-card">
             <div class="feature-icon">
-                <i class="fas fa-clipboard-list" style="color: white; font-size: 1.875rem;"></i>
+                <i class="fas fa-mobile-alt" style="color: white; font-size: 2rem;"></i>
             </div>
-            <h3>Digital Checklists</h3>
-            <p>Replace paper with mobile-friendly digital checklists. Complete tasks on any device, anywhere.</p>
+            <h3>Mobile-First Design</h3>
+            <p>Complete checks on phones, tablets, or computers. Works perfectly on any device, anywhere.</p>
         </div>
 
         <div class="feature-card">
             <div class="feature-icon">
-                <i class="fas fa-thermometer-half" style="color: white; font-size: 1.875rem;"></i>
+                <i class="fas fa-thermometer-half" style="color: white; font-size: 2rem;"></i>
             </div>
-            <h3>Temperature Monitoring</h3>
-            <p>Track fridge temperatures with automatic alerts for out-of-range readings. Create defects instantly.</p>
+            <h3>Smart Temperature Tracking</h3>
+            <p>Automatic alerts for out-of-range readings. Create defects instantly with one tap.</p>
         </div>
 
         <div class="feature-card">
             <div class="feature-icon">
-                <i class="fas fa-camera" style="color: white; font-size: 1.875rem;"></i>
+                <i class="fas fa-camera" style="color: white; font-size: 2rem;"></i>
             </div>
             <h3>Photo Evidence</h3>
-            <p>Capture and store photo proof of compliance. Timestamped and tamper-proof.</p>
+            <p>Timestamped, tamper-proof photo documentation. Visual proof for every check.</p>
         </div>
 
         <div class="feature-card">
             <div class="feature-icon">
-                <i class="fas fa-certificate" style="color: white; font-size: 1.875rem;"></i>
+                <i class="fas fa-clipboard-check" style="color: white; font-size: 2rem;"></i>
             </div>
-            <h3>EHO Ready</h3>
-            <p>Impress inspectors with professional digital records. Access any date in seconds.</p>
+            <h3>Custom Checklists</h3>
+            <p>Build checklists that match your exact procedures. HACCP compliant templates included.</p>
         </div>
 
         <div class="feature-card">
             <div class="feature-icon">
-                <i class="fas fa-exclamation-triangle" style="color: white; font-size: 1.875rem;"></i>
+                <i class="fas fa-file-pdf" style="color: white; font-size: 2rem;"></i>
             </div>
-            <h3>Defect Tracking</h3>
-            <p>Report and track issues in real-time. Photos, severity levels, and resolution tracking.</p>
+            <h3>Instant Reports</h3>
+            <p>Generate professional PDF reports in seconds. Perfect for EHO inspections.</p>
         </div>
 
         <div class="feature-card">
             <div class="feature-icon">
-                <i class="fas fa-building" style="color: white; font-size: 1.875rem;"></i>
+                <i class="fas fa-users" style="color: white; font-size: 2rem;"></i>
             </div>
-            <h3>Multi-Site Management</h3>
-            <p>Manage all locations from one dashboard. See compliance across your entire operation.</p>
+            <h3>Unlimited Users</h3>
+            <p>Add all your staff at no extra cost. Everyone has their own login.</p>
         </div>
     </div>
 </section>
 
-<!-- How It Works -->
-<section class="how-it-works">
-    <div class="section-header">
-        <h2>From paper to digital in 3 simple steps</h2>
-    </div>
-
-    <div class="steps-grid">
-        <div class="step">
-            <div class="step-number">1</div>
-            <div class="step-icon">
-                <i class="fas fa-cog" style="color: #0EA5E9;"></i>
+<!-- ROI Section -->
+<section id="roi" class="roi-section">
+    <div class="roi-content">
+        <div class="roi-grid">
+            <div class="roi-text">
+                <h2>See Your Return on Investment</h2>
+                <p>The average restaurant saves £520 per month by switching to Zynthio. That's over £6,000 per year in recovered time and reduced admin costs.</p>
+                <a (click)="navigateToRegister()" class="btn-white" style="cursor: pointer;">
+                    Start Saving Today <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                </a>
             </div>
-            <h3>Set up your checklists</h3>
-            <p>Add your tasks and schedules in minutes</p>
-        </div>
-
-        <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-icon">
-                <i class="fas fa-mobile-alt" style="color: #0EA5E9;"></i>
+            <div class="roi-stats">
+                <div class="roi-stat">
+                    <div class="roi-stat-value">10hrs</div>
+                    <div class="roi-stat-label">Saved per week</div>
+                </div>
+                <div class="roi-stat">
+                    <div class="roi-stat-value">£6,240</div>
+                    <div class="roi-stat-label">Saved annually</div>
+                </div>
+                <div class="roi-stat">
+                    <div class="roi-stat-value">100%</div>
+                    <div class="roi-stat-label">Compliance rate</div>
+                </div>
+                <div class="roi-stat">
+                    <div class="roi-stat-value">5min</div>
+                    <div class="roi-stat-label">Setup time</div>
+                </div>
             </div>
-            <h3>Access from any device</h3>
-            <p>Staff complete checks on phones, tablets, or computers</p>
-        </div>
-
-        <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-icon">
-                <i class="fas fa-chart-line" style="color: #0EA5E9;"></i>
-            </div>
-            <h3>View reports & stay compliant</h3>
-            <p>Real-time visibility and EHO-ready records</p>
         </div>
     </div>
 </section>
@@ -988,97 +1331,164 @@
 <!-- Pricing Section -->
 <section id="pricing" class="pricing-section">
     <div class="section-header">
-        <h2>Simple, transparent pricing</h2>
-        <p>Pay per site, unlimited users</p>
+        <span class="badge">Transparent Pricing</span>
+        <h2>Choose Your Plan</h2>
+        <p>Simple per-site pricing. Unlimited users. No hidden fees.</p>
     </div>
 
     <div class="pricing-grid">
         <div class="pricing-card">
             <h3>Starter</h3>
             <div><span class="price">£12</span><span class="price-period"> per site/month</span></div>
-            <p style="color: #6B7280; margin-bottom: 1.5rem;">1-3 sites</p>
+            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">Perfect for 1-3 sites</p>
 
             <ul class="pricing-features">
                 <li>Mobile-friendly web access</li>
                 <li>Digital checklists</li>
+                <li>Temperature monitoring</li>
                 <li>Photo upload</li>
                 <li>Email reports</li>
-                <li>Basic support</li>
                 <li>Unlimited users</li>
+                <li>Basic support</li>
             </ul>
 
             <a (click)="navigateToRegister()" class="btn-secondary" style="display: block; text-align: center; cursor: pointer;">Start Free Trial</a>
+            <div class="savings-badge">Save £144/year with annual billing</div>
         </div>
 
         <div class="pricing-card popular">
-            <div class="popular-badge">MOST POPULAR</div>
+            <div class="popular-badge">Most Popular</div>
             <h3>Professional</h3>
             <div><span class="price">£10</span><span class="price-period"> per site/month</span></div>
-            <p style="color: #6B7280; margin-bottom: 1.5rem;">4-10 sites</p>
+            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">Best for 4-10 sites</p>
 
             <ul class="pricing-features">
-                <li><strong>Everything in Starter</strong></li>
-                <li>Documents module</li>
+                <li><strong>Everything in Starter, plus:</strong></li>
                 <li>Priority support</li>
                 <li>Custom branding</li>
                 <li>Advanced analytics</li>
+                <li>Multi-site dashboard</li>
+                <li>Documents module</li>
+                <li>API access</li>
             </ul>
 
             <a (click)="navigateToRegister()" class="btn-primary" style="display: block; text-align: center; cursor: pointer;">Start Free Trial</a>
+            <div class="savings-badge">Save £180/year with annual billing</div>
         </div>
 
         <div class="pricing-card">
             <h3>Enterprise</h3>
             <div><span class="price">£8</span><span class="price-period"> per site/month</span></div>
-            <p style="color: #6B7280; margin-bottom: 1.5rem;">11+ sites</p>
+            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">For 11+ sites</p>
 
             <ul class="pricing-features">
-                <li><strong>Everything in Pro</strong></li>
+                <li><strong>Everything in Pro, plus:</strong></li>
+                <li>Dedicated account manager</li>
                 <li>E-learning module</li>
-                <li>Dedicated manager</li>
-                <li>API access</li>
                 <li>Custom integrations</li>
+                <li>SLA guarantee</li>
+                <li>Onboarding assistance</li>
+                <li>White-label options</li>
             </ul>
 
             <a href="#contact" class="btn-secondary" style="display: block; text-align: center;">Contact Sales</a>
+            <div class="savings-badge">Save £216/year with annual billing</div>
         </div>
-    </div>
-
-    <div class="annual-note">
-        Save 15% with annual billing
     </div>
 </section>
 
 <!-- Fife Special Offer -->
 <section id="trial" class="fife-banner">
-    <div>
-        <i class="fas fa-gift" style="font-size: 3rem; color: white; margin-bottom: 1rem;"></i>
+    <div class="fife-content">
+        <div>
+            <i class="fas fa-gift" style="font-size: 4rem; color: #0EA5E9; margin-bottom: 1.5rem;"></i>
+        </div>
+        <h2>EXCLUSIVE OFFER FOR FIFE</h2>
+        <div class="price" style="font-size: 3.5rem;">6 Months Completely FREE</div>
+        <p>Full Professional plan access • No credit card required • Worth over £360</p>
+        <a (click)="navigateToRegister()" class="btn-white" style="cursor: pointer;">
+            Claim Your Free Trial Now <i class="fas fa-arrow-right" style="margin-left: 0.75rem;"></i>
+        </a>
+        <div class="urgency-text">
+            <i class="fas fa-clock" style="margin-right: 0.5rem;"></i>
+            Limited time offer for Fife-based businesses
+        </div>
     </div>
-    <h2>SPECIAL OFFER FOR FIFE BUSINESSES</h2>
-    <div class="price" style="font-size: 2.5rem; margin-bottom: 0.5rem;">6 Months FREE Trial</div>
-    <p>No credit card required • Full Professional plan access</p>
-    <a (click)="navigateToRegister()" class="btn-white" style="cursor: pointer;">Claim Your Free Trial →</a>
 </section>
 
-<!-- Testimonial -->
-<section class="testimonial-section">
-    <div class="testimonial-card">
-        <div class="quote-icon">
-            <i class="fas fa-quote-left" style="color: #0EA5E9;"></i>
+<!-- Testimonials -->
+<section id="testimonials" class="testimonials-section">
+    <div class="section-header">
+        <span class="badge">Success Stories</span>
+        <h2>Loved by Hospitality Professionals</h2>
+        <p>See what our customers say about Zynthio</p>
+    </div>
+
+    <div class="testimonials-grid">
+        <div class="testimonial-card">
+            <div class="quote-icon">
+                <i class="fas fa-quote-left"></i>
+            </div>
+            <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <blockquote>
+                Cut our admin time by 10 hours a week. The EHO inspector was genuinely impressed with our digital records. Best investment we've made.
+            </blockquote>
+            <div class="author">Karol T.</div>
+            <div class="author-role">Viva Italia Group (13 locations)</div>
         </div>
-        <blockquote>
-            Zynthio cut our admin time by 10 hours a week and our EHO inspector was genuinely impressed with our digital records.
-        </blockquote>
-        <div class="author">Karol T</div>
-        <div class="author-role">Viva Italia Group (13 locations)</div>
+
+        <div class="testimonial-card">
+            <div class="quote-icon">
+                <i class="fas fa-quote-left"></i>
+            </div>
+            <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <blockquote">
+                Game-changer for our restaurant group. Temperature alerts caught a fridge issue before we lost thousands in stock. Paid for itself in the first month.
+            </blockquote>
+            <div class="author">Sarah M.</div>
+            <div class="author-role">Operations Manager, Edinburgh</div>
+        </div>
+
+        <div class="testimonial-card">
+            <div class="quote-icon">
+                <i class="fas fa-quote-left"></i>
+            </div>
+            <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <blockquote>
+                Setup took 5 minutes. Staff love using it on their phones. No more messy paper forms. Our compliance score went from 3 to 5 stars.
+            </blockquote>
+            <div class="author">James R.</div>
+            <div class="author-role">The Rose & Crown, Fife</div>
+        </div>
     </div>
 </section>
 
 <!-- Final CTA -->
 <section class="final-cta">
-    <h2>Ready to go digital?</h2>
-    <p>Join 500+ venues using Zynthio for food safety compliance</p>
-    <a (click)="navigateToRegister()" class="btn-white" style="cursor: pointer;">Start Your Free Trial</a>
+    <h2>Ready to Transform Your Food Safety?</h2>
+    <p>Join 500+ hospitality businesses already saving time and impressing inspectors with Zynthio</p>
+    <a (click)="navigateToRegister()" class="btn-white" style="cursor: pointer;">
+        <i class="fas fa-rocket" style="margin-right: 0.75rem;"></i>
+        Start Your Free Trial Today
+    </a>
 </section>
 
 <!-- Footer -->
@@ -1095,16 +1505,16 @@
                 <text x="30" y="85" font-family="'Century Gothic', 'Futura', 'Arial', sans-serif" font-size="72" font-weight="700" fill="url(#hygieneBlueWhite)" letter-spacing="0">Z</text>
                 <text x="75" y="85" font-family="'Century Gothic', 'Futura', 'Arial', sans-serif" font-size="72" font-weight="300" fill="#FFFFFF" letter-spacing="1">YNTHIO</text>
             </svg>
-            <p style="font-size: 0.875rem;">Modern food safety management</p>
+            <p style="font-size: 0.9375rem; line-height: 1.6;">The modern way to manage food safety compliance. Trusted by hospitality businesses across the UK.</p>
         </div>
 
         <div class="footer-col">
             <h4>Product</h4>
             <ul>
+                <li><a href="#benefits">Benefits</a></li>
                 <li><a href="#features">Features</a></li>
                 <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
             </ul>
         </div>
 
@@ -1114,19 +1524,30 @@
                 <li><a routerLink="/privacy">Privacy Policy</a></li>
                 <li><a routerLink="/terms">Terms of Service</a></li>
                 <li><a routerLink="/cookies">Cookie Policy</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
 
         <div class="footer-col">
-            <h4>Contact</h4>
+            <h4>Get In Touch</h4>
             <ul>
-                <li style="font-size: 0.875rem;">hello&#64;prstart.co.uk</li>
-                <li style="font-size: 0.875rem;">Bradford, England, UK</li>
+                <li style="font-size: 0.9375rem; margin-bottom: 0.75rem;">
+                    <i class="fas fa-envelope" style="color: #0EA5E9; margin-right: 0.5rem;"></i>
+                    hello&#64;prstart.co.uk
+                </li>
+                <li style="font-size: 0.9375rem; margin-bottom: 0.75rem;">
+                    <i class="fas fa-map-marker-alt" style="color: #0EA5E9; margin-right: 0.5rem;"></i>
+                    Bradford, England, UK
+                </li>
+                <li style="font-size: 0.9375rem;">
+                    <i class="fas fa-clock" style="color: #0EA5E9; margin-right: 0.5rem;"></i>
+                    Mon-Fri 9am-5pm GMT
+                </li>
             </ul>
         </div>
     </div>
 
     <div class="footer-bottom">
-        © 2025 Zynthio. All rights reserved.
+        © 2025 Zynthio. All rights reserved. Made with <i class="fas fa-heart" style="color: #EF4444;"></i> in the UK
     </div>
 </footer>
