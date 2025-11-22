@@ -326,8 +326,11 @@ export class DynamicTaskFormComponent implements OnInit {
         field.validation_rules.repeat_template.forEach((template: any) => {
           for (let i = 0; i < count; i++) {
             const controlName = `field_${field.id}_${i}_${template.type}`;
-            // Remove old control if exists
+
+            // Preserve existing value if control exists
+            let existingValue = '';
             if (this.dynamicForm.contains(controlName)) {
+              existingValue = this.dynamicForm.get(controlName)?.value || '';
               this.dynamicForm.removeControl(controlName);
             }
 
@@ -340,8 +343,8 @@ export class DynamicTaskFormComponent implements OnInit {
             }
             // Photo fields are always optional (no validators)
 
-            this.dynamicForm.addControl(controlName, this.fb.control('', validators));
-            console.log(`Created control ${controlName} with validators:`, validators.length > 0 ? 'required' : 'optional');
+            this.dynamicForm.addControl(controlName, this.fb.control(existingValue, validators));
+            console.log(`Created control ${controlName} with validators:`, validators.length > 0 ? 'required' : 'optional', 'value:', existingValue);
           }
         });
       }

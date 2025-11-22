@@ -99,7 +99,7 @@
               <span>Upload Photo</span>
             </label>
             <div *ngIf="dynamicForm.get('field_' + field.id)?.value" class="photo-preview">
-              Photo uploaded
+              <img [src]="dynamicForm.get('field_' + field.id)?.value" alt="Uploaded photo" class="uploaded-photo" />
             </div>
           </div>
         </div>
@@ -148,7 +148,7 @@
                         <span>Photo</span>
                       </label>
                       <div *ngIf="dynamicForm.get('field_' + field.id + '_' + i + '_' + template.type)?.value" class="photo-preview-small">
-                        ✓ Uploaded
+                        <img [src]="dynamicForm.get('field_' + field.id + '_' + i + '_' + template.type)?.value" alt="Temperature photo {{ i + 1 }}" class="uploaded-photo-small" />
                       </div>
                     </div>
                   </div>
