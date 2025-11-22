@@ -1316,7 +1316,7 @@
         <a href="#testimonials" (click)="closeMobileMenu()">Testimonials</a>
         <a *ngIf="!isLoggedIn" (click)="navigateToLogin(); closeMobileMenu()">Login</a>
         <a *ngIf="isLoggedIn" (click)="navigateToDashboard(); closeMobileMenu()">Dashboard</a>
-        <a (click)="navigateToRegister(); closeMobileMenu()" class="btn-primary" style="margin-top: 1rem; cursor: pointer;">Start Free Trial</a>
+        <a routerLink="/register" (click)="closeMobileMenu()" class="btn-primary" style="margin-top: 1rem;">Start Free Trial</a>
     </div>
 </div>
 
@@ -1352,7 +1352,7 @@
         </button>
 
         <!-- Desktop CTA Button -->
-        <a (click)="navigateToRegister()" class="btn-primary desktop-cta" style="cursor: pointer;">Start Free Trial</a>
+        <a routerLink="/register" class="btn-primary desktop-cta">Start Free Trial</a>
     </div>
 </nav>
 
@@ -1373,7 +1373,7 @@
             </p>
 
             <div class="cta-buttons">
-                <a (click)="navigateToRegister()" class="btn-primary" style="cursor: pointer;">
+                <a routerLink="/register" class="btn-primary">
                     <i class="fas fa-rocket" style="margin-right: 0.5rem;"></i>
                     Start 6-Month Free Trial
                 </a>
@@ -1618,7 +1618,7 @@
             <div class="roi-text">
                 <h2>See Your Return on Investment</h2>
                 <p>The average restaurant saves £520 per month by switching to Zynthio. That's over £6,000 per year in recovered time and reduced admin costs.</p>
-                <a (click)="navigateToRegister()" class="btn-white" style="cursor: pointer;">
+                <a routerLink="/register" class="btn-white">
                     Start Saving Today <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
                 </a>
             </div>
@@ -1668,7 +1668,7 @@
                 <li>Basic support</li>
             </ul>
 
-            <a (click)="navigateToRegister()" class="btn-secondary" style="display: block; text-align: center; cursor: pointer;">Start Free Trial</a>
+            <a routerLink="/register" class="btn-secondary" style="display: block; text-align: center;">Start Free Trial</a>
             <div class="savings-badge">Save £144/year with annual billing</div>
         </div>
 
@@ -1688,7 +1688,7 @@
                 <li>API access</li>
             </ul>
 
-            <a (click)="navigateToRegister()" class="btn-primary" style="display: block; text-align: center; cursor: pointer;">Start Free Trial</a>
+            <a routerLink="/register" class="btn-primary" style="display: block; text-align: center;">Start Free Trial</a>
             <div class="savings-badge">Save £180/year with annual billing</div>
         </div>
 
@@ -1722,7 +1722,7 @@
         <h2>EXCLUSIVE OFFER FOR FIFE</h2>
         <div class="price" style="font-size: 3.5rem;">6 Months Completely FREE</div>
         <p>Full Professional plan access • No credit card required • Worth over £360</p>
-        <a (click)="navigateToRegister()" class="btn-white" style="cursor: pointer;">
+        <a routerLink="/register" class="btn-white">
             Claim Your Free Trial Now <i class="fas fa-arrow-right" style="margin-left: 0.75rem;"></i>
         </a>
         <div class="urgency-text">
@@ -1925,7 +1925,7 @@
 <section class="final-cta">
     <h2>Ready to Transform Your Food Safety?</h2>
     <p>Join 500+ hospitality businesses already saving time and impressing inspectors with Zynthio</p>
-    <a (click)="navigateToRegister()" class="btn-white" style="cursor: pointer;">
+    <a routerLink="/register" class="btn-white">
         <i class="fas fa-rocket" style="margin-right: 0.75rem;"></i>
         Start Your Free Trial Today
     </a>
