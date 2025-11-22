@@ -10,6 +10,7 @@ class CategoryBase(BaseModel):
     description: Optional[str] = None
     frequency: ChecklistFrequency
     closes_at: Optional[time] = None
+    opens_at: Optional[time] = None
     is_global: bool = False
 
 
@@ -23,6 +24,7 @@ class CategoryUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     frequency: Optional[ChecklistFrequency] = None
+    opens_at: Optional[time] = None
     closes_at: Optional[time] = None
     is_active: Optional[bool] = None
 
