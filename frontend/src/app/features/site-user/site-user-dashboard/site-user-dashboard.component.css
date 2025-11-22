@@ -767,6 +767,29 @@ mat-card-content {
   .task-grid {
     gap: 16px;
   }
+
+  /* Dashboard Header - Allow wrapping on tablet */
+  .dashboard-header {
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .header-stats {
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  /* Stat Cards - Adjust for tablet */
+  .stat-card {
+    min-width: 140px;
+    flex: 0 1 auto;
+  }
+
+  .circular-progress-container {
+    width: 90px;
+    height: 90px;
+  }
 }
 
 /* Mobile (< 768px) */
