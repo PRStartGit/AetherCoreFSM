@@ -257,25 +257,41 @@ export class DynamicTaskFormComponent implements OnInit {
   }
 
   onPhotoSelectedRepeating(event: any, fieldId: number, index: number, subFieldType: string): void {
+    console.log('[DEBUG] Photo selected for repeating field:', { fieldId, index, subFieldType });
+
     const file = event.target?.files?.[0];
+    console.log('[DEBUG] File captured:', file ? `${file.name} (${file.size} bytes)` : 'No file');
+
     if (file) {
       const controlName = `field_${fieldId}_${index}_${subFieldType}`;
+      console.log('[DEBUG] Control name:', controlName);
+      console.log('[DEBUG] Control exists:', this.dynamicForm.contains(controlName));
+      console.log('[DEBUG] All form controls:', Object.keys(this.dynamicForm.controls));
+
       this.uploadPhoto(file).subscribe({
         next: (response: any) => {
+          console.log('[DEBUG] Upload successful, response:', response);
           this.dynamicForm.get(controlName)?.setValue(response.file_url);
+          console.log('[DEBUG] Form control value set to:', response.file_url);
           this.snackBar.open('Photo uploaded successfully', 'Close', { duration: 2000 });
         },
         error: (error) => {
-          console.error('Photo upload failed:', error);
+          console.error('[ERROR] Photo upload failed:', error);
+          console.error('[ERROR] Error details:', error.error);
+          console.error('[ERROR] Status:', error.status);
           this.snackBar.open('Failed to upload photo', 'Close', { duration: 3000 });
         }
       });
+    } else {
+      console.warn('[WARN] No file selected from event');
     }
   }
 
   private uploadPhoto(file: File) {
+    console.log('[DEBUG] uploadPhoto called with file:', file.name);
     const formData = new FormData();
     formData.append('file', file);
+    console.log('[DEBUG] FormData created, posting to /api/v1/utils/upload-photo');
     return this.http.post('/api/v1/utils/upload-photo', formData);
   }
 
