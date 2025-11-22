@@ -1186,6 +1186,16 @@
 
     /* Responsive */
     @media (max-width: 768px) {
+        /* Base adjustments */
+        body {
+            font-size: 14px;
+        }
+
+        /* Navigation */
+        .nav-container {
+            padding: 0 1rem;
+        }
+
         .nav-links {
             display: none;
         }
@@ -1198,93 +1208,358 @@
             display: none;
         }
 
+        /* Hero Section */
         .hero {
-            padding: 4rem 2rem 3rem;
+            padding: 3rem 1rem 2rem;
         }
 
         .hero-grid {
             grid-template-columns: 1fr;
-            gap: 3rem;
+            gap: 2rem;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
+            line-height: 1.2;
         }
 
         .subheadline {
-            font-size: 1.125rem;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .trust-badge {
+            font-size: 0.8125rem;
+            padding: 0.5rem 1rem;
         }
 
         .cta-buttons {
             flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .cta-buttons .btn-primary,
+        .cta-buttons .btn-secondary {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        .trust-item {
+            font-size: 0.875rem;
+        }
+
+        /* Dashboard Preview */
+        .dashboard-preview {
+            padding: 1.5rem;
+            transform: none;
+        }
+
+        .dashboard-preview:hover {
+            transform: none;
+        }
+
+        .dashboard-title {
+            font-size: 1.0625rem;
+        }
+
+        .dashboard-subtitle {
+            font-size: 0.8125rem;
+        }
+
+        .completion-percentage {
+            font-size: 1.75rem;
+        }
+
+        .dashboard-icon-wrapper {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+
+        .dashboard-icon-wrapper i {
+            font-size: 1.25rem !important;
+        }
+
+        .task-name {
+            font-size: 0.875rem;
+        }
+
+        .task-value {
+            font-size: 0.8125rem;
+        }
+
+        /* Stats Banner */
+        .stats-banner {
+            padding: 2rem 1rem;
         }
 
         .stats-grid {
             grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
+            gap: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+        }
+
+        .badge-icon {
+            font-size: 2rem !important;
+        }
+
+        /* Section Headers */
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-header .badge {
+            font-size: 0.75rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.75rem;
+            line-height: 1.2;
+        }
+
+        .section-header p {
+            font-size: 1rem;
+        }
+
+        /* Benefits Section */
+        .benefits-section {
+            padding: 4rem 1rem;
         }
 
         .benefits-grid {
             grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .benefit-card {
+            padding: 2rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.25rem;
+        }
+
+        .benefit-icon {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .benefit-icon i {
+            font-size: 1.5rem !important;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 4rem 1rem;
         }
 
         .features-grid {
             grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.125rem;
+        }
+
+        .feature-icon {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .feature-icon i {
+            font-size: 1.5rem !important;
+        }
+
+        /* ROI Section */
+        .roi-section {
+            padding: 4rem 1rem;
         }
 
         .roi-grid {
             grid-template-columns: 1fr;
-            gap: 3rem;
+            gap: 2rem;
+        }
+
+        .roi-text h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .roi-text p {
+            font-size: 1rem;
+        }
+
+        .roi-stats {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .roi-stat {
+            padding: 1.5rem;
+        }
+
+        .roi-stat-value {
+            font-size: 2rem;
+        }
+
+        .roi-stat-label {
+            font-size: 0.875rem;
+        }
+
+        .btn-white {
+            width: 100%;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 4rem 1rem;
         }
 
         .pricing-grid {
             grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .pricing-card {
+            padding: 2rem;
         }
 
         .pricing-card.popular {
             transform: scale(1);
         }
 
-        .testimonials-grid {
-            grid-template-columns: 1fr;
+        .pricing-card h3 {
+            font-size: 1.5rem;
         }
 
-        .footer-grid {
+        .price {
+            font-size: 2.5rem;
+        }
+
+        /* Fife Banner */
+        .fife-banner {
+            padding: 4rem 1rem;
+        }
+
+        .fife-banner h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .fife-banner .price {
+            font-size: 2.5rem !important;
+        }
+
+        .fife-banner p {
+            font-size: 1rem;
+        }
+
+        .fife-banner i.fa-gift {
+            font-size: 3rem !important;
+        }
+
+        /* Testimonials */
+        .testimonials-section {
+            padding: 4rem 1rem;
+        }
+
+        .testimonials-grid {
             grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .testimonial-card {
+            padding: 2rem;
+        }
+
+        blockquote {
+            font-size: 1rem;
+        }
+
+        /* Trust Badges */
+        .trust-badges-section {
+            padding: 2rem 1rem;
         }
 
         .badges-grid {
             grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
-        .section-header h2 {
-            font-size: 2rem;
+        .badge-text {
+            font-size: 0.8125rem;
         }
 
-        .section-header p {
-            font-size: 1.125rem;
-        }
-
-        .fife-banner h2 {
-            font-size: 2.25rem;
-        }
-
-        .final-cta h2 {
-            font-size: 2.25rem;
+        /* FAQ */
+        .faq-section {
+            padding: 4rem 1rem;
         }
 
         .faq-question {
-            font-size: 1rem;
-            padding: 1.25rem 1.5rem;
+            font-size: 0.9375rem;
+            padding: 1rem 1.25rem;
         }
 
         .faq-answer {
-            padding: 0 1.5rem;
+            padding: 0 1.25rem;
         }
 
         .faq-answer.open {
-            padding: 0 1.5rem 1.25rem;
+            padding: 0 1.25rem 1rem;
+        }
+
+        .faq-answer p {
+            font-size: 0.9375rem;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            padding: 4rem 1rem;
+        }
+
+        .final-cta h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .final-cta p {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 1rem 2rem;
+        }
+
+        .footer-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .footer-col h4 {
+            font-size: 1rem;
+        }
+
+        /* Buttons */
+        .btn-primary,
+        .btn-secondary {
+            padding: 0.875rem 1.5rem;
+            font-size: 0.9375rem;
         }
     }
 </style>
