@@ -204,16 +204,96 @@
 
     .dashboard-preview {
         background: white;
-        border-radius: 1rem;
-        padding: 2.5rem;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+        border-radius: 1.25rem;
+        padding: 2rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         border: 1px solid #E5E7EB;
         transform: perspective(1000px) rotateY(-5deg);
         transition: transform 0.3s ease;
+        overflow: hidden;
     }
 
     .dashboard-preview:hover {
         transform: perspective(1000px) rotateY(0deg);
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 1.25rem;
+        border-bottom: 2px solid #F3F4F6;
+        margin-bottom: 1.5rem;
+    }
+
+    .dashboard-title-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .dashboard-icon-wrapper {
+        width: 3rem;
+        height: 3rem;
+        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.4);
+    }
+
+    .dashboard-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 0.25rem;
+    }
+
+    .dashboard-subtitle {
+        font-size: 0.875rem;
+        color: #6B7280;
+        font-weight: 500;
+    }
+
+    .dashboard-completion {
+        text-align: right;
+    }
+
+    .completion-percentage {
+        font-size: 2.25rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }
+
+    .completion-label {
+        font-size: 0.75rem;
+        color: #6B7280;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 0.5rem;
+        background: #F3F4F6;
+        border-radius: 9999px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #10B981 0%, #059669 100%);
+        border-radius: 9999px;
+        transition: width 0.6s ease;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
     }
 
     /* Stats Banner */
@@ -822,6 +902,191 @@
         font-size: 0.875rem;
     }
 
+    /* Dashboard Preview Task Items */
+    .task-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.875rem 0;
+        border-bottom: 1px solid #F3F4F6;
+    }
+
+    .task-item:last-child {
+        border-bottom: none;
+    }
+
+    .task-icon {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .icon-complete {
+        background: #DCFCE7;
+        color: #10B981;
+    }
+
+    .icon-pending {
+        background: #FEF3C7;
+        color: #F59E0B;
+    }
+
+    .task-content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .task-name {
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.9375rem;
+    }
+
+    .task-value {
+        font-size: 0.875rem;
+        font-weight: 700;
+        letter-spacing: 0.025em;
+    }
+
+    .task-value.complete {
+        color: #10B981;
+    }
+
+    .task-value.pending {
+        color: #F59E0B;
+    }
+
+    /* FAQ Section */
+    .faq-section {
+        padding: 6rem 2rem;
+        background: white;
+    }
+
+    .faq-container {
+        max-width: 896px;
+        margin: 0 auto;
+    }
+
+    .faq-item {
+        background: white;
+        border: 1px solid #E5E7EB;
+        border-radius: 1rem;
+        margin-bottom: 1.25rem;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+
+    .faq-item:hover {
+        border-color: #BAE6FD;
+        box-shadow: 0 4px 12px -4px rgba(14, 165, 233, 0.2);
+    }
+
+    .faq-question {
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+        padding: 1.5rem 2rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #111827;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: color 0.2s;
+    }
+
+    .faq-question:hover {
+        color: #0EA5E9;
+    }
+
+    .faq-icon {
+        color: #0EA5E9;
+        font-size: 1.25rem;
+        transition: transform 0.3s;
+        flex-shrink: 0;
+        margin-left: 1rem;
+    }
+
+    .faq-icon.open {
+        transform: rotate(180deg);
+    }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        padding: 0 2rem;
+    }
+
+    .faq-answer.open {
+        max-height: 500px;
+        padding: 0 2rem 1.5rem;
+    }
+
+    .faq-answer p {
+        color: #6B7280;
+        line-height: 1.7;
+        font-size: 1rem;
+    }
+
+    /* Trust Badges Section */
+    .trust-badges-section {
+        padding: 3rem 2rem;
+        background: white;
+        border-top: 1px solid #E5E7EB;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    .trust-badges-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .trust-badges-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #6B7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 2rem;
+    }
+
+    .badges-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 3rem;
+        align-items: center;
+        justify-items: center;
+    }
+
+    .badge-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .badge-icon {
+        font-size: 3rem;
+        color: #0EA5E9;
+    }
+
+    .badge-text {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+        text-align: center;
+    }
+
     /* Mobile Menu */
     .mobile-menu-button {
         display: none;
@@ -976,8 +1241,17 @@
             grid-template-columns: 1fr;
         }
 
+        .badges-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
         .section-header h2 {
             font-size: 2rem;
+        }
+
+        .section-header p {
+            font-size: 1.125rem;
         }
 
         .fife-banner h2 {
@@ -986,6 +1260,19 @@
 
         .final-cta h2 {
             font-size: 2.25rem;
+        }
+
+        .faq-question {
+            font-size: 1rem;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+        }
+
+        .faq-answer.open {
+            padding: 0 1.5rem 1.25rem;
         }
     }
 </style>
@@ -1101,47 +1388,60 @@
         </div>
 
         <div class="dashboard-preview">
-            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid #E5E7EB; margin-bottom: 1rem;">
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 2.5rem; height: 2.5rem; background: #E0F2FE; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-clipboard-list" style="color: #0EA5E9; font-size: 1.25rem;"></i>
+            <div class="dashboard-header">
+                <div class="dashboard-title-section">
+                    <div class="dashboard-icon-wrapper">
+                        <i class="fas fa-clipboard-check" style="color: white; font-size: 1.5rem;"></i>
                     </div>
                     <div>
-                        <div style="font-weight: 600; color: #111827;">Today's Tasks</div>
-                        <div style="font-size: 0.875rem; color: #6B7280;">12 of 15 completed</div>
+                        <div class="dashboard-title">Today's Checklist</div>
+                        <div class="dashboard-subtitle">12 of 15 tasks completed</div>
                     </div>
                 </div>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #10B981;">80%</div>
+                <div class="dashboard-completion">
+                    <div class="completion-percentage">80%</div>
+                    <div class="completion-label">Complete</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 80%;"></div>
             </div>
 
             <div class="task-item task-complete">
-                <div style="display: flex; align-items: center;">
+                <div class="task-content">
                     <div class="task-icon icon-complete">
-                        <i class="fas fa-check" style="font-size: 0.875rem;"></i>
+                        <i class="fas fa-check"></i>
                     </div>
-                    <span style="font-weight: 500;">Fridge Temperature</span>
+                    <span class="task-name">Fridge Temperature Check</span>
                 </div>
-                <span style="font-size: 0.875rem; font-weight: 600; color: #10B981;">3.2°C</span>
+                <span class="task-value complete">
+                    <i class="fas fa-thermometer-half" style="margin-right: 0.375rem;"></i>3.2°C
+                </span>
             </div>
 
             <div class="task-item task-complete">
-                <div style="display: flex; align-items: center;">
+                <div class="task-content">
                     <div class="task-icon icon-complete">
-                        <i class="fas fa-check" style="font-size: 0.875rem;"></i>
+                        <i class="fas fa-check"></i>
                     </div>
-                    <span style="font-weight: 500;">Opening Checks</span>
+                    <span class="task-name">Opening Health & Safety</span>
                 </div>
-                <span style="font-size: 0.875rem; font-weight: 600; color: #10B981;">Complete</span>
+                <span class="task-value complete">
+                    <i class="fas fa-check-circle" style="margin-right: 0.375rem;"></i>Complete
+                </span>
             </div>
 
             <div class="task-item task-pending">
-                <div style="display: flex; align-items: center;">
+                <div class="task-content">
                     <div class="task-icon icon-pending">
-                        <i class="fas fa-exclamation" style="font-size: 0.875rem;"></i>
+                        <i class="fas fa-clock"></i>
                     </div>
-                    <span style="font-weight: 500;">Weekly Deep Clean</span>
+                    <span class="task-name">Weekly Deep Clean</span>
                 </div>
-                <span style="font-size: 0.875rem; font-weight: 600; color: #F59E0B;">Due Today</span>
+                <span class="task-value pending">
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 0.375rem;"></i>Due Today
+                </span>
             </div>
         </div>
     </div>
@@ -1477,6 +1777,130 @@
             </blockquote>
             <div class="author">James R.</div>
             <div class="author-role">The Rose & Crown, Fife</div>
+        </div>
+    </div>
+</section>
+
+<!-- Trust Badges -->
+<section class="trust-badges-section">
+    <div class="trust-badges-container">
+        <div class="trust-badges-title">Trusted & Secure Food Safety Compliance</div>
+        <div class="badges-grid">
+            <div class="badge-item">
+                <div class="badge-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="badge-text">GDPR<br>Compliant</div>
+            </div>
+            <div class="badge-item">
+                <div class="badge-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="badge-text">256-bit<br>Encryption</div>
+            </div>
+            <div class="badge-item">
+                <div class="badge-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="badge-text">FSA<br>Approved</div>
+            </div>
+            <div class="badge-item">
+                <div class="badge-icon">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div class="badge-text">UK Data<br>Centers</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="faq-section">
+    <div class="section-header">
+        <span class="badge">Common Questions</span>
+        <h2>Frequently Asked Questions</h2>
+        <p>Everything you need to know about Zynthio</p>
+    </div>
+
+    <div class="faq-container">
+        <div class="faq-item">
+            <button class="faq-question" (click)="toggleFaq(0)">
+                <span>How long does it take to set up Zynthio?</span>
+                <i class="fas fa-chevron-down faq-icon" [class.open]="openFaqIndex === 0"></i>
+            </button>
+            <div class="faq-answer" [class.open]="openFaqIndex === 0">
+                <p>Most businesses are up and running in under 10 minutes. Simply sign up, add your sites and users, and you're ready to start creating checklists. No complex installation or IT support needed.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" (click)="toggleFaq(1)">
+                <span>Do I really get 6 months free?</span>
+                <i class="fas fa-chevron-down faq-icon" [class.open]="openFaqIndex === 1"></i>
+            </button>
+            <div class="faq-answer" [class.open]="openFaqIndex === 1">
+                <p>Yes! For Fife-based businesses, we're offering 6 months completely free access to our Professional plan (worth over £360). No credit card required to start. After the trial, plans start from just £12/site/month.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" (click)="toggleFaq(2)">
+                <span>Will my staff find it easy to use?</span>
+                <i class="fas fa-chevron-down faq-icon" [class.open]="openFaqIndex === 2"></i>
+            </button>
+            <div class="faq-answer" [class.open]="openFaqIndex === 2">
+                <p>Absolutely. Zynthio is designed to be simpler than paper forms. Your staff can use their phones, tablets, or computers. The interface is intuitive - most users need zero training and are completing checklists within minutes.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" (click)="toggleFaq(3)">
+                <span>Is my data secure and backed up?</span>
+                <i class="fas fa-chevron-down faq-icon" [class.open]="openFaqIndex === 3"></i>
+            </button>
+            <div class="faq-answer" [class.open]="openFaqIndex === 3">
+                <p>Yes. All data is encrypted with 256-bit SSL, stored in secure UK data centers, and automatically backed up. We're fully GDPR compliant and take data security seriously. Your records are safer than paper files that can be lost or damaged.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" (click)="toggleFaq(4)">
+                <span>Can I customize checklists for my business?</span>
+                <i class="fas fa-chevron-down faq-icon" [class.open]="openFaqIndex === 4"></i>
+            </button>
+            <div class="faq-answer" [class.open]="openFaqIndex === 4">
+                <p>Yes! You can create custom checklists that match your exact procedures. We also provide HACCP-compliant templates to get you started quickly. Add your own tasks, set temperature ranges, and create the perfect workflow for your business.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" (click)="toggleFaq(5)">
+                <span>Do EHO inspectors accept digital records?</span>
+                <i class="fas fa-chevron-down faq-icon" [class.open]="openFaqIndex === 5"></i>
+            </button>
+            <div class="faq-answer" [class.open]="openFaqIndex === 5">
+                <p>Yes. Digital food safety records are fully accepted by Environmental Health Officers across the UK. In fact, many inspectors prefer digital records because they're timestamped, tamper-proof, and easier to review. You can generate instant PDF reports for inspections.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" (click)="toggleFaq(6)">
+                <span>What if I have multiple locations?</span>
+                <i class="fas fa-chevron-down faq-icon" [class.open]="openFaqIndex === 6"></i>
+            </button>
+            <div class="faq-answer" [class.open]="openFaqIndex === 6">
+                <p>Zynthio is perfect for multi-site businesses. View compliance across all locations from one central dashboard, compare performance between sites, and ensure consistency. Each site can have custom checklists while you maintain oversight of everything.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" (click)="toggleFaq(7)">
+                <span>Can I cancel anytime?</span>
+                <i class="fas fa-chevron-down faq-icon" [class.open]="openFaqIndex === 7"></i>
+            </button>
+            <div class="faq-answer" [class.open]="openFaqIndex === 7">
+                <p>Yes. There are no long-term contracts or cancellation fees. You can cancel anytime with one click from your dashboard. We're confident you'll love Zynthio, but we never lock you in.</p>
+            </div>
         </div>
     </div>
 </section>

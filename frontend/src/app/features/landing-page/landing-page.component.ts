@@ -18,6 +18,9 @@ export class LandingPageComponent implements OnInit {
   // Mobile menu state
   isMobileMenuOpen: boolean = false;
 
+  // FAQ state - tracks which FAQ item is open (null = all closed)
+  openFaqIndex: number | null = null;
+
   // Pricing data
   pricingPlans = {
     starter: {
@@ -187,6 +190,14 @@ export class LandingPageComponent implements OnInit {
    */
   closeMobileMenu(): void {
     this.isMobileMenuOpen = false;
+  }
+
+  /**
+   * Toggle FAQ item open/closed
+   * If clicking the same item, close it. If clicking a different item, open that one.
+   */
+  toggleFaq(index: number): void {
+    this.openFaqIndex = this.openFaqIndex === index ? null : index;
   }
 
 }
