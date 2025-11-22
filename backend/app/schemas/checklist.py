@@ -44,9 +44,19 @@ class CategoryInfo(BaseModel):
     """Category information for checklist response."""
     id: int
     name: str
+    opens_at: Optional[str] = None
     closes_at: Optional[str] = None
 
     model_config = {"from_attributes": True}
+
+    @field_serializer('opens_at', when_used='always')
+    def serialize_opens_at(self, opens_at):
+        """Convert time object to string."""
+        if opens_at is None:
+            return None
+        if isinstance(opens_at, time):
+            return opens_at.strftime('%H:%M:%S')
+        return str(opens_at)
 
     @field_serializer('closes_at', when_used='always')
     def serialize_closes_at(self, closes_at):
