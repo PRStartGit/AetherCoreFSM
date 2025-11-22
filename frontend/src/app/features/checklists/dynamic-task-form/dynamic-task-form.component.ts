@@ -142,6 +142,8 @@ export class DynamicTaskFormComponent implements OnInit {
         const instances = this.getRepeatingInstances(field.id);
         const groupData: any[] = [];
 
+        console.log('[DEBUG] Processing repeating group field:', field.id, 'with', instances.length, 'instances');
+
         instances.forEach((instance, idx) => {
           const instanceData: any = {};
           if (field.validation_rules?.repeat_template) {
@@ -149,20 +151,25 @@ export class DynamicTaskFormComponent implements OnInit {
               const controlName = `field_${field.id}_${idx}_${template.type}`;
               const value = this.dynamicForm.get(controlName)?.value;
 
+              console.log(`[DEBUG] Reading control ${controlName}:`, value);
+
               // Store based on template type
               if (template.type === 'temperature' || template.type === 'number') {
                 instanceData[template.type] = parseFloat(value) || null;
               } else if (template.type === 'photo') {
                 instanceData[template.type] = value || null;
+                console.log('[DEBUG] Photo value for submission:', value);
               } else {
                 instanceData[template.type] = value || null;
               }
             });
           }
+          console.log('[DEBUG] Instance data for index', idx, ':', instanceData);
           groupData.push(instanceData);
         });
 
         response.json_value = groupData;
+        console.log('[DEBUG] Final json_value for field', field.id, ':', groupData);
       } else {
         // Handle regular fields
         const value = this.dynamicForm.get(`field_${field.id}`)?.value;
@@ -194,6 +201,10 @@ export class DynamicTaskFormComponent implements OnInit {
       checklist_item_id: this.checklistItemId,
       responses: responses
     };
+
+    console.log('[DEBUG] ===== FULL SUBMISSION DATA =====');
+    console.log('[DEBUG] Submission:', JSON.stringify(submission, null, 2));
+    console.log('[DEBUG] ================================');
 
     this.taskFieldService.submitResponses(submission).subscribe({
       next: (result) => {
