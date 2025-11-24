@@ -28,6 +28,7 @@ import { PrivacyPolicyComponent } from './features/legal/privacy/privacy-policy.
 import { CookiePolicyComponent } from './features/legal/cookies/cookie-policy.component';
 import { PromotionListComponent } from './features/super-admin/promotions/promotion-list/promotion-list.component';
 import { LogsComponent } from './features/super-admin/activity-logs/logs.component';
+import { ContactComponent } from './features/contact/contact.component';
 import { FaqComponent } from './features/support/faq/faq.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
@@ -69,6 +70,10 @@ const routes: Routes = [
   {
     path: 'cookies',
     component: CookiePolicyComponent
+  },
+  {
+    path: 'contact',
+    component: ContactComponent
   },
   {
     path: '',

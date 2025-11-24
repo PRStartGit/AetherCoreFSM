@@ -177,7 +177,7 @@ export class SiteUserDashboardComponent implements OnInit {
     this.futureTasks = [];
     this.openingLaterTasks = [];
 
-    const today = new Date(todayStr);
+    const today = new Date(todayStr + 'T00:00:00');
     today.setHours(0, 0, 0, 0);
     console.log('Today (for comparison):', today.toISOString(), '(timestamp:', today.getTime(), ')');
 
@@ -190,7 +190,7 @@ export class SiteUserDashboardComponent implements OnInit {
       }
 
       // Check if this checklist's opening time has arrived
-      const checklistDate = new Date(checklist.checklist_date);
+      const checklistDate = new Date(checklist.checklist_date + 'T00:00:00');
       checklistDate.setHours(0, 0, 0, 0);
       const isToday = checklistDate.getTime() === today.getTime();
 
@@ -504,6 +504,9 @@ export class SiteUserDashboardComponent implements OnInit {
   }
 
   onDynamicFormSubmitted(checklistId: number, item: ChecklistItemWithTask): void {
+    // Store scroll position before reloading to prevent page jump
+    const scrollY = window.scrollY;
+    
     // Mark item as completed locally
     item.is_completed = true;
 
@@ -514,6 +517,11 @@ export class SiteUserDashboardComponent implements OnInit {
     if (this.expandedChecklists.has(checklistId)) {
       this.loadChecklistItems(checklistId);
     }
+    
+    // Restore scroll position after Angular updates the DOM
+    setTimeout(() => window.scrollTo(0, scrollY), 0);
+    setTimeout(() => window.scrollTo(0, scrollY), 100);
+    setTimeout(() => window.scrollTo(0, scrollY), 300);
   }
 
   getOverallCompletionPercentage(): number {

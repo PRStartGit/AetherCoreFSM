@@ -268,6 +268,9 @@ def delete_user(
             detail="Cannot delete your own account"
         )
 
+    # Delete any password reset tokens for this user
+    from app.models.password_reset import PasswordResetToken
+    db.query(PasswordResetToken).filter(PasswordResetToken.user_id == user_id).delete()
     db.delete(user)
     db.commit()
 

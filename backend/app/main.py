@@ -59,7 +59,7 @@ async def health_check():
 
 
 # Import and include routers
-from app.api.v1 import auth, organizations, sites, users, categories, tasks, task_fields, checklists, defects, dashboards, reports, promotions, utils, system_messages, activity_logs
+from app.api.v1 import auth, organizations, sites, users, categories, tasks, task_fields, checklists, defects, dashboards, reports, promotions, utils, system_messages, activity_logs, contact
 
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX, tags=["Authentication"])
 app.include_router(organizations.router, prefix=settings.API_V1_PREFIX, tags=["Organizations"])
@@ -76,3 +76,4 @@ app.include_router(utils.router, prefix=settings.API_V1_PREFIX, tags=["Utils"])
 app.include_router(promotions.router, prefix=settings.API_V1_PREFIX, tags=["Promotions"])
 app.include_router(system_messages.router, prefix=settings.API_V1_PREFIX, tags=["System Messages"])
 app.include_router(activity_logs.router, prefix=settings.API_V1_PREFIX, tags=["Activity Logs"])
+app.include_router(contact.router, prefix=settings.API_V1_PREFIX + "/contact", tags=["Contact"])
