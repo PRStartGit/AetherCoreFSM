@@ -97,6 +97,7 @@ def create_user(
         logger.info(f"Attempting to send welcome email to {new_user.email} (role: {new_user.role.value})")
 
         # Send welcome email with temporary password
+        org_id = organization.slug if organization else ""
         email_sent = send_welcome_email(
             user_email=new_user.email,
             user_name=f"{new_user.first_name} {new_user.last_name}",
@@ -104,7 +105,8 @@ def create_user(
             user_role=new_user.role.value,
             temporary_password=user_data.password,  # Original password before hashing
             assigned_sites=assigned_sites,
-            login_url="https://zynthio.com/login"
+            login_url="https://zynthio.co.uk/login",
+            org_id=org_id
         )
 
         if email_sent:

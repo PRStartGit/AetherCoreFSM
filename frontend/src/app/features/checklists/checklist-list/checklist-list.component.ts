@@ -181,6 +181,7 @@ export class ChecklistListComponent implements OnInit {
     return statusMap[checklist.status] || 'bg-gray-100 text-gray-800';
   }
 
+isSuperAdmin(): boolean {    return this.authService.isSuperAdmin();  }
   isSiteUser(): boolean {
     return this.authService.isSiteUser();
   }

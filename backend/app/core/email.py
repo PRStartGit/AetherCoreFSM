@@ -161,13 +161,15 @@ class EmailService:
         user_role: str,
         temporary_password: str,
         assigned_sites: str,
-        login_url: str
+        login_url: str,
+        org_id: str = ''
     ) -> bool:
         """Send welcome email to new user"""
         context = {
             'user_name': user_name,
             'user_email': user_email,
             'organization_name': organization_name,
+            'org_id': org_id,
             'user_role': user_role,
             'temporary_password': temporary_password,
             'assigned_sites': assigned_sites,

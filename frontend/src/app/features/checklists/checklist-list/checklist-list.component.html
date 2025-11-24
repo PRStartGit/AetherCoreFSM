@@ -5,7 +5,7 @@
       <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 m-0">Checklists</h1>
       <p class="text-sm sm:text-base text-gray-600 mt-1">Manage site inspection checklists</p>
     </div>
-    <button *ngIf="!isSiteUser()"
+    <button *ngIf="isSuperAdmin()"
             (click)="openCreateDialog()"
             class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-medium text-sm sm:text-base">
       + New Checklist
@@ -61,7 +61,7 @@
       <div class="text-6xl mb-4">📋</div>
       <h3 class="text-lg font-semibold text-gray-700 mt-4 mb-2">No Checklists Found</h3>
       <p class="text-gray-500 mb-6">Create your first checklist to get started</p>
-      <button *ngIf="!isSiteUser()"
+      <button *ngIf="isSuperAdmin()"
               (click)="openCreateDialog()"
               class="px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-medium">
         + Create First Checklist
@@ -122,7 +122,7 @@
                   class="flex-1 px-3 py-2 text-sm text-center text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium">
             View
           </button>
-          <button *ngIf="!isSiteUser()"
+          <button *ngIf="isSuperAdmin()"
                   (click)="deleteChecklist(checklist)"
                   class="px-3 py-2 text-sm text-red-600 bg-red-50 hover:bg-red-100 rounded-lg font-medium">
             Delete
@@ -203,7 +203,7 @@
                           title="View Details">
                     View
                   </button>
-                  <button *ngIf="!isSiteUser()"
+                  <button *ngIf="isSuperAdmin()"
                           (click)="deleteChecklist(checklist)"
                           class="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded-lg font-medium"
                           title="Delete">
