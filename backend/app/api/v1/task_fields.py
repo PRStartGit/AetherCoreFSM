@@ -230,6 +230,8 @@ def submit_field_responses(
     current_user: User = Depends(get_current_user)
 ):
     """Submit field responses for a checklist item."""
+    from app.models.defect import Defect, DefectSeverity, DefectStatus
+
     # Verify checklist item exists
     checklist_item = db.query(ChecklistItem).filter(ChecklistItem.id == submission.checklist_item_id).first()
 
@@ -238,6 +240,10 @@ def submit_field_responses(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Checklist item not found"
         )
+
+    # Get checklist for site_id
+    checklist = db.query(Checklist).filter(Checklist.id == checklist_item.checklist_id).first()
+    site_id = checklist.site_id if checklist else None
 
     # Create all responses
     created_responses = []
@@ -253,6 +259,92 @@ def submit_field_responses(
             completed_by=current_user.id
         )
         db.add(new_response)
+        db.flush()  # Flush to get response ID for defect linking
+
+        # Temperature validation and automatic defect creation
+        task_field = db.query(TaskField).filter(TaskField.id == response_data.task_field_id).first()
+
+        if task_field:
+            # Check regular temperature fields
+            if response_data.number_value is not None and task_field.field_type in ["TEMPERATURE", "NUMBER"]:
+                temperature = response_data.number_value
+                field_label_lower = task_field.field_label.lower()
+
+                # Determine if it's a fridge or freezer based on field label
+                is_fridge = any(keyword in field_label_lower for keyword in ["fridge", "refrigerator", "chiller"])
+                is_freezer = any(keyword in field_label_lower for keyword in ["freezer", "frozen"])
+
+                # Legal limits
+                FRIDGE_MAX = 8  # Fridges must be below 8°C
+                FREEZER_MAX = -18  # Freezers must be at or below -18°C
+
+                violation = None
+                if is_fridge and temperature >= FRIDGE_MAX:
+                    violation = f"Fridge temperature {temperature}°C exceeds legal limit (must be < {FRIDGE_MAX}°C)"
+                elif is_freezer and temperature > FREEZER_MAX:
+                    violation = f"Freezer temperature {temperature}°C exceeds legal limit (must be ≤ {FREEZER_MAX}°C)"
+
+                if violation and site_id:
+                    # Create defect automatically
+                    defect = Defect(
+                        title=f"Temperature Violation: {task_field.field_label}",
+                        description=violation,
+                        severity=DefectSeverity.HIGH,
+                        status=DefectStatus.OPEN,
+                        site_id=site_id,
+                        checklist_item_id=checklist_item.id,
+                        reported_by_id=current_user.id
+                    )
+                    db.add(defect)
+                    db.flush()  # Get defect ID
+
+                    # Link defect to response
+                    new_response.auto_defect_id = defect.id
+
+            # Check repeating group temperature fields (JSON)
+            elif response_data.json_value and isinstance(response_data.json_value, list):
+                field_label_lower = task_field.field_label.lower()
+                is_fridge = any(keyword in field_label_lower for keyword in ["fridge", "refrigerator", "chiller"])
+                is_freezer = any(keyword in field_label_lower for keyword in ["freezer", "frozen"])
+
+                # Legal limits
+                FRIDGE_MAX = 8
+                FREEZER_MAX = -18
+
+                violations = []
+                for idx, instance in enumerate(response_data.json_value):
+                    if isinstance(instance, dict) and "temperature" in instance:
+                        temperature = instance.get("temperature")
+                        if temperature is not None:
+                            try:
+                                temp_value = float(temperature)
+                                item_number = idx + 1
+
+                                if is_fridge and temp_value >= FRIDGE_MAX:
+                                    violations.append(f"Item {item_number}: {temp_value}°C exceeds limit (must be < {FRIDGE_MAX}°C)")
+                                elif is_freezer and temp_value > FREEZER_MAX:
+                                    violations.append(f"Item {item_number}: {temp_value}°C exceeds limit (must be ≤ {FREEZER_MAX}°C)")
+                            except (ValueError, TypeError):
+                                pass  # Skip invalid temperature values
+
+                if violations and site_id:
+                    # Create single defect for all violations in this group
+                    violation_text = "\n".join(violations)
+                    defect = Defect(
+                        title=f"Temperature Violation: {task_field.field_label}",
+                        description=f"Multiple temperature readings outside legal limits:\n{violation_text}",
+                        severity=DefectSeverity.HIGH,
+                        status=DefectStatus.OPEN,
+                        site_id=site_id,
+                        checklist_item_id=checklist_item.id,
+                        reported_by_id=current_user.id
+                    )
+                    db.add(defect)
+                    db.flush()
+
+                    # Link defect to response
+                    new_response.auto_defect_id = defect.id
+
         created_responses.append(new_response)
 
     # Mark checklist item as completed

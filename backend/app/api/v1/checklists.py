@@ -224,6 +224,7 @@ def list_checklists(
 ):
     """List checklists with filters."""
     from app.models.category import Category
+    from datetime import datetime, time as dt_time
 
     query = db.query(Checklist).options(joinedload(Checklist.category))
 
@@ -260,15 +261,45 @@ def list_checklists(
 
     checklists = query.order_by(Checklist.checklist_date.desc()).offset(skip).limit(limit).all()
 
-    # Manually build response to handle time field serialization
+    # Get current date and time
+    now = datetime.now()
+    today = now.date()
+
+    # Manually build response to handle time field serialization and dynamic status
     result = []
     for checklist in checklists:
+        # Calculate dynamic status based on current time and category settings
+        dynamic_status = checklist.status
+
+        # Only recalculate status if not already completed
+        if checklist.status != ChecklistStatus.COMPLETED:
+            # Check if checklist is for today or in the past
+            if checklist.checklist_date <= today:
+                # Check if closing time has passed
+                if checklist.category and checklist.category.closes_at:
+                    # Combine checklist date with closing time
+                    closes_datetime = datetime.combine(checklist.checklist_date, checklist.category.closes_at)
+
+                    # If current time has passed the closing time, mark as OVERDUE
+                    if now > closes_datetime:
+                        dynamic_status = ChecklistStatus.OVERDUE
+                    elif checklist.completed_items > 0:
+                        dynamic_status = ChecklistStatus.IN_PROGRESS
+                    else:
+                        dynamic_status = ChecklistStatus.PENDING
+                else:
+                    # No closing time - check if in progress or pending
+                    if checklist.completed_items > 0:
+                        dynamic_status = ChecklistStatus.IN_PROGRESS
+                    else:
+                        dynamic_status = ChecklistStatus.PENDING
+
         checklist_dict = {
             "id": checklist.id,
             "checklist_date": checklist.checklist_date,
             "category_id": checklist.category_id,
             "site_id": checklist.site_id,
-            "status": checklist.status,
+            "status": dynamic_status,  # Use dynamic status
             "total_items": checklist.total_items,
             "completed_items": checklist.completed_items,
             "completion_percentage": checklist.completion_percentage,
