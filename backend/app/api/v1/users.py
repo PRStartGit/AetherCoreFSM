@@ -51,6 +51,9 @@ def create_user(
                 detail="Cannot create super admin users"
             )
 
+    # Super Admins must not have an organization_id
+    final_organization_id = None if user_data.role == UserRole.SUPER_ADMIN else user_data.organization_id
+
     # Create user
     new_user = User(
         email=user_data.email,
@@ -59,7 +62,7 @@ def create_user(
         last_name=user_data.last_name,
         role=user_data.role,
         phone=user_data.phone,
-        organization_id=user_data.organization_id,
+        organization_id=final_organization_id,
         is_active=user_data.is_active,
         must_change_password=True  # Force password change on first login
     )
@@ -215,6 +218,10 @@ def update_user(
 
     for field, value in update_data.items():
         setattr(user, field, value)
+
+    # If role is being changed to SUPER_ADMIN, ensure organization_id is NULL
+    if user.role == UserRole.SUPER_ADMIN:
+        user.organization_id = None
 
     # Update site assignments if provided
     if site_ids is not None:
