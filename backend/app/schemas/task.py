@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 from datetime import datetime
-from app.models.user import Department
 
 
 class TaskBase(BaseModel):
@@ -11,7 +10,7 @@ class TaskBase(BaseModel):
     order_index: int = 0
     form_config: Optional[Dict[str, Any]] = None
     has_dynamic_form: Optional[bool] = False
-    allocated_departments: Optional[List[Department]] = None
+    allocated_departments: Optional[List[str]] = None
 
 
 class TaskCreate(TaskBase):
@@ -27,7 +26,7 @@ class TaskUpdate(BaseModel):
     form_config: Optional[Dict[str, Any]] = None
     has_dynamic_form: Optional[bool] = None
     is_active: Optional[bool] = None
-    allocated_departments: Optional[List[Department]] = None
+    allocated_departments: Optional[List[str]] = None
 
 
 class TaskResponse(TaskBase):
