@@ -28,6 +28,7 @@ export class ChecklistCompletionComponent implements OnInit {
   checklistId: number = 0;
   itemResponses: Map<number, ChecklistItemResponses> = new Map();
   Array = Array; // Expose Array to template
+  isOverdue = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -49,6 +50,9 @@ export class ChecklistCompletionComponent implements OnInit {
     this.checklistService.getById(this.checklistId).subscribe({
       next: (checklist) => {
         this.checklist = checklist;
+        
+        // Check if checklist is overdue
+        this.isOverdue = checklist.status === ChecklistStatus.OVERDUE;
 
         // Load task details for each item
         if (checklist.items && checklist.items.length > 0) {

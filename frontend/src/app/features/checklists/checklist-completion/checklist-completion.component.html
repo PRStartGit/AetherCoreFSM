@@ -23,6 +23,12 @@
 
   <!-- Checklist Content -->
   <div *ngIf="!loading && !error && checklist" class="checklist-content">
+    <!-- Overdue Warning -->
+    <div *ngIf="isOverdue" class="overdue-warning">
+      <mat-icon>warning</mat-icon>
+      <span>This checklist is overdue and cannot be completed.</span>
+    </div>
+
     <!-- Progress Bar -->
     <div class="progress-section">
       <div class="progress-info">
@@ -81,8 +87,8 @@
               </div>
             </div>
 
-            <!-- Show form if item is not completed -->
-            <div *ngIf="!item.is_completed" class="dynamic-form-container">
+            <!-- Show form if item is not completed and not overdue -->
+            <div *ngIf="!item.is_completed && !isOverdue" class="dynamic-form-container">
               <app-dynamic-task-form
                 [taskId]="item.task_id"
                 [checklistItemId]="item.id"
@@ -96,7 +102,7 @@
             <mat-checkbox
               [(ngModel)]="item.is_completed"
               (change)="onItemCompleted(item)"
-              [disabled]="item.is_completed">
+              [disabled]="item.is_completed || isOverdue">
               Mark as completed
             </mat-checkbox>
           </div>

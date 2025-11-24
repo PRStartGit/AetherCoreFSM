@@ -244,6 +244,32 @@ def submit_field_responses(
     # Get checklist for site_id
     checklist = db.query(Checklist).filter(Checklist.id == checklist_item.checklist_id).first()
     site_id = checklist.site_id if checklist else None
+    
+    # Check if checklist is overdue - prevent completion of overdue checklists
+    if checklist:
+        from datetime import date, datetime, time as dt_time
+        from app.models.category import Category
+        
+        category = db.query(Category).filter(Category.id == checklist.category_id).first()
+        today = date.today()
+        now = datetime.now()
+        
+        # If checklist date is in the past, it's overdue
+        if checklist.checklist_date < today:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot complete overdue checklist. This checklist was due on " + str(checklist.checklist_date)
+            )
+        
+        # If checklist is for today but past closing time, it's overdue
+        if checklist.checklist_date == today and category and category.closes_at:
+            closes_at_time = category.closes_at
+            current_time = now.time()
+            if current_time > closes_at_time:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Cannot complete checklist after closing time (" + str(closes_at_time) + ")"
+                )
 
     # Create all responses
     created_responses = []

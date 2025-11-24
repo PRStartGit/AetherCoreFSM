@@ -1,0 +1,413 @@
+{
+  "categories": [
+    {
+      "name": "Management Opening Checklist",
+      "description": "Daily opening procedures for management to ensure premises is ready for operation",
+      "icon": "🔓",
+      "frequency": "daily",
+      "opens_at": "06:00:00",
+      "closes_at": "11:00:00",
+      "is_global": true,
+      "is_active": true,
+      "tasks": [
+        {
+          "name": "Internal Walkthrough Completed",
+          "description": "Complete visual inspection of all areas before opening",
+          "priority": "high",
+          "order_index": 1,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "Internal Walkthrough Completed?", "field_order": 1, "is_required": true},
+            {"field_type": "TEXT", "field_label": "Issues Found During Walkthrough", "field_order": 2, "is_required": false, "show_if": {"field_order": 1, "equals": false}}
+          ]
+        },
+        {
+          "name": "Fire Safety Check",
+          "description": "Verify all fire exits are unlocked and fire safety equipment is accessible",
+          "priority": "critical",
+          "order_index": 2,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "All Fire Exits Unlocked?", "field_order": 1, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Fire Extinguishers Accessible?", "field_order": 2, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Fire Alarm Panel Showing Normal?", "field_order": 3, "is_required": true},
+            {"field_type": "TEXT", "field_label": "Issues Found", "field_order": 4, "is_required": false}
+          ]
+        },
+        {
+          "name": "Lighting Check",
+          "description": "Verify all lights are working in all areas",
+          "priority": "medium",
+          "order_index": 3,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "All Lights Working?", "field_order": 1, "is_required": true},
+            {"field_type": "TEXT", "field_label": "Faulty Lights Location", "field_order": 2, "is_required": false, "show_if": {"field_order": 1, "equals": false}}
+          ]
+        },
+        {
+          "name": "External Area Check",
+          "description": "Check external areas including car park, entrance, and signage",
+          "priority": "medium",
+          "order_index": 4,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "External Areas Clean and Safe?", "field_order": 1, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Signage Visible and Undamaged?", "field_order": 2, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Car Park Clear of Hazards?", "field_order": 3, "is_required": true},
+            {"field_type": "TEXT", "field_label": "Issues Found", "field_order": 4, "is_required": false}
+          ]
+        },
+        {
+          "name": "Toilet Facilities Check",
+          "description": "Verify all toilets are clean, stocked, and functional",
+          "priority": "high",
+          "order_index": 5,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "All Toilets Clean?", "field_order": 1, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Soap Dispensers Filled?", "field_order": 2, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Paper Towels/Hand Dryers Working?", "field_order": 3, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "All Toilets Flushing Correctly?", "field_order": 4, "is_required": true},
+            {"field_type": "TEXT", "field_label": "Issues Found", "field_order": 5, "is_required": false}
+          ]
+        },
+        {
+          "name": "Security Systems Check",
+          "description": "Verify CCTV and alarm systems are functioning",
+          "priority": "medium",
+          "order_index": 6,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "CCTV System Operational?", "field_order": 1, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Alarm System Deactivated Correctly?", "field_order": 2, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Safe Secure?", "field_order": 3, "is_required": true}
+          ]
+        },
+        {
+          "name": "Staff Rota Confirmation",
+          "description": "Confirm all scheduled staff have arrived or arrangements made for cover",
+          "priority": "medium",
+          "order_index": 7,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "All Scheduled Staff Present?", "field_order": 1, "is_required": true},
+            {"field_type": "TEXT", "field_label": "Cover Arrangements Made", "field_order": 2, "is_required": false, "show_if": {"field_order": 1, "equals": false}}
+          ]
+        },
+        {
+          "name": "Float and Till Check",
+          "description": "Verify cash floats are correct and tills are operational",
+          "priority": "high",
+          "order_index": 8,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "Cash Floats Counted and Correct?", "field_order": 1, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "All Tills Operational?", "field_order": 2, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Card Machines Working?", "field_order": 3, "is_required": true},
+            {"field_type": "TEXT", "field_label": "Discrepancies Notes", "field_order": 4, "is_required": false}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Management Closing Checklist",
+      "description": "Daily closing procedures for management to ensure premises is secure",
+      "icon": "🔒",
+      "frequency": "daily",
+      "opens_at": "20:00:00",
+      "closes_at": "03:00:00",
+      "is_global": true,
+      "is_active": true,
+      "tasks": [
+        {
+          "name": "End of Day Walkthrough",
+          "description": "Complete visual inspection of all areas before closing",
+          "priority": "high",
+          "order_index": 1,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "Internal Walkthrough Completed?", "field_order": 1, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "All Customers Left Premises?", "field_order": 2, "is_required": true},
+            {"field_type": "TEXT", "field_label": "Issues Found During Walkthrough", "field_order": 3, "is_required": false}
+          ]
+        },
+        {
+          "name": "Fire Safety Closing Check",
+          "description": "Verify fire exits are secured (but not locked from inside) and equipment in place",
+          "priority": "critical",
+          "order_index": 2,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "Fire Exits Secured Appropriately?", "field_order": 1, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Fire Extinguishers All Present?", "field_order": 2, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "No Obstructions to Fire Routes?", "field_order": 3, "is_required": true}
+          ]
+        },
+        {
+          "name": "Kitchen Closing Check",
+          "description": "Verify kitchen is cleaned and equipment is switched off/set correctly",
+          "priority": "high",
+          "order_index": 3,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "All Cooking Equipment Off?", "field_order": 1, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Gas Supply Isolated?", "field_order": 2, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Extraction Fans Off?", "field_order": 3, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Kitchen Deep Cleaned?", "field_order": 4, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Fridges/Freezers Running Correctly?", "field_order": 5, "is_required": true}
+          ]
+        },
+        {
+          "name": "Bar Closing Check",
+          "description": "Verify bar area is secured and tills cashed up",
+          "priority": "high",
+          "order_index": 4,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "All Tills Cashed Up?", "field_order": 1, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Cash Secured in Safe?", "field_order": 2, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Bar Fridges Running Correctly?", "field_order": 3, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Draught Lines Isolated (if applicable)?", "field_order": 4, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Bar Area Cleaned?", "field_order": 5, "is_required": true}
+          ]
+        },
+        {
+          "name": "Waste Management Closing",
+          "description": "Ensure all waste is disposed of correctly",
+          "priority": "medium",
+          "order_index": 5,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "All Internal Bins Emptied?", "field_order": 1, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "External Bins Secured with Lids?", "field_order": 2, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Food Waste Disposed Correctly?", "field_order": 3, "is_required": true}
+          ]
+        },
+        {
+          "name": "Security Closing",
+          "description": "Activate security systems and secure premises",
+          "priority": "critical",
+          "order_index": 6,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "All Windows Closed and Locked?", "field_order": 1, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "All Doors Locked?", "field_order": 2, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Alarm System Activated?", "field_order": 3, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "CCTV Recording?", "field_order": 4, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "External Lights On/Timer Set?", "field_order": 5, "is_required": true}
+          ]
+        },
+        {
+          "name": "End of Day Cash Report",
+          "description": "Complete cash reconciliation for the day",
+          "priority": "high",
+          "order_index": 7,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Management",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "Cash Counted and Reconciled?", "field_order": 1, "is_required": true},
+            {"field_type": "YES_NO", "field_label": "Any Discrepancies?", "field_order": 2, "is_required": true},
+            {"field_type": "NUMBER", "field_label": "Discrepancy Amount (£)", "field_order": 3, "is_required": false, "show_if": {"field_order": 2, "equals": true}},
+            {"field_type": "TEXT", "field_label": "Discrepancy Notes", "field_order": 4, "is_required": false, "show_if": {"field_order": 2, "equals": true}}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "KITCHEN Temperature Control (AM)",
+      "description": "Morning temperature checks for all kitchen refrigeration and freezer equipment",
+      "icon": "🌡️",
+      "frequency": "daily",
+      "opens_at": "06:00:00",
+      "closes_at": "12:00:00",
+      "is_global": true,
+      "is_active": true,
+      "tasks": [
+        {
+          "name": "KITCHEN AM Fridge Temperature Checks",
+          "description": "Check and record temperatures of all kitchen refrigeration units (must be 1-5°C)",
+          "priority": "high",
+          "order_index": 1,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Kitchen",
+          "fields": [
+            {"field_type": "NUMBER", "field_label": "Number of Kitchen Fridges", "field_order": 1, "is_required": true, "validation_rules": {"min": 0, "max": 50}},
+            {"field_type": "REPEATING_GROUP", "field_label": "Kitchen Fridge Temperature Readings", "field_order": 2, "is_required": true, "validation_rules": {"repeat_count_field_id": 1, "repeat_label": "Kitchen Fridge", "repeat_template": [{"type": "text", "label": "Fridge Name/Location"}, {"type": "temperature", "label": "Temperature (°C)", "min": -5, "max": 15}, {"type": "photo", "label": "Photo Evidence"}]}}
+          ]
+        },
+        {
+          "name": "KITCHEN AM Freezer Temperature Checks",
+          "description": "Check and record temperatures of all kitchen freezers (must be ≤-18°C)",
+          "priority": "high",
+          "order_index": 2,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Kitchen",
+          "fields": [
+            {"field_type": "NUMBER", "field_label": "Number of Kitchen Freezers", "field_order": 1, "is_required": true, "validation_rules": {"min": 0, "max": 50}},
+            {"field_type": "REPEATING_GROUP", "field_label": "Kitchen Freezer Temperature Readings", "field_order": 2, "is_required": true, "validation_rules": {"repeat_count_field_id": 1, "repeat_label": "Kitchen Freezer", "repeat_template": [{"type": "text", "label": "Freezer Name/Location"}, {"type": "temperature", "label": "Temperature (°C)", "min": -30, "max": 0}, {"type": "photo", "label": "Photo Evidence"}]}}
+          ]
+        },
+        {
+          "name": "Delivery Temperature Check",
+          "description": "Record temperatures of all chilled and frozen deliveries before acceptance",
+          "priority": "high",
+          "order_index": 3,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Kitchen",
+          "fields": [
+            {"field_type": "YES_NO", "field_label": "Did you receive any deliveries?", "field_order": 1, "is_required": true},
+            {"field_type": "NUMBER", "field_label": "Number of Suppliers", "field_order": 2, "is_required": false, "show_if": {"field_order": 1, "equals": true}, "validation_rules": {"min": 0, "max": 20}},
+            {"field_type": "REPEATING_GROUP", "field_label": "Delivery Details", "field_order": 3, "is_required": false, "show_if": {"field_order": 1, "equals": true}, "validation_rules": {"repeat_count_field_id": 2, "repeat_label": "Delivery", "repeat_template": [{"type": "text", "label": "Supplier Name"}, {"type": "text", "label": "Item Description"}, {"type": "temperature", "label": "Temperature (°C)", "min": -30, "max": 15}, {"type": "photo", "label": "Photo Evidence"}]}}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "KITCHEN Temperature Control (PM)",
+      "description": "Evening temperature checks for all kitchen refrigeration and freezer equipment",
+      "icon": "🌡️",
+      "frequency": "daily",
+      "opens_at": "17:00:00",
+      "closes_at": "23:59:00",
+      "is_global": true,
+      "is_active": true,
+      "tasks": [
+        {
+          "name": "KITCHEN PM Fridge Temperature Checks",
+          "description": "Check and record temperatures of all kitchen refrigeration units (must be 1-5°C)",
+          "priority": "high",
+          "order_index": 1,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Kitchen",
+          "fields": [
+            {"field_type": "NUMBER", "field_label": "Number of Kitchen Fridges", "field_order": 1, "is_required": true, "validation_rules": {"min": 0, "max": 50}},
+            {"field_type": "REPEATING_GROUP", "field_label": "Kitchen Fridge Temperature Readings", "field_order": 2, "is_required": true, "validation_rules": {"repeat_count_field_id": 1, "repeat_label": "Kitchen Fridge", "repeat_template": [{"type": "text", "label": "Fridge Name/Location"}, {"type": "temperature", "label": "Temperature (°C)", "min": -5, "max": 15}, {"type": "photo", "label": "Photo Evidence"}]}}
+          ]
+        },
+        {
+          "name": "KITCHEN PM Freezer Temperature Checks",
+          "description": "Check and record temperatures of all kitchen freezers (must be ≤-18°C)",
+          "priority": "high",
+          "order_index": 2,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Kitchen",
+          "fields": [
+            {"field_type": "NUMBER", "field_label": "Number of Kitchen Freezers", "field_order": 1, "is_required": true, "validation_rules": {"min": 0, "max": 50}},
+            {"field_type": "REPEATING_GROUP", "field_label": "Kitchen Freezer Temperature Readings", "field_order": 2, "is_required": true, "validation_rules": {"repeat_count_field_id": 1, "repeat_label": "Kitchen Freezer", "repeat_template": [{"type": "text", "label": "Freezer Name/Location"}, {"type": "temperature", "label": "Temperature (°C)", "min": -30, "max": 0}, {"type": "photo", "label": "Photo Evidence"}]}}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "BAR Temperature Control (AM)",
+      "description": "Morning temperature checks for all bar fridges and freezers",
+      "icon": "🍺",
+      "frequency": "daily",
+      "opens_at": "08:00:00",
+      "closes_at": "12:00:00",
+      "is_global": true,
+      "is_active": true,
+      "tasks": [
+        {
+          "name": "BAR AM Fridge Temperature Checks",
+          "description": "Check and record all bar fridge temperatures in the morning (must be 1-5°C)",
+          "priority": "high",
+          "order_index": 1,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Bar",
+          "fields": [
+            {"field_type": "NUMBER", "field_label": "Number of Bar Fridges", "field_order": 1, "is_required": true, "validation_rules": {"min": 0, "max": 50}},
+            {"field_type": "REPEATING_GROUP", "field_label": "Bar Fridge Temperature Readings", "field_order": 2, "is_required": true, "validation_rules": {"repeat_count_field_id": 1, "repeat_label": "Bar Fridge", "repeat_template": [{"type": "text", "label": "Fridge Name/Location"}, {"type": "temperature", "label": "Temperature (°C)", "min": -5, "max": 15}, {"type": "photo", "label": "Photo Evidence"}]}}
+          ]
+        },
+        {
+          "name": "BAR AM Freezer Temperature Checks",
+          "description": "Check and record all bar freezer temperatures in the morning (must be ≤-18°C)",
+          "priority": "high",
+          "order_index": 2,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Bar",
+          "fields": [
+            {"field_type": "NUMBER", "field_label": "Number of Bar Freezers", "field_order": 1, "is_required": true, "validation_rules": {"min": 0, "max": 50}},
+            {"field_type": "REPEATING_GROUP", "field_label": "Bar Freezer Temperature Readings", "field_order": 2, "is_required": true, "validation_rules": {"repeat_count_field_id": 1, "repeat_label": "Bar Freezer", "repeat_template": [{"type": "text", "label": "Freezer Name/Location"}, {"type": "temperature", "label": "Temperature (°C)", "min": -30, "max": 0}, {"type": "photo", "label": "Photo Evidence"}]}}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "BAR Temperature Control (PM)",
+      "description": "Evening temperature checks for all bar fridges and freezers",
+      "icon": "🍺",
+      "frequency": "daily",
+      "opens_at": "17:00:00",
+      "closes_at": "23:59:00",
+      "is_global": true,
+      "is_active": true,
+      "tasks": [
+        {
+          "name": "BAR PM Fridge Temperature Checks",
+          "description": "Check and record all bar fridge temperatures in the evening (must be 1-5°C)",
+          "priority": "high",
+          "order_index": 1,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Bar",
+          "fields": [
+            {"field_type": "NUMBER", "field_label": "Number of Bar Fridges", "field_order": 1, "is_required": true, "validation_rules": {"min": 0, "max": 50}},
+            {"field_type": "REPEATING_GROUP", "field_label": "Bar Fridge Temperature Readings", "field_order": 2, "is_required": true, "validation_rules": {"repeat_count_field_id": 1, "repeat_label": "Bar Fridge", "repeat_template": [{"type": "text", "label": "Fridge Name/Location"}, {"type": "temperature", "label": "Temperature (°C)", "min": -5, "max": 15}, {"type": "photo", "label": "Photo Evidence"}]}}
+          ]
+        },
+        {
+          "name": "BAR PM Freezer Temperature Checks",
+          "description": "Check and record all bar freezer temperatures in the evening (must be ≤-18°C)",
+          "priority": "high",
+          "order_index": 2,
+          "is_active": true,
+          "has_dynamic_form": true,
+          "allocated_departments": "Bar",
+          "fields": [
+            {"field_type": "NUMBER", "field_label": "Number of Bar Freezers", "field_order": 1, "is_required": true, "validation_rules": {"min": 0, "max": 50}},
+            {"field_type": "REPEATING_GROUP", "field_label": "Bar Freezer Temperature Readings", "field_order": 2, "is_required": true, "validation_rules": {"repeat_count_field_id": 1, "repeat_label": "Bar Freezer", "repeat_template": [{"type": "text", "label": "Freezer Name/Location"}, {"type": "temperature", "label": "Temperature (°C)", "min": -30, "max": 0}, {"type": "photo", "label": "Photo Evidence"}]}}
+          ]
+        }
+      ]
+    }
+  ]
+}

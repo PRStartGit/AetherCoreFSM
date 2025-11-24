@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from typing import List
 import secrets
 import string
@@ -268,9 +269,30 @@ def delete_user(
             detail="Cannot delete your own account"
         )
 
-    # Delete any password reset tokens for this user
+    # Delete all related records before deleting user
     from app.models.password_reset_token import PasswordResetToken
+    from app.models.user_site import UserSite
+    from app.models.system_message import SystemMessage
+    from app.models.activity_log import ActivityLog
+    
+    # Delete password reset tokens
     db.query(PasswordResetToken).filter(PasswordResetToken.user_id == user_id).delete()
+    
+    # Delete user site assignments
+    db.query(UserSite).filter(UserSite.user_id == user_id).delete()
+    
+    # Delete message dismissals (if table exists)
+    try:
+        db.execute(text("DELETE FROM message_dismissals WHERE user_id = :uid"), {"uid": user_id})
+    except:
+        pass
+    
+    # Set system messages created_by to NULL instead of deleting
+    db.query(SystemMessage).filter(SystemMessage.created_by_user_id == user_id).update({"created_by_user_id": None})
+    
+    # Set activity logs user_id to NULL instead of deleting (preserve audit trail)
+    db.query(ActivityLog).filter(ActivityLog.user_id == user_id).update({"user_id": None})
+    
     db.delete(user)
     db.commit()
 
