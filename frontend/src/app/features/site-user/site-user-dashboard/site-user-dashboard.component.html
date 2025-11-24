@@ -226,36 +226,13 @@
               <mat-spinner diameter="30"></mat-spinner>
               <span>Loading checklist items...</span>
             </div>
-            <div class="items-list" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id) && checklistItems.get(checklist.id)!.length > 0">
-              <div class="checklist-item" *ngFor="let item of checklistItems.get(checklist.id)">
-                <!-- Dynamic Form for tasks with has_dynamic_form -->
-                <div *ngIf="item.task?.has_dynamic_form">
-                  <h4 class="item-name">{{ item.item_name }}</h4>
-
-                  <!-- Show completion message if already completed -->
-                  <div *ngIf="item.is_completed" class="form-completed-message">
-                    <mat-icon class="completed-icon">check_circle</mat-icon>
-                    <span class="completed-text">Form submitted successfully</span>
-                  </div>
-
-                  <!-- Show form if not completed -->
-                  <app-dynamic-task-form *ngIf="!item.is_completed"
-                    [taskId]="item.task_id"
-                    [checklistItemId]="item.id"
-                    (formSubmitted)="onDynamicFormSubmitted(checklist.id, item)">
-                  </app-dynamic-task-form>
-                </div>
-
-                <!-- Simple checkbox for basic tasks -->
-                <mat-checkbox *ngIf="!item.task?.has_dynamic_form"
-                  [checked]="item.is_completed"
-                  (change)="toggleItem(checklist.id, item)">
-                  {{ item.item_name }}
-                </mat-checkbox>
+            <!-- Locked message for missed checklists -->
+            <div class="checklist-locked-message" *ngIf="!loadingItems.has(checklist.id)">
+              <mat-icon class="lock-icon">lock</mat-icon>
+              <div class="locked-text">
+                <h4>Checklist Locked</h4>
+                <p>This checklist is past its due date and can no longer be edited. Please contact management if you need to record information for this missed checklist.</p>
               </div>
-            </div>
-            <div class="empty-items" *ngIf="!loadingItems.has(checklist.id) && checklistItems.get(checklist.id) && checklistItems.get(checklist.id)!.length === 0">
-              <p>No checklist items configured</p>
             </div>
           </div>
         </mat-card>
