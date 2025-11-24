@@ -97,7 +97,7 @@ def create_user(
         logger.info(f"Attempting to send welcome email to {new_user.email} (role: {new_user.role.value})")
 
         # Send welcome email with temporary password
-        org_id = organization.slug if organization else ""
+        org_id = organization.org_id if organization else ""
         email_sent = send_welcome_email(
             user_email=new_user.email,
             user_name=f"{new_user.first_name} {new_user.last_name}",
