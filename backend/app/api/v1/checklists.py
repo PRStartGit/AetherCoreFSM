@@ -342,9 +342,28 @@ def get_checklist(
                 detail="Not enough permissions"
             )
 
-    # Get all items
+    # Get all items with task fields
     items = []
     for item in checklist.items:
+        # Get task fields if task has dynamic form
+        task_fields = []
+        if item.task and item.task.has_dynamic_form:
+            from app.models.task_field import TaskField
+            fields = db.query(TaskField).filter(
+                TaskField.task_id == item.task_id
+            ).order_by(TaskField.field_order).all()
+
+            for field in fields:
+                task_fields.append({
+                    "id": field.id,
+                    "field_type": field.field_type,
+                    "field_label": field.field_label,
+                    "field_order": field.field_order,
+                    "is_required": field.is_required,
+                    "validation_rules": field.validation_rules,
+                    "show_if": field.show_if
+                })
+
         items.append({
             "id": item.id,
             "item_name": item.item_name,
@@ -353,7 +372,9 @@ def get_checklist(
             "item_data": item.item_data,
             "photo_url": item.photo_url,
             "task_id": item.task_id,
-            "completed_at": item.completed_at
+            "completed_at": item.completed_at,
+            "has_dynamic_form": item.task.has_dynamic_form if item.task else False,
+            "fields": task_fields
         })
 
     checklist_dict = {
