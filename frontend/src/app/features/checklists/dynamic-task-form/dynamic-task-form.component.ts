@@ -347,6 +347,11 @@ export class DynamicTaskFormComponent implements OnInit {
             console.log(`Created control ${controlName} with validators:`, validators.length > 0 ? 'required' : 'optional', 'value:', existingValue);
           }
         });
+
+    // CRITICAL FIX: Force form validation to update after adding/removing controls
+    // This ensures the submit button enables/disables correctly
+    this.dynamicForm.updateValueAndValidity();
+    console.log('[FIX] Form validity updated. Form valid:', this.dynamicForm.valid, 'Form invalid:', this.dynamicForm.invalid);
       }
     });
   }
