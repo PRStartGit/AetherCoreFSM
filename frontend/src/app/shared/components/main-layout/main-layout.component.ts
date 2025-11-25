@@ -3,6 +3,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { User, UserRole } from '../../../core/models';
 import { Router } from '@angular/router';
 import { SystemMessageService, SystemMessage } from '../../../core/services/system-message.service';
+import { NotificationService, Notification } from '../../../core/services/notification.service';
 import { Subscription } from 'rxjs';
 
 interface NavItem {
@@ -33,8 +34,11 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   showNotifications = false;
   showProfileDropdown = false;
   notifications: SystemMessage[] = [];
+  ticketNotifications: Notification[] = [];
   unreadCount = 0;
+  ticketUnreadCount = 0;
   private subscription?: Subscription;
+  private notificationSubscription?: Subscription;
 
   // Single items (like Dashboard)
   topNavItems: NavItem[] = [];
@@ -45,7 +49,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   constructor(
     public authService: AuthService,
     private router: Router,
-    private systemMessageService: SystemMessageService
+    private systemMessageService: SystemMessageService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -64,10 +69,12 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
+    this.notificationSubscription?.unsubscribe();
   }
 
   loadNotifications(): void {
     this.systemMessageService.loadMessages();
+    this.loadTicketNotifications();
   }
 
   toggleMobileMenu(): void {
@@ -297,5 +304,29 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.systemMessageService.dismissMessage(id).subscribe(() => {
       this.loadNotifications();
     });
+  }
+
+  loadTicketNotifications(): void {
+    this.notificationService.getNotifications(true, 10).subscribe(notifications => {
+      this.ticketNotifications = notifications;
+    });
+    this.notificationSubscription = this.notificationService.unreadCount$.subscribe(count => {
+      this.ticketUnreadCount = count;
+    });
+    this.notificationService.refreshUnreadCount();
+  }
+
+  dismissTicketNotification(id: number): void {
+    this.notificationService.markAsRead([id]).subscribe(() => {
+      this.loadTicketNotifications();
+    });
+  }
+
+  navigateToTicket(notification: Notification): void {
+    if (notification.related_url) {
+      this.router.navigate([notification.related_url]);
+      this.dismissTicketNotification(notification.id);
+      this.showNotifications = false;
+    }
   }
 }

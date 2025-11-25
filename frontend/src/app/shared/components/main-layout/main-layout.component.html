@@ -123,8 +123,8 @@
     <div class="relative">
       <button (click)="toggleNotifications()" class="w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors relative flex items-center justify-center">
         <i class="fa-solid fa-bell text-gray-700 text-lg md:text-xl"></i>
-        <span *ngIf="unreadCount > 0" class="absolute top-1 right-1 min-w-[18px] h-[18px] bg-red-500 rounded-full border-2 border-white text-white text-[10px] font-bold flex items-center justify-center">
-          {{ unreadCount > 9 ? '9+' : unreadCount }}
+        <span *ngIf="(unreadCount + ticketUnreadCount) > 0" class="absolute top-1 right-1 min-w-[18px] h-[18px] bg-red-500 rounded-full border-2 border-white text-white text-[10px] font-bold flex items-center justify-center">
+          {{ (unreadCount + ticketUnreadCount) > 9 ? '9+' : (unreadCount + ticketUnreadCount) }}
         </span>
       </button>
       <!-- Notification Dropdown -->
@@ -136,17 +136,39 @@
           </button>
         </div>
         <div class="overflow-y-auto max-h-72">
-          <div *ngIf="notifications.length === 0" class="p-4 text-center text-gray-500 text-sm">
-            No notifications
-          </div>
-          <div *ngFor="let msg of notifications" class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer" (click)="dismissNotification(msg.id)">
-            <div class="flex items-start gap-2">
-              <i class="fa-solid fa-bullhorn text-blue-500 mt-1 text-sm"></i>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm text-gray-800">{{ msg.message_content }}</p>
-                <p class="text-xs text-gray-400 mt-1">{{ msg.created_by_name }} · {{ msg.created_at | date:'short' }}</p>
+          <!-- Ticket Notifications -->
+          <div *ngIf="ticketNotifications.length > 0">
+            <div class="px-3 py-2 bg-gray-50 border-b border-gray-200">
+              <span class="text-xs font-semibold text-gray-600">Ticket Updates</span>
+            </div>
+            <div *ngFor="let notif of ticketNotifications" 
+                 class="p-3 border-b border-gray-100 hover:bg-blue-50 cursor-pointer transition-colors"
+                 (click)="navigateToTicket(notif)">
+              <div class="flex items-start gap-2">
+                <i class="fa-solid fa-ticket text-blue-600 mt-1 text-sm"></i>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-semibold text-gray-900">{{ notif.title }}</p>
+                  <p class="text-xs text-gray-600 mt-0.5">{{ notif.message }}</p>
+                  <p class="text-xs text-gray-400 mt-1">{{ notif.created_at | date:'short' }}</p>
+                </div>
+                <span *ngIf="!notif.is_read" class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1.5"></span>
               </div>
             </div>
+          </div>
+          
+          <!-- System Messages -->
+          <div *ngIf="notifications.length > 0">
+            <div class="px-3 py-2 bg-gray-50 border-b border-gray-200">
+              <span class="text-xs font-semibold text-gray-600">System Messages</span>
+            </div>
+            <div *ngFor="let msg of notifications" class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer" (click)="dismissNotification(msg.id)">
+              <div class="flex items-start gap-2">
+                <i class="fa-solid fa-bullhorn text-blue-500 mt-1 text-sm"></i>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm text-gray-800">{{ msg.message_content }}</p>
+                  <p class="text-xs text-gray-400 mt-1">{{ msg.created_by_name }} · {{ msg.created_at | date:'short' }}</p>
+                </div>
+              </div>
           </div>
         </div>
       </div>
