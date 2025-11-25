@@ -14,6 +14,7 @@ from app.core.dependencies import get_current_user
 from app.models.user import User, UserRole
 from app.models.ticket import Ticket, TicketMessage, TicketStatus, TicketPriority, TicketType
 from app.core.email import email_service
+from app.services.notification_service import notification_service
 
 router = APIRouter()
 
@@ -150,6 +151,18 @@ def create_ticket(
         )
     except Exception as e:
         print(f"Failed to send ticket notification email: {e}")
+
+    # Create in-app notification for all super admins
+    try:
+        notification_service.notify_ticket_new(
+            db=db,
+            ticket_number=ticket.ticket_number,
+            subject=ticket.subject,
+            ticket_id=ticket.id
+        )
+        db.commit()
+    except Exception as e:
+        print(f"Failed to create notification: {e}")
 
     return _ticket_to_response(ticket)
 
@@ -291,6 +304,20 @@ def update_ticket(
             )
         except Exception as e:
             print(f"Failed to send status update email: {e}")
+
+        # Create in-app notification for ticket owner
+        try:
+            notification_service.notify_ticket_status_change(
+                db=db,
+                user_id=ticket.created_by_user_id,
+                ticket_number=ticket.ticket_number,
+                subject=ticket.subject,
+                new_status=ticket.status.value.replace('_', ' ').title(),
+                ticket_id=ticket.id
+            )
+            db.commit()
+        except Exception as e:
+            print(f"Failed to create status notification: {e}")
 
     return _ticket_to_response(ticket)
 
