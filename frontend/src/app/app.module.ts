@@ -68,6 +68,7 @@ import { BroadcastModalComponent } from './shared/components/broadcast-modal/bro
 import { TicketListComponent } from './features/support/ticket-list/ticket-list.component';
 import { TicketDetailComponent } from './features/support/ticket-detail/ticket-detail.component';
 import { AdminTicketListComponent } from './features/super-admin/tickets/admin-ticket-list/admin-ticket-list.component';
+import { TicketSettingsComponent } from './features/super-admin/tickets/ticket-settings/ticket-settings.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +103,8 @@ import { AdminTicketListComponent } from './features/super-admin/tickets/admin-t
     // Ticket Components
     TicketListComponent,
     TicketDetailComponent,
-    AdminTicketListComponent
+    AdminTicketListComponent,
+    TicketSettingsComponent
   ],
   imports: [
     BrowserModule,

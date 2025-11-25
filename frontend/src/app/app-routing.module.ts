@@ -32,6 +32,7 @@ import { FaqComponent } from './features/support/faq/faq.component';
 import { TicketListComponent } from './features/support/ticket-list/ticket-list.component';
 import { TicketDetailComponent } from './features/support/ticket-detail/ticket-detail.component';
 import { AdminTicketListComponent } from './features/super-admin/tickets/admin-ticket-list/admin-ticket-list.component';
+import { TicketSettingsComponent } from './features/super-admin/tickets/ticket-settings/ticket-settings.component';
 
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
@@ -129,6 +130,12 @@ const routes: Routes = [
       {
         path: 'super-admin/tickets',
         component: AdminTicketListComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN] }
+      },
+      {
+        path: 'super-admin/tickets/settings',
+        component: TicketSettingsComponent,
         canActivate: [RoleGuard],
         data: { roles: [UserRole.SUPER_ADMIN] }
       },
