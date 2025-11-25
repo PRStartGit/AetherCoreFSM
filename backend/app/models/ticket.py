@@ -38,9 +38,9 @@ class Ticket(Base):
     subject = Column(String(255), nullable=False)
     description = Column(Text, nullable=False)
 
-    status = Column(SQLEnum(TicketStatus), default=TicketStatus.OPEN, nullable=False)
-    priority = Column(SQLEnum(TicketPriority), default=TicketPriority.MEDIUM, nullable=False)
-    ticket_type = Column(SQLEnum(TicketType), default=TicketType.GENERAL, nullable=False)
+    status = Column(SQLEnum(TicketStatus, values_callable=lambda x: [e.value for e in x]), default=TicketStatus.OPEN, nullable=False)
+    priority = Column(SQLEnum(TicketPriority, values_callable=lambda x: [e.value for e in x]), default=TicketPriority.MEDIUM, nullable=False)
+    ticket_type = Column(SQLEnum(TicketType, values_callable=lambda x: [e.value for e in x]), default=TicketType.GENERAL, nullable=False)
 
     # User who created the ticket
     created_by_user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
