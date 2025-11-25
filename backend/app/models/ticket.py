@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 import enum
 
-from app.db.base import Base
+from app.core.database import Base
 
 
 class TicketStatus(str, enum.Enum):

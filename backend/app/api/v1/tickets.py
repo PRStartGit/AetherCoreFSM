@@ -9,8 +9,8 @@ from datetime import datetime
 from pydantic import BaseModel
 import uuid
 
-from app.db.session import get_db
-from app.core.auth import get_current_user
+from app.core.database import get_db
+from app.core.dependencies import get_current_user
 from app.models.user import User, UserRole
 from app.models.ticket import Ticket, TicketMessage, TicketStatus, TicketPriority, TicketType
 from app.core.email import email_service
