@@ -5,6 +5,19 @@ import { Router } from '@angular/router';
 import { SystemMessageService, SystemMessage } from '../../../core/services/system-message.service';
 import { Subscription } from 'rxjs';
 
+interface NavItem {
+  label: string;
+  icon: string;
+  route: string;
+}
+
+interface NavSection {
+  label: string;
+  icon: string;
+  expanded: boolean;
+  items: NavItem[];
+}
+
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',
@@ -23,7 +36,11 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   unreadCount = 0;
   private subscription?: Subscription;
 
-  navigationItems: any[] = [];
+  // Single items (like Dashboard)
+  topNavItems: NavItem[] = [];
+
+  // Collapsible sections
+  navSections: NavSection[] = [];
 
   constructor(
     public authService: AuthService,
@@ -65,9 +82,14 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 
+  toggleSection(section: NavSection): void {
+    section.expanded = !section.expanded;
+  }
+
   updateNavigation(): void {
     if (!this.user) {
-      this.navigationItems = [];
+      this.topNavItems = [];
+      this.navSections = [];
       return;
     }
 
@@ -81,42 +103,165 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       tasks: 'fa-solid fa-list-check',
       checklist: 'fa-solid fa-clipboard-check',
       defects: 'fa-solid fa-triangle-exclamation',
-      profile: 'fa-solid fa-user'
+      profile: 'fa-solid fa-user',
+      promotions: 'fa-solid fa-percent',
+      logs: 'fa-solid fa-clock-rotate-left',
+      tickets: 'fa-solid fa-ticket',
+      // Section icons
+      userMgmt: 'fa-solid fa-users-gear',
+      orgSection: 'fa-solid fa-building',
+      fsm: 'fa-solid fa-utensils',
+      maintenance: 'fa-solid fa-wrench',
+      support: 'fa-solid fa-headset',
+      cms: 'fa-solid fa-bullhorn',
+      system: 'fa-solid fa-gear'
     };
 
     switch (this.user.role) {
       case UserRole.SUPER_ADMIN:
-        this.navigationItems = [
-          { label: 'Dashboard', icon: icons.dashboard, route: '/super-admin' },
-          { label: 'Organizations', icon: icons.organizations, route: '/super-admin/organizations' },
-          { label: 'Sites', icon: icons.sites, route: '/org-admin/sites' },
-          { label: 'Users', icon: icons.users, route: '/super-admin/users' },
-          { label: 'Promo Settings', icon: 'fa-solid fa-percent', route: '/super-admin/promotions' },
-          { label: 'Categories', icon: icons.category, route: '/categories' },
-          { label: 'Tasks', icon: icons.tasks, route: '/tasks' },
-          { label: 'Checklists', icon: icons.checklist, route: '/checklists' },
-          { label: 'Defects', icon: icons.defects, route: '/defects' },
-          { label: 'Profile', icon: icons.profile, route: '/profile' }
+        this.topNavItems = [
+          { label: 'Dashboard', icon: icons.dashboard, route: '/super-admin' }
+        ];
+        this.navSections = [
+          {
+            label: 'User Management',
+            icon: icons.userMgmt,
+            expanded: false,
+            items: [
+              { label: 'Users', icon: icons.users, route: '/super-admin/users' }
+            ]
+          },
+          {
+            label: 'Organizations',
+            icon: icons.orgSection,
+            expanded: false,
+            items: [
+              { label: 'Organizations', icon: icons.organizations, route: '/super-admin/organizations' },
+              { label: 'Sites', icon: icons.sites, route: '/org-admin/sites' }
+            ]
+          },
+          {
+            label: 'Food Safety Management',
+            icon: icons.fsm,
+            expanded: false,
+            items: [
+              { label: 'Categories', icon: icons.category, route: '/categories' },
+              { label: 'Tasks', icon: icons.tasks, route: '/tasks' },
+              { label: 'Checklists', icon: icons.checklist, route: '/checklists' }
+            ]
+          },
+          {
+            label: 'Maintenance',
+            icon: icons.maintenance,
+            expanded: false,
+            items: [
+              { label: 'Defects', icon: icons.defects, route: '/defects' }
+            ]
+          },
+          {
+            label: 'Support',
+            icon: icons.support,
+            expanded: false,
+            items: [
+              { label: 'Tickets', icon: icons.tickets, route: '/super-admin/tickets' }
+            ]
+          },
+          {
+            label: 'CMS',
+            icon: icons.cms,
+            expanded: false,
+            items: [
+              { label: 'Promotions', icon: icons.promotions, route: '/super-admin/promotions' }
+            ]
+          },
+          {
+            label: 'System',
+            icon: icons.system,
+            expanded: false,
+            items: [
+              { label: 'Activity Logs', icon: icons.logs, route: '/super-admin/logs' }
+            ]
+          }
         ];
         break;
       case UserRole.ORG_ADMIN:
-        this.navigationItems = [
-          { label: 'Dashboard', icon: icons.dashboard, route: '/org-admin' },
-          { label: 'Sites', icon: icons.sites, route: '/org-admin/sites' },
-          { label: 'Users', icon: icons.users, route: '/org-admin/users' },
-          { label: 'Categories', icon: icons.category, route: '/categories' },
-          { label: 'Tasks', icon: icons.tasks, route: '/tasks' },
-          { label: 'Checklists', icon: icons.checklist, route: '/checklists' },
-          { label: 'Defects', icon: icons.defects, route: '/defects' },
-          { label: 'Profile', icon: icons.profile, route: '/profile' }
+        this.topNavItems = [
+          { label: 'Dashboard', icon: icons.dashboard, route: '/org-admin' }
+        ];
+        this.navSections = [
+          {
+            label: 'User Management',
+            icon: icons.userMgmt,
+            expanded: false,
+            items: [
+              { label: 'Users', icon: icons.users, route: '/org-admin/users' }
+            ]
+          },
+          {
+            label: 'Organization',
+            icon: icons.orgSection,
+            expanded: false,
+            items: [
+              { label: 'Sites', icon: icons.sites, route: '/org-admin/sites' }
+            ]
+          },
+          {
+            label: 'Food Safety Management',
+            icon: icons.fsm,
+            expanded: false,
+            items: [
+              { label: 'Categories', icon: icons.category, route: '/categories' },
+              { label: 'Tasks', icon: icons.tasks, route: '/tasks' },
+              { label: 'Checklists', icon: icons.checklist, route: '/checklists' }
+            ]
+          },
+          {
+            label: 'Maintenance',
+            icon: icons.maintenance,
+            expanded: false,
+            items: [
+              { label: 'Defects', icon: icons.defects, route: '/defects' }
+            ]
+          },
+          {
+            label: 'Support',
+            icon: icons.support,
+            expanded: false,
+            items: [
+              { label: 'My Tickets', icon: icons.tickets, route: '/support/tickets' }
+            ]
+          }
         ];
         break;
       case UserRole.SITE_USER:
-        this.navigationItems = [
-          { label: 'Dashboard', icon: icons.dashboard, route: '/site-user' },
-          { label: 'Checklists', icon: icons.checklist, route: '/checklists' },
-          { label: 'Defects', icon: icons.defects, route: '/defects' },
-          { label: 'Profile', icon: icons.profile, route: '/profile' }
+        this.topNavItems = [
+          { label: 'Dashboard', icon: icons.dashboard, route: '/site-user' }
+        ];
+        this.navSections = [
+          {
+            label: 'Food Safety Management',
+            icon: icons.fsm,
+            expanded: false,
+            items: [
+              { label: 'Checklists', icon: icons.checklist, route: '/checklists' }
+            ]
+          },
+          {
+            label: 'Maintenance',
+            icon: icons.maintenance,
+            expanded: false,
+            items: [
+              { label: 'Defects', icon: icons.defects, route: '/defects' }
+            ]
+          },
+          {
+            label: 'Support',
+            icon: icons.support,
+            expanded: false,
+            items: [
+              { label: 'My Tickets', icon: icons.tickets, route: '/support/tickets' }
+            ]
+          }
         ];
         break;
     }
@@ -140,12 +285,12 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   toggleNotifications(): void {
     this.showNotifications = !this.showNotifications;
-    this.showProfileDropdown = false; // Close profile dropdown when opening notifications
+    this.showProfileDropdown = false;
   }
 
   toggleProfileDropdown(): void {
     this.showProfileDropdown = !this.showProfileDropdown;
-    this.showNotifications = false; // Close notifications when opening profile dropdown
+    this.showNotifications = false;
   }
 
   dismissNotification(id: number): void {

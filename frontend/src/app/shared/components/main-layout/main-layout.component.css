@@ -61,6 +61,37 @@ nav:hover::-webkit-scrollbar-thumb {
   color: #0EA5E9 !important;
 }
 
+/* Section header styling */
+.nav-section-header {
+  position: relative;
+}
+
+.nav-section-header:hover i {
+  color: #0EA5E9;
+}
+
+/* Collapsed sidebar tooltip on hover */
+@media (min-width: 768px) {
+  .nav-item[title]:hover::after,
+  .nav-section-header[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 8px;
+    padding: 6px 12px;
+    background: #1F2937;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    border-radius: 6px;
+    z-index: 100;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* Ensure Material Design components work well */
 ::ng-deep .mat-mdc-list-item {
   --mdc-list-list-item-label-text-color: inherit !important;
@@ -68,4 +99,15 @@ nav:hover::-webkit-scrollbar-thumb {
 
 ::ng-deep .mat-mdc-menu-content {
   padding: 0 !important;
+}
+
+/* Smooth section expand/collapse */
+.nav-section-items {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.nav-section-items.expanded {
+  max-height: 500px;
 }

@@ -15,10 +15,12 @@
     <p *ngIf="!sidebarCollapsed" class="text-gray-400 text-xs mt-1 md:block hidden">Site Safety Management</p>
   </div>
   <nav class="mt-1 px-2 flex-1 overflow-y-auto py-2">
-    <a *ngFor="let item of navigationItems"
+    <!-- Top Nav Items (Dashboard) -->
+    <a *ngFor="let item of topNavItems"
        [routerLink]="item.route"
        (click)="closeMobileMenu()"
        routerLinkActive="nav-item-active"
+       [routerLinkActiveOptions]="{exact: true}"
        [title]="sidebarCollapsed ? item.label : ''"
        [class.md:justify-center]="sidebarCollapsed"
        [class.md:px-0]="sidebarCollapsed"
@@ -26,6 +28,38 @@
       <i [class]="item.icon + ' text-base w-5 text-center'"></i>
       <span [class.md:hidden]="sidebarCollapsed">{{ item.label }}</span>
     </a>
+
+    <!-- Collapsible Sections -->
+    <div *ngFor="let section of navSections" class="mb-1">
+      <!-- Section Header -->
+      <button (click)="toggleSection(section)"
+              [title]="sidebarCollapsed ? section.label : ''"
+              [class.md:justify-center]="sidebarCollapsed"
+              [class.md:px-0]="sidebarCollapsed"
+              class="w-full nav-section-header flex items-center gap-3 py-2.5 px-3 text-gray-400 text-xs font-semibold uppercase tracking-wider hover:bg-gray-700 hover:text-gray-200 cursor-pointer rounded-lg transition-all duration-200">
+        <i [class]="section.icon + ' text-base w-5 text-center'"></i>
+        <span [class.md:hidden]="sidebarCollapsed" class="flex-1 text-left">{{ section.label }}</span>
+        <i *ngIf="!sidebarCollapsed" [class]="section.expanded ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-right'" class="text-xs transition-transform duration-200 md:block hidden"></i>
+      </button>
+
+      <!-- Section Items -->
+      <div *ngIf="section.expanded || sidebarCollapsed"
+           [class.md:hidden]="sidebarCollapsed && !section.expanded"
+           class="overflow-hidden transition-all duration-200"
+           [class.ml-2]="!sidebarCollapsed">
+        <a *ngFor="let item of section.items"
+           [routerLink]="item.route"
+           (click)="closeMobileMenu()"
+           routerLinkActive="nav-item-active"
+           [title]="sidebarCollapsed ? item.label : ''"
+           [class.md:justify-center]="sidebarCollapsed"
+           [class.md:px-0]="sidebarCollapsed"
+           class="nav-item flex items-center gap-3 py-2 px-3 text-gray-300 text-sm font-medium hover:bg-gray-700 hover:text-white cursor-pointer rounded-lg mb-0.5 transition-all duration-200">
+          <i [class]="item.icon + ' text-sm w-5 text-center'"></i>
+          <span [class.md:hidden]="sidebarCollapsed">{{ item.label }}</span>
+        </a>
+      </div>
+    </div>
   </nav>
 
   <!-- User info at bottom -->
@@ -72,14 +106,6 @@
     </button>
   </div>
   <div class="flex items-center gap-2 md:gap-4">
-    <!-- Logs Icon (Super Admin only) -->
-    <a *ngIf="user?.role === UserRole.SUPER_ADMIN"
-       routerLink="/super-admin/logs"
-       class="w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center"
-       title="Activity Logs">
-      <i class="fa-solid fa-clock-rotate-left text-gray-700 text-lg md:text-xl"></i>
-    </a>
-
     <!-- Broadcast Icon (Admin only) -->
     <button *ngIf="canBroadcast()"
             (click)="openBroadcastModal()"
@@ -126,7 +152,7 @@
       </div>
     </div>
 
-    <!-- User Avatar with Dropdown -->
+    <!-- User Avatar with Dropdown (Profile moved here) -->
     <div class="relative">
       <button (click)="toggleProfileDropdown()"
               class="w-10 h-10 rounded-full bg-gradient-to-br from-hygiene-600 to-cyan-600 flex items-center justify-center text-white font-semibold text-sm hover:ring-2 hover:ring-cyan-400 transition-all cursor-pointer">
@@ -134,6 +160,10 @@
       </button>
       <!-- Profile Dropdown -->
       <div *ngIf="showProfileDropdown" class="absolute right-0 top-12 w-48 bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-100">
+          <p class="text-sm font-semibold text-gray-800 truncate">{{ user?.full_name }}</p>
+          <p class="text-xs text-gray-500 truncate">{{ user?.email }}</p>
+        </div>
         <div class="py-1">
           <a routerLink="/profile"
              (click)="showProfileDropdown = false"
