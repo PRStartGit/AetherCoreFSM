@@ -12,13 +12,10 @@ import { CategoryListComponent } from './features/categories/category-list/categ
 import { TaskListComponent } from './features/tasks/task-list/task-list.component';
 import { ChecklistListComponent } from './features/checklists/checklist-list/checklist-list.component';
 import { ChecklistCompletionComponent } from './features/checklists/checklist-completion/checklist-completion.component';
-// import { DefectListComponent } from './features/defects/defect-list/defect-list.component';
 import { OrganizationListComponent } from './features/super-admin/organizations/organization-list/organization-list.component';
 import { OrganizationFormComponent } from './features/super-admin/organizations/organization-form/organization-form.component';
 import { UserListComponent } from './features/super-admin/users/user-list/user-list.component';
 import { UserFormComponent } from './features/super-admin/users/user-form/user-form.component';
-// import { SiteListComponent } from './features/super-admin/sites/site-list/site-list.component';
-// import { ReportsComponent } from './features/super-admin/reports/reports.component';
 import { SitesListComponent } from './features/org-admin/sites-list/sites-list.component';
 import { SitesFormComponent } from './features/org-admin/sites-form/sites-form.component';
 import { ProfileComponent } from './features/profile/profile.component';
@@ -30,6 +27,12 @@ import { PromotionListComponent } from './features/super-admin/promotions/promot
 import { LogsComponent } from './features/super-admin/activity-logs/logs.component';
 import { ContactComponent } from './features/contact/contact.component';
 import { FaqComponent } from './features/support/faq/faq.component';
+
+// Ticket Components
+import { TicketListComponent } from './features/support/ticket-list/ticket-list.component';
+import { TicketDetailComponent } from './features/support/ticket-detail/ticket-detail.component';
+import { AdminTicketListComponent } from './features/super-admin/tickets/admin-ticket-list/admin-ticket-list.component';
+
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { UserRole } from './core/models';
@@ -122,18 +125,19 @@ const routes: Routes = [
         canActivate: [RoleGuard],
         data: { roles: [UserRole.SUPER_ADMIN] }
       },
-      // {
-      //   path: 'super-admin/sites',
-      //   component: SiteListComponent,
-      //   canActivate: [RoleGuard],
-      //   data: { roles: [UserRole.SUPER_ADMIN] }
-      // },
-      // {
-      //   path: 'super-admin/reports',
-      //   component: ReportsComponent,
-      //   canActivate: [RoleGuard],
-      //   data: { roles: [UserRole.SUPER_ADMIN] }
-      // },
+      // Super Admin Tickets
+      {
+        path: 'super-admin/tickets',
+        component: AdminTicketListComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN] }
+      },
+      {
+        path: 'super-admin/tickets/:id',
+        component: TicketDetailComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN] }
+      },
       {
         path: 'categories',
         component: CategoryListComponent,
@@ -220,6 +224,17 @@ const routes: Routes = [
       {
         path: 'support/faq',
         component: FaqComponent,
+        canActivate: [AuthGuard]
+      },
+      // User Support Tickets (all logged-in users)
+      {
+        path: 'support/tickets',
+        component: TicketListComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'support/tickets/:id',
+        component: TicketDetailComponent,
         canActivate: [AuthGuard]
       }
     ]

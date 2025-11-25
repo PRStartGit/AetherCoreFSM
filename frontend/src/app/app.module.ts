@@ -46,15 +46,10 @@ import { TaskFormComponent } from './features/tasks/task-form/task-form.componen
 import { ChecklistListComponent } from './features/checklists/checklist-list/checklist-list.component';
 import { ChecklistFormComponent } from './features/checklists/checklist-form/checklist-form.component';
 import { ChecklistCompletionComponent } from './features/checklists/checklist-completion/checklist-completion.component';
-// import { DefectListComponent } from './features/defects/defect-list/defect-list.component';
-// import { DefectFormComponent } from './features/defects/defect-form/defect-form.component';
 import { OrganizationListComponent } from './features/super-admin/organizations/organization-list/organization-list.component';
 import { OrganizationFormComponent } from './features/super-admin/organizations/organization-form/organization-form.component';
 import { UserListComponent } from './features/super-admin/users/user-list/user-list.component';
 import { UserFormComponent } from './features/super-admin/users/user-form/user-form.component';
-// import { SiteListComponent } from './features/super-admin/sites/site-list/site-list.component';
-// import { SiteFormComponent } from './features/super-admin/sites/site-form/site-form.component';
-// import { ReportsComponent } from './features/super-admin/reports/reports.component';
 import { SitesListComponent } from './features/org-admin/sites-list/sites-list.component';
 import { SitesFormComponent } from './features/org-admin/sites-form/sites-form.component';
 import { ProfileComponent } from './features/profile/profile.component';
@@ -69,6 +64,10 @@ import { FaqComponent } from './features/support/faq/faq.component';
 import { ContactComponent } from './features/contact/contact.component';
 import { SystemMessageBannerComponent } from './shared/components/system-message-banner/system-message-banner.component';
 import { BroadcastModalComponent } from './shared/components/broadcast-modal/broadcast-modal.component';
+// Ticket Components
+import { TicketListComponent } from './features/support/ticket-list/ticket-list.component';
+import { TicketDetailComponent } from './features/support/ticket-detail/ticket-detail.component';
+import { AdminTicketListComponent } from './features/super-admin/tickets/admin-ticket-list/admin-ticket-list.component';
 
 @NgModule({
   declarations: [
@@ -86,15 +85,10 @@ import { BroadcastModalComponent } from './shared/components/broadcast-modal/bro
     ChecklistListComponent,
     ChecklistFormComponent,
     ChecklistCompletionComponent,
-    // DefectListComponent,
-    // DefectFormComponent,
     OrganizationListComponent,
     OrganizationFormComponent,
     UserListComponent,
     UserFormComponent,
-    // SiteListComponent,
-    // SiteFormComponent,
-    // ReportsComponent,
     SitesListComponent,
     SitesFormComponent,
     ProfileComponent,
@@ -104,7 +98,11 @@ import { BroadcastModalComponent } from './shared/components/broadcast-modal/bro
     CookiePolicyComponent,
     PromotionListComponent,
     FaqComponent,
-    ContactComponent
+    ContactComponent,
+    // Ticket Components
+    TicketListComponent,
+    TicketDetailComponent,
+    AdminTicketListComponent
   ],
   imports: [
     BrowserModule,
