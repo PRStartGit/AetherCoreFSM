@@ -3,12 +3,19 @@ from sqlalchemy.orm import Session
 from typing import List
 import secrets
 import string
+from datetime import date
+from calendar import monthrange
 from app.core.database import get_db
 from app.core.dependencies import get_current_super_admin, get_current_user
 from app.core.security import get_password_hash
 from app.models.user import User, UserRole
 from app.models.organization import Organization
 from app.models.organization_module import OrganizationModule
+from app.models.category import Category, ChecklistFrequency
+from app.models.site import Site
+from app.models.checklist import Checklist, ChecklistStatus
+from app.models.checklist_item import ChecklistItem
+from app.models.task import Task
 from app.schemas.organization import (
     OrganizationCreate,
     OrganizationUpdate,
@@ -394,3 +401,133 @@ def grant_module_to_all_users(
         "users_granted": users_granted,
         "total_users": len(users)
     }
+
+
+@router.post("/organizations/{org_id}/regenerate-checklists")
+def regenerate_organization_checklists(
+    org_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_super_admin)
+):
+    """
+    Regenerate all daily checklists for an organization's sites (Super Admin only).
+    Creates checklists for today for all active sites in the organization.
+    """
+    # Check if organization exists
+    organization = db.query(Organization).filter(Organization.id == org_id).first()
+    if not organization:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Organization not found"
+        )
+
+    try:
+        today = date.today()
+        created_count = 0
+        skipped_count = 0
+
+        # Get all active sites for this organization
+        sites = db.query(Site).filter(
+            Site.organization_id == org_id,
+            Site.is_active == True
+        ).all()
+
+        if not sites:
+            return {
+                "status": "success",
+                "message": "No active sites found for this organization",
+                "created": 0,
+                "skipped": 0,
+                "sites_processed": 0
+            }
+
+        for site in sites:
+            # Get active categories (global + organization-specific)
+            categories = db.query(Category).filter(
+                ((Category.is_global == True) | (Category.organization_id == site.organization_id)),
+                Category.is_active == True
+            ).all()
+
+            for category in categories:
+                # Determine if we should create a checklist based on frequency
+                should_create = False
+                checklist_date = today
+
+                if category.frequency == ChecklistFrequency.DAILY:
+                    # Daily categories: create every day, due today
+                    should_create = True
+                    checklist_date = today
+                elif category.frequency == ChecklistFrequency.MONTHLY:
+                    # Monthly categories: create for current month if not exists
+                    # Due date is the last day of the month
+                    should_create = True
+                    _, last_day = monthrange(today.year, today.month)
+                    checklist_date = date(today.year, today.month, last_day)
+                elif category.frequency == ChecklistFrequency.WEEKLY:
+                    # Weekly categories: create for current week if not exists
+                    should_create = True
+                    checklist_date = today
+
+                if not should_create:
+                    continue
+
+                # Check if checklist already exists for this date
+                existing = db.query(Checklist).filter(
+                    Checklist.checklist_date == checklist_date,
+                    Checklist.category_id == category.id,
+                    Checklist.site_id == site.id
+                ).first()
+
+                if existing:
+                    skipped_count += 1
+                    continue
+
+                # Create new checklist
+                new_checklist = Checklist(
+                    checklist_date=checklist_date,
+                    category_id=category.id,
+                    site_id=site.id,
+                    status=ChecklistStatus.PENDING
+                )
+                db.add(new_checklist)
+                db.flush()
+
+                # Get all active tasks for this category
+                tasks = db.query(Task).filter(
+                    Task.category_id == category.id,
+                    Task.is_active == True
+                ).order_by(Task.order_index).all()
+
+                # Create checklist items for each task
+                for task in tasks:
+                    checklist_item = ChecklistItem(
+                        checklist_id=new_checklist.id,
+                        task_id=task.id,
+                        item_name=task.name,
+                        is_completed=False
+                    )
+                    db.add(checklist_item)
+
+                # Set totals
+                new_checklist.total_items = len(tasks)
+                new_checklist.completed_items = 0
+
+                created_count += 1
+
+        db.commit()
+
+        return {
+            "status": "success",
+            "message": f"Successfully regenerated checklists for {organization.name}",
+            "created": created_count,
+            "skipped": skipped_count,
+            "sites_processed": len(sites),
+            "date": str(today)
+        }
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error regenerating checklists: {str(e)}"
+        )

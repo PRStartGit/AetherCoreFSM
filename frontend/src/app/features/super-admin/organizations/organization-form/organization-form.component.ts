@@ -30,6 +30,7 @@ export class OrganizationFormComponent implements OnInit {
     { name: 'Zynthio Training', displayName: 'Training Module', enabled: false }
   ];
   moduleLoading = false;
+  checklistRegenerating = false;
 
   constructor(
     private fb: FormBuilder,
@@ -269,5 +270,27 @@ export class OrganizationFormComponent implements OnInit {
     }
     const parts = [addr.line_1, addr.line_2, addr.town_or_city].filter(l => l && l.trim());
     return parts.join(', ');
+  }
+
+  regenerateChecklists(): void {
+    if (!this.organizationId || this.checklistRegenerating) return;
+
+    const confirmed = confirm('Are you sure you want to regenerate all checklists for this organization? This will create missing checklists for all active sites.');
+    if (!confirmed) return;
+
+    this.checklistRegenerating = true;
+
+    this.http.post<any>(`/api/v1/organizations/${this.organizationId}/regenerate-checklists`, {}).subscribe({
+      next: (response) => {
+        this.checklistRegenerating = false;
+        alert(`Successfully regenerated checklists!\n\nCreated: ${response.created}\nSkipped: ${response.skipped}\nSites Processed: ${response.sites_processed}`);
+      },
+      error: (err) => {
+        this.checklistRegenerating = false;
+        this.error = 'Failed to regenerate checklists';
+        console.error('Error regenerating checklists:', err);
+        alert('Failed to regenerate checklists. Please try again.');
+      }
+    });
   }
 }
