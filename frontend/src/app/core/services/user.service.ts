@@ -94,4 +94,17 @@ export class UserService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/${id}`);
   }
+
+  // Module Access Management
+  getUserModuleAccess(userId: number): Observable<string[]> {
+    return this.http.get<string[]>(`${this.API_URL}/${userId}/module-access`);
+  }
+
+  grantModuleAccess(userId: number, moduleName: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/${userId}/module-access`, { module_name: moduleName });
+  }
+
+  removeModuleAccess(userId: number, moduleName: string): Observable<any> {
+    return this.http.delete(`${this.API_URL}/${userId}/module-access/${moduleName}`);
+  }
 }

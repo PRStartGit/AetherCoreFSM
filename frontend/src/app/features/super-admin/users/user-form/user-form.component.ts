@@ -30,6 +30,13 @@ export class UserFormComponent implements OnInit {
     { value: UserRole.SITE_USER, label: 'Site User' }
   ];
 
+  // Module access management
+  availableModules = [
+    { name: 'Zynthio Recipes', enabled: false },
+    { name: 'Zynthio Training', enabled: false }
+  ];
+  moduleLoading = false;
+
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -161,6 +168,9 @@ export class UserFormComponent implements OnInit {
           this.loadSites(user.organization_id);
         }
 
+        // Load module access for this user
+        this.loadUserModuleAccess();
+
         this.loading = false;
       },
       error: (err) => {
@@ -169,6 +179,56 @@ export class UserFormComponent implements OnInit {
         console.error('Error loading user:', err);
       }
     });
+  }
+
+  loadUserModuleAccess(): void {
+    if (!this.userId) return;
+
+    this.userService.getUserModuleAccess(this.userId).subscribe({
+      next: (modules: string[]) => {
+        // Update enabled state for each module
+        this.availableModules.forEach(module => {
+          module.enabled = modules.includes(module.name);
+        });
+      },
+      error: (err) => {
+        console.error('Error loading user module access:', err);
+      }
+    });
+  }
+
+  toggleModuleAccess(module: any): void {
+    if (!this.userId || this.moduleLoading) return;
+
+    this.moduleLoading = true;
+
+    if (module.enabled) {
+      // Remove access
+      this.userService.removeModuleAccess(this.userId, module.name).subscribe({
+        next: () => {
+          module.enabled = false;
+          this.moduleLoading = false;
+        },
+        error: (err) => {
+          this.error = `Failed to remove ${module.name} access`;
+          this.moduleLoading = false;
+          console.error('Error removing module access:', err);
+        }
+      });
+    } else {
+      // Grant access
+      this.userService.grantModuleAccess(this.userId, module.name).subscribe({
+        next: () => {
+          module.enabled = true;
+          this.moduleLoading = false;
+        },
+        error: (err) => {
+          this.error = `Failed to grant ${module.name} access`;
+          this.moduleLoading = false;
+          console.error('Error granting module access:', err);
+        }
+      });
+    }
   }
 
   onRoleChange(role: UserRole): void {
