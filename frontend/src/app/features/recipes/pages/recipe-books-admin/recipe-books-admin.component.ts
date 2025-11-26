@@ -13,6 +13,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
 import { RecipeBookService, RecipeBook, RecipeBookWithRecipes, RecipeInBook } from '../../services/recipe-book.service';
 import { RecipeService } from '../../services/recipe.service';
 import { SiteService } from '../../../../core/services/site.service';
@@ -36,7 +37,8 @@ import { Site } from '../../../../core/models';
     MatCheckboxModule,
     MatSelectModule,
     MatExpansionModule,
-    MatChipsModule
+    MatChipsModule,
+    MatDividerModule
   ],
   templateUrl: './recipe-books-admin.component.html',
   styleUrls: ['./recipe-books-admin.component.scss']
