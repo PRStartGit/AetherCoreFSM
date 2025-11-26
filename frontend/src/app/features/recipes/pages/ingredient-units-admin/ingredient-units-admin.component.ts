@@ -11,14 +11,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RecipeService } from '../../services/recipe.service';
-
-interface IngredientUnit {
-  id: number;
-  name: string;
-  display_name: string;
-  category?: string;
-  sort_order: number;
-}
+import { IngredientUnit } from '../../models/recipe.models';
 
 @Component({
   selector: 'app-ingredient-units-admin',

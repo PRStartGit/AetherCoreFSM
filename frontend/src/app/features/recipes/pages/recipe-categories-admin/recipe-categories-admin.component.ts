@@ -10,13 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RecipeService } from '../../services/recipe.service';
-
-interface RecipeCategory {
-  id: number;
-  name: string;
-  sort_order: number;
-  created_at: string;
-}
+import { RecipeCategory } from '../../models/recipe.models';
 
 @Component({
   selector: 'app-recipe-categories-admin',

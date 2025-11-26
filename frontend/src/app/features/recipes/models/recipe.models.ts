@@ -2,13 +2,13 @@ export interface RecipeCategory {
   id: number;
   name: string;
   sort_order: number;
-  created_at?: string;
+  created_at: string;
 }
 
 export interface IngredientUnit {
   id: number;
   name: string;
-  abbreviation?: string;
+  display_name: string;
   category?: string;
   sort_order: number;
 }
