@@ -63,7 +63,7 @@
         </div>
       </a>
 
-      <a routerLink="/training/courses" *ngIf="currentUser.role === 'super_admin'" class="block">
+      <a routerLink="/training/courses" *ngIf="currentUser && currentUser.role === 'super_admin'" class="block">
         <div class="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-cyan-500">
           <div class="flex items-center gap-4">
             <div class="w-16 h-16 rounded-full bg-gradient-to-br from-hygiene-600 to-cyan-600 flex items-center justify-center">
