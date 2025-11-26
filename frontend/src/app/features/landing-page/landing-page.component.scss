@@ -1,6 +1,7 @@
-// Badge styling - Add proper spacing
+// Badge styling - Add proper spacing for ALL badges across the page
+:host ::ng-deep .badge,
 .badge {
-  display: inline-block;
+  display: inline-block !important;
   margin-bottom: 1.5rem !important;
 }
 
