@@ -258,12 +258,7 @@ export class UserFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log('🔵 DEBUG: onSubmit() called');
-    console.log('🔵 DEBUG: Form valid?', this.userForm.valid);
-    console.log('🔵 DEBUG: Form value:', this.userForm.value);
-
     if (this.userForm.invalid) {
-      console.log('🔴 DEBUG: Form is INVALID, stopping submission');
       this.userForm.markAllAsTouched();
       return;
     }
@@ -291,16 +286,11 @@ export class UserFormComponent implements OnInit {
         updateData.password = formValue.password;
       }
 
-      console.log('🟢 DEBUG: EDIT MODE - Updating user ID:', this.userId);
-      console.log('🟢 DEBUG: Update payload:', updateData);
-
       this.userService.update(this.userId, updateData).subscribe({
         next: () => {
-          console.log('✅ DEBUG: Update successful!');
           this.router.navigate([this.getBaseRoute()]);
         },
         error: (err) => {
-          console.log('❌ DEBUG: Update failed:', err);
           this.error = 'Failed to update user';
           this.loading = false;
           console.error('Error updating user:', err);
@@ -323,17 +313,12 @@ export class UserFormComponent implements OnInit {
         hire_date: formValue.hire_date
       };
 
-      console.log('🟡 DEBUG: CREATE MODE - Creating new user');
-      console.log('🟡 DEBUG: Create payload:', createData);
-
       this.userService.create(createData).subscribe({
         next: () => {
-          console.log('✅ DEBUG: Create successful!');
           alert('User created successfully! A password reset email will be sent to the user.');
           this.router.navigate([this.getBaseRoute()]);
         },
         error: (err) => {
-          console.log('❌ DEBUG: Create failed:', err);
           this.error = 'Failed to create user';
           this.loading = false;
           console.error('Error creating user:', err);

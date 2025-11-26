@@ -193,11 +193,6 @@ def update_user(
     current_user: User = Depends(get_current_org_admin)
 ):
     """Update user (Org Admin or Super Admin)."""
-    print(f"========== UPDATE_USER CALLED FOR USER {user_id} ==========", flush=True)
-    print(f"Received data: {user_data.model_dump(exclude_unset=True)}", flush=True)
-    logger.info(f"🔵 DEBUG: Updating user {user_id}")
-    logger.info(f"🔵 DEBUG: Received data: {user_data.model_dump(exclude_unset=True)}")
-
     user = db.query(User).filter(User.id == user_id).first()
 
     if not user:
@@ -205,8 +200,6 @@ def update_user(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-
-    logger.info(f"🔵 DEBUG: Current user org_id BEFORE update: {user.organization_id}")
 
     # Check permissions for org admins
     if current_user.role == UserRole.ORG_ADMIN:
@@ -233,21 +226,12 @@ def update_user(
     update_data = user_data.model_dump(exclude_unset=True)
     site_ids = update_data.pop('site_ids', None)
 
-    logger.info(f"🟢 DEBUG: update_data dict: {update_data}")
-    logger.info(f"🟢 DEBUG: site_ids: {site_ids}")
-
     for field, value in update_data.items():
-        logger.info(f"🟡 DEBUG: Setting {field} = {value}")
         setattr(user, field, value)
-
-    logger.info(f"🔵 DEBUG: User org_id AFTER setattr loop: {user.organization_id}")
 
     # If role is being changed to SUPER_ADMIN, ensure organization_id is NULL
     if user.role == UserRole.SUPER_ADMIN:
-        logger.info(f"🔴 DEBUG: Role is SUPER_ADMIN, setting org_id to None")
         user.organization_id = None
-
-    logger.info(f"🔵 DEBUG: User org_id AFTER super_admin check: {user.organization_id}")
 
     # Update site assignments if provided
     if site_ids is not None:
@@ -261,8 +245,6 @@ def update_user(
 
     db.commit()
     db.refresh(user)
-
-    logger.info(f"✅ DEBUG: User org_id AFTER commit: {user.organization_id}")
 
     return user
 
