@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query, UploadFile
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.core.database import get_db
-from app.core.auth.dependencies import get_current_user
+from app.core.dependencies import get_current_user
 from app.models.user import User, UserRole
 from app.schemas.course import CourseCreate, CourseUpdate, CourseResponse, CourseWithModulesResponse
 from app.schemas.course_module import CourseModuleCreate, CourseModuleUpdate, CourseModuleResponse, ReorderModulesRequest
