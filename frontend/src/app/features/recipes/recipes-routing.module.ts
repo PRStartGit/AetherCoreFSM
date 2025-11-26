@@ -6,6 +6,7 @@ import { RecipeFormComponent } from './pages/recipe-form/recipe-form.component';
 import { RecipeDetailComponent } from './pages/recipe-detail/recipe-detail.component';
 import { RecipeCategoriesAdminComponent } from './pages/recipe-categories-admin/recipe-categories-admin.component';
 import { IngredientUnitsAdminComponent } from './pages/ingredient-units-admin/ingredient-units-admin.component';
+import { RecipeBooksAdminComponent } from './pages/recipe-books-admin/recipe-books-admin.component';
 import { RecipesAccessGuard } from './guards/recipes-access.guard';
 import { RecipesEditGuard } from './guards/recipes-edit.guard';
 import { RoleGuard } from '../../core/guards/role.guard';
@@ -36,6 +37,11 @@ const routes: Routes = [
     component: IngredientUnitsAdminComponent,
     canActivate: [RoleGuard],
     data: { roles: ['super_admin'] }
+  },
+  {
+    path: 'admin/books',
+    component: RecipeBooksAdminComponent,
+    canActivate: [RecipesEditGuard]
   },
   {
     path: ':id',
