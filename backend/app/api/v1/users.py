@@ -193,6 +193,8 @@ def update_user(
     current_user: User = Depends(get_current_org_admin)
 ):
     """Update user (Org Admin or Super Admin)."""
+    print(f"========== UPDATE_USER CALLED FOR USER {user_id} ==========", flush=True)
+    print(f"Received data: {user_data.model_dump(exclude_unset=True)}", flush=True)
     logger.info(f"🔵 DEBUG: Updating user {user_id}")
     logger.info(f"🔵 DEBUG: Received data: {user_data.model_dump(exclude_unset=True)}")
 
