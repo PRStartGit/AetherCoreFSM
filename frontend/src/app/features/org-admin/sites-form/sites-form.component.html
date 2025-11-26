@@ -27,7 +27,7 @@
       <h2 class="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Organization Selector (Super Admin only) -->
-        <div *ngIf="isSuperAdmin && !isEditMode" class="md:col-span-2">
+        <div *ngIf="isSuperAdmin" class="md:col-span-2">
           <label for="organization_id" class="block text-sm font-medium text-gray-700 mb-2">
             Organization <span class="text-red-600">*</span>
           </label>

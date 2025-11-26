@@ -46,7 +46,7 @@ export class SitesFormComponent implements OnInit {
     this.initializeForm();
 
     // Load organizations if Super Admin
-    if (this.isSuperAdmin && !this.isEditMode) {
+    if (this.isSuperAdmin) {
       this.loadOrganizations();
     }
 
@@ -61,7 +61,7 @@ export class SitesFormComponent implements OnInit {
   }
 
   initializeForm(): void {
-    const orgValidators = this.isSuperAdmin && !this.isEditMode ? [Validators.required] : [];
+    const orgValidators = this.isSuperAdmin ? [Validators.required] : [];
 
     this.siteForm = this.fb.group({
       organization_id: ['', orgValidators],
@@ -100,6 +100,7 @@ export class SitesFormComponent implements OnInit {
     this.siteService.getById(id).subscribe({
       next: (site) => {
         this.siteForm.patchValue({
+          organization_id: site.organization_id,
           name: site.name,
           site_code: site.site_code,
           address: site.address,
@@ -152,6 +153,11 @@ export class SitesFormComponent implements OnInit {
         weekly_report_time: formValue.weekly_report_time,
         report_recipients: formValue.report_recipients
       };
+
+      // Super admins can change the organization
+      if (this.isSuperAdmin && formValue.organization_id) {
+        updateData.organization_id = formValue.organization_id;
+      }
 
       this.siteService.update(this.siteId, updateData).subscribe({
         next: () => {
