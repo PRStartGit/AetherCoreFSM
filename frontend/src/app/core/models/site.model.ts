@@ -37,6 +37,7 @@ export interface SiteCreate {
 export interface SiteUpdate {
   name?: string;
   site_code?: string;
+  organization_id?: number;
   address?: string;
   city?: string;
   postcode?: string;
