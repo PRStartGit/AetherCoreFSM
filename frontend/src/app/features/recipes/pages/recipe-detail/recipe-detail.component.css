@@ -1,0 +1,33 @@
+/* Recipe Detail Component Styles */
+
+/* Print Styles */
+@media print {
+  @page {
+    margin: 1cm;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:p-0 {
+    padding: 0 !important;
+  }
+
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+
+  .print\:border-0 {
+    border: 0 !important;
+  }
+
+  /* Ensure good page breaks */
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+
+  ul, ol {
+    page-break-inside: avoid;
+  }
+}

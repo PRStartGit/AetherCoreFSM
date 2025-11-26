@@ -234,6 +234,11 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
+        path: 'recipes',
+        loadChildren: () => import('./features/recipes/recipes.module').then(m => m.RecipesModule),
+        canActivate: [AuthGuard]
+      },
+      {
         path: 'support/faq',
         component: FaqComponent,
         canActivate: [AuthGuard]

@@ -24,6 +24,12 @@ from app.models.course import Course
 from app.models.course_module import CourseModule
 from app.models.course_enrollment import CourseEnrollment, EnrollmentStatus
 from app.models.module_progress import ModuleProgress
+from app.models.recipe_category import RecipeCategory
+from app.models.recipe import Recipe
+from app.models.recipe_ingredient import RecipeIngredient
+from app.models.ingredient_unit import IngredientUnit
+from app.models.allergen_keyword import AllergenKeyword
+from app.models.recipe_allergen import RecipeAllergen
 
 __all__ = [
     "User",
@@ -53,4 +59,10 @@ __all__ = [
     "CourseEnrollment",
     "EnrollmentStatus",
     "ModuleProgress",
+    "RecipeCategory",
+    "Recipe",
+    "RecipeIngredient",
+    "IngredientUnit",
+    "AllergenKeyword",
+    "RecipeAllergen",
 ]

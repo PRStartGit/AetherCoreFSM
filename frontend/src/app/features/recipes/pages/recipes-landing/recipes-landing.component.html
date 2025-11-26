@@ -1,0 +1,116 @@
+<div class="p-4 md:p-6">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-12">
+    <svg class="animate-spin h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+  </div>
+
+  <!-- No Access Message -->
+  <div *ngIf="!loading && !hasRecipeAccess" class="max-w-4xl mx-auto mt-8">
+    <div class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-xl p-8 md:p-12 border border-gray-200">
+      <!-- Header Section -->
+      <div class="text-center mb-8">
+        <div class="mb-6 inline-block">
+          <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-green-100 to-green-50 flex items-center justify-center shadow-lg">
+            <i class="fa-solid fa-utensils text-5xl text-green-600"></i>
+          </div>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+          <span class="bg-gradient-to-r from-green-600 to-green-600 bg-clip-text text-transparent">Recipe Book</span>
+        </h1>
+        <p class="text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed">
+          Access and manage your organization's standardized recipes, including ingredients, allergen information, and scaling tools.
+        </p>
+      </div>
+
+      <!-- Request Access Notice -->
+      <div class="bg-green-50 border-l-4 border-green-500 rounded-r-lg p-6 mb-8">
+        <div class="flex items-start">
+          <i class="fa-solid fa-info-circle text-green-600 text-xl mt-1 mr-3"></i>
+          <div>
+            <h3 class="font-semibold text-green-900 mb-1">Recipe Book Access Required</h3>
+            <p class="text-green-800 text-sm">
+              To get started with the Recipe Book module, please contact one of your organization administrators below to request access.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Org Admins Contact Info -->
+      <div *ngIf="orgAdmins.length > 0" class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+        <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+          <i class="fa-solid fa-users text-green-600 mr-3"></i>
+          Your Organisation Administrators
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div *ngFor="let admin of orgAdmins"
+               class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors border border-gray-100">
+            <div class="flex-shrink-0">
+              <div class="w-14 h-14 rounded-full bg-gradient-to-br from-green-600 to-green-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                {{ admin.full_name.charAt(0).toUpperCase() }}
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-gray-900 text-lg truncate">{{ admin.full_name }}</p>
+              <a [href]="'mailto:' + admin.email"
+                 class="text-green-600 hover:text-green-700 text-sm flex items-center gap-1 mt-1 truncate">
+                <i class="fa-solid fa-envelope text-xs"></i>
+                {{ admin.email }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="orgAdmins.length === 0" class="text-center py-8">
+        <i class="fa-solid fa-user-shield text-4xl text-gray-300 mb-3"></i>
+        <p class="text-gray-600">
+          No administrators found. Please contact your organization's main administrator for access.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Has Access - Recipe Dashboard -->
+  <div *ngIf="!loading && hasRecipeAccess">
+    <div class="mb-6">
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Recipe Book</h1>
+      <p class="text-gray-600 mt-1">Manage and access your organization's standardized recipes</p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <a routerLink="/recipes/list" class="block">
+        <div class="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-green-500">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+              <i class="fa-solid fa-book-open text-3xl text-white"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-gray-900">View Recipes</h2>
+              <p class="text-gray-600 text-sm mt-1">Browse and search all available recipes</p>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <a *ngIf="hasCrudAccess()" routerLink="/recipes/create" class="block">
+        <div class="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-green-500">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+              <i class="fa-solid fa-plus-circle text-3xl text-white"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-gray-900">Create Recipe</h2>
+              <p class="text-gray-600 text-sm mt-1">Add new recipes to your collection</p>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Future: Phase 2/3 features will appear here -->
+  </div>
+</div>

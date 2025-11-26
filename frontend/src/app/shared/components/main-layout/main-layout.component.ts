@@ -115,6 +115,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       logs: 'fa-solid fa-clock-rotate-left',
       tickets: 'fa-solid fa-ticket',
       training: 'fa-solid fa-graduation-cap',
+      recipes: 'fa-solid fa-book-open',
       // Section icons
       userMgmt: 'fa-solid fa-users-gear',
       orgSection: 'fa-solid fa-building',
@@ -123,13 +124,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       support: 'fa-solid fa-headset',
       cms: 'fa-solid fa-bullhorn',
       system: 'fa-solid fa-gear',
-      trainingSection: 'fa-solid fa-graduation-cap'
+      trainingSection: 'fa-solid fa-graduation-cap',
+      recipesSection: 'fa-solid fa-book-open'
     };
 
     switch (this.user.role) {
       case UserRole.SUPER_ADMIN:
         this.topNavItems = [
-          { label: 'Dashboard', icon: icons.dashboard, route: '/super-admin' }
+          { label: 'Dashboard', icon: icons.dashboard, route: '/super-admin' },
+          { label: 'Recipe Book', icon: icons.recipesSection, route: '/recipes' }
         ];
         this.navSections = [
           {
@@ -204,7 +207,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         break;
       case UserRole.ORG_ADMIN:
         this.topNavItems = [
-          { label: 'Dashboard', icon: icons.dashboard, route: '/org-admin' }
+          { label: 'Dashboard', icon: icons.dashboard, route: '/org-admin' },
+          { label: 'Recipe Book', icon: icons.recipesSection, route: '/recipes' }
         ];
         this.navSections = [
           {
@@ -261,7 +265,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         break;
       case UserRole.SITE_USER:
         this.topNavItems = [
-          { label: 'Dashboard', icon: icons.dashboard, route: '/site-user' }
+          { label: 'Dashboard', icon: icons.dashboard, route: '/site-user' },
+          { label: 'Recipe Book', icon: icons.recipesSection, route: '/recipes' }
         ];
         this.navSections = [
           {

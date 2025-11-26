@@ -8,6 +8,7 @@ from app.core.dependencies import get_current_super_admin, get_current_user
 from app.core.security import get_password_hash
 from app.models.user import User, UserRole
 from app.models.organization import Organization
+from app.models.organization_module import OrganizationModule
 from app.schemas.organization import (
     OrganizationCreate,
     OrganizationUpdate,
@@ -195,3 +196,86 @@ def delete_organization(
     db.commit()
 
     return None
+
+
+@router.post("/organizations/{org_id}/modules/{module_name}/enable")
+def enable_organization_module(
+    org_id: int,
+    module_name: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_super_admin)
+):
+    """Enable a module for an organization (Super Admin only)."""
+    # Check if organization exists
+    organization = db.query(Organization).filter(Organization.id == org_id).first()
+    if not organization:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Organization not found"
+        )
+
+    # Check if module already exists
+    org_module = db.query(OrganizationModule).filter(
+        OrganizationModule.organization_id == org_id,
+        OrganizationModule.module_name == module_name
+    ).first()
+
+    if org_module:
+        # Update existing module
+        org_module.is_enabled = True
+    else:
+        # Create new module entry
+        org_module = OrganizationModule(
+            organization_id=org_id,
+            module_name=module_name,
+            is_enabled=True
+        )
+        db.add(org_module)
+
+    db.commit()
+    db.refresh(org_module)
+
+    return {
+        "message": f"Module '{module_name}' enabled for organization {organization.name}",
+        "module_name": module_name,
+        "is_enabled": org_module.is_enabled
+    }
+
+
+@router.post("/organizations/{org_id}/modules/{module_name}/disable")
+def disable_organization_module(
+    org_id: int,
+    module_name: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_super_admin)
+):
+    """Disable a module for an organization (Super Admin only)."""
+    # Check if organization exists
+    organization = db.query(Organization).filter(Organization.id == org_id).first()
+    if not organization:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Organization not found"
+        )
+
+    # Check if module exists
+    org_module = db.query(OrganizationModule).filter(
+        OrganizationModule.organization_id == org_id,
+        OrganizationModule.module_name == module_name
+    ).first()
+
+    if not org_module:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Module '{module_name}' not found for this organization"
+        )
+
+    org_module.is_enabled = False
+    db.commit()
+    db.refresh(org_module)
+
+    return {
+        "message": f"Module '{module_name}' disabled for organization {organization.name}",
+        "module_name": module_name,
+        "is_enabled": org_module.is_enabled
+    }
