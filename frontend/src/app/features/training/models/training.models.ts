@@ -71,6 +71,7 @@ export interface CourseModuleCreate {
   description?: string;
   video_url?: string;
   pdf_url?: string;
+  text_content?: string;
   order_index: number;
   duration_minutes?: number;
 }
@@ -80,6 +81,7 @@ export interface CourseModuleUpdate {
   description?: string;
   video_url?: string;
   pdf_url?: string;
+  text_content?: string;
   order_index?: number;
   duration_minutes?: number;
 }

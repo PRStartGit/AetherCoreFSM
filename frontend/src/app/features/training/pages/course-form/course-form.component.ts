@@ -41,6 +41,7 @@ export class CourseFormComponent implements OnInit {
       description: [''],
       video_url: [''],
       pdf_url: [''],
+      text_content: [''],
       duration_minutes: [null]
     });
   }
@@ -154,6 +155,7 @@ export class CourseFormComponent implements OnInit {
       description: module.description,
       video_url: module.video_url,
       pdf_url: module.pdf_url,
+      text_content: module.text_content,
       duration_minutes: module.duration_minutes
     });
   }
