@@ -24,6 +24,13 @@ export class OrganizationFormComponent implements OnInit {
 
   subscriptionTiers = ['platform_admin', 'free', 'basic', 'professional', 'enterprise'];
 
+  // Module management
+  modules = [
+    { name: 'recipes', displayName: 'Recipe Book', enabled: false },
+    { name: 'Zynthio Training', displayName: 'Training Module', enabled: false }
+  ];
+  moduleLoading = false;
+
   constructor(
     private fb: FormBuilder,
     private organizationService: OrganizationService,
@@ -75,11 +82,50 @@ export class OrganizationFormComponent implements OnInit {
         // Disable org_id editing for existing organizations
         this.organizationForm.get('org_id')?.disable();
         this.loading = false;
+
+        // Load module statuses
+        this.loadModuleStatuses();
       },
       error: (err) => {
         this.error = 'Failed to load organization';
         this.loading = false;
         console.error('Error loading organization:', err);
+      }
+    });
+  }
+
+  loadModuleStatuses(): void {
+    if (!this.organizationId) return;
+
+    this.http.get<any[]>(`/api/v1/organizations/${this.organizationId}/modules`).subscribe({
+      next: (orgModules) => {
+        // Update module enabled states
+        this.modules.forEach(module => {
+          const orgModule = orgModules.find(om => om.module_name === module.name);
+          module.enabled = orgModule ? orgModule.is_enabled : false;
+        });
+      },
+      error: (err) => {
+        console.error('Error loading module statuses:', err);
+      }
+    });
+  }
+
+  toggleModule(module: any): void {
+    if (!this.organizationId || this.moduleLoading) return;
+
+    this.moduleLoading = true;
+    const endpoint = module.enabled ? 'disable' : 'enable';
+
+    this.http.post(`/api/v1/organizations/${this.organizationId}/modules/${module.name}/${endpoint}`, {}).subscribe({
+      next: () => {
+        module.enabled = !module.enabled;
+        this.moduleLoading = false;
+      },
+      error: (err) => {
+        this.error = `Failed to ${endpoint} ${module.displayName}`;
+        this.moduleLoading = false;
+        console.error(`Error toggling module:`, err);
       }
     });
   }

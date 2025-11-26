@@ -198,6 +198,37 @@ def delete_organization(
     return None
 
 
+@router.get("/organizations/{org_id}/modules")
+def get_organization_modules(
+    org_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_super_admin)
+):
+    """Get all modules and their statuses for an organization (Super Admin only)."""
+    # Check if organization exists
+    organization = db.query(Organization).filter(Organization.id == org_id).first()
+    if not organization:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Organization not found"
+        )
+
+    # Get all organization modules
+    org_modules = db.query(OrganizationModule).filter(
+        OrganizationModule.organization_id == org_id
+    ).all()
+
+    return [
+        {
+            "module_name": om.module_name,
+            "is_enabled": om.is_enabled,
+            "created_at": om.created_at,
+            "updated_at": om.updated_at
+        }
+        for om in org_modules
+    ]
+
+
 @router.post("/organizations/{org_id}/modules/{module_name}/enable")
 def enable_organization_module(
     org_id: int,
