@@ -201,12 +201,19 @@ def update_user(
             detail="User not found"
         )
 
-    # Check permissions
+    # Check permissions for org admins
     if current_user.role == UserRole.ORG_ADMIN:
+        # Org admins can only update users in their organization
         if current_user.organization_id != user.organization_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Not enough permissions"
+            )
+        # Org admins cannot change the organization
+        if user_data.organization_id and user_data.organization_id != user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Cannot change user organization"
             )
         # Org admins cannot change role to super admin
         if user_data.role == UserRole.SUPER_ADMIN:

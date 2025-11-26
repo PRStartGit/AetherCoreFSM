@@ -35,6 +35,7 @@ class UserUpdate(BaseModel):
     phone: Optional[str] = None
     is_active: Optional[bool] = None
     role: Optional[UserRole] = None
+    organization_id: Optional[int] = None
     department: Optional[Department] = None
     job_title: Optional[JobTitle] = None
     job_role_id: Optional[int] = None
