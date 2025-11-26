@@ -81,6 +81,7 @@ export class UserService {
     if (user.first_name !== undefined) payload.first_name = user.first_name;
     if (user.last_name !== undefined) payload.last_name = user.last_name;
     if (user.role !== undefined) payload.role = user.role;
+    if (user.organization_id !== undefined) payload.organization_id = user.organization_id;
     if (user.is_active !== undefined) payload.is_active = user.is_active;
     if (user.site_ids !== undefined) payload.site_ids = user.site_ids;
     if (user.password !== undefined && user.password) payload.password = user.password;
