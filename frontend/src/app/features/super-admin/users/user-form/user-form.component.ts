@@ -274,6 +274,7 @@ export class UserFormComponent implements OnInit {
         first_name: formValue.first_name,
         last_name: formValue.last_name,
         role: formValue.role,
+        organization_id: formValue.organization_id,
         is_active: formValue.is_active,
         site_ids: formValue.site_ids || [],
         job_role_id: formValue.job_role_id,
