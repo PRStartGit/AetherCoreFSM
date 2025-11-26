@@ -8,13 +8,55 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Google Consent Mode v2 -->
+  <script>
+    // Define dataLayer and gtag function
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+
+    // Set default consent to 'denied' as a placeholder (GDPR compliant)
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied',
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'functionality_storage': 'denied',
+      'personalization_storage': 'denied',
+      'security_storage': 'granted', // Security cookies are essential
+      'wait_for_update': 500 // Wait for consent banner to potentially update consent
+    });
+
+    // Check if user has already made a consent choice
+    var consentChoice = localStorage.getItem('cookieConsent');
+    if (consentChoice === 'all') {
+      gtag('consent', 'update', {
+        'analytics_storage': 'granted',
+        'ad_storage': 'granted',
+        'ad_user_data': 'granted',
+        'ad_personalization': 'granted',
+        'functionality_storage': 'granted',
+        'personalization_storage': 'granted'
+      });
+    } else if (consentChoice === 'necessary') {
+      // Keep analytics denied, only essential cookies
+      gtag('consent', 'update', {
+        'analytics_storage': 'denied',
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied'
+      });
+    }
+  </script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-HNNCR4YXGZ"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-HNNCR4YXGZ');
+    gtag('config', 'G-HNNCR4YXGZ', {
+      'anonymize_ip': true, // Anonymize IP addresses
+      'cookie_flags': 'SameSite=None;Secure' // Secure cookie settings
+    });
   </script>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
