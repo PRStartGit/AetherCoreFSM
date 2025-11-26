@@ -605,12 +605,86 @@
         background: white;
     }
 
+    /* Billing Toggle */
+    .billing-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2.5rem;
+        font-weight: 600;
+        color: #6B7280;
+    }
+
+    .billing-toggle span {
+        transition: color 0.3s;
+    }
+
+    .billing-toggle span.active {
+        color: #111827;
+    }
+
+    .toggle-switch {
+        position: relative;
+        width: 60px;
+        height: 30px;
+        background: #E5E7EB;
+        border-radius: 9999px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .toggle-switch:hover {
+        background: #D1D5DB;
+    }
+
+    .toggle-switch.annual {
+        background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+    }
+
+    .toggle-slider {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 24px;
+        height: 24px;
+        background: white;
+        border-radius: 50%;
+        transition: transform 0.3s;
+    }
+
+    .toggle-switch.annual .toggle-slider {
+        transform: translateX(30px);
+    }
+
+    .savings-pill {
+        display: inline-block;
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-left: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
     .pricing-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 2.5rem;
         max-width: 1280px;
         margin: 0 auto;
+    }
+
+    .pricing-grid-four {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 2.5rem auto 0;
     }
 
     .pricing-card {
@@ -710,6 +784,47 @@
         font-weight: 700;
         text-transform: uppercase;
         margin-top: 1rem;
+    }
+
+    /* Module Showcases */
+    .module-showcase {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .module-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+    }
+
+    .module-text {
+        max-width: 600px;
+    }
+
+    .module-visual {
+        position: relative;
+    }
+
+    .mini-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: white;
+        border: 2px solid #E5E7EB;
+        color: #374151;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .mini-badge:hover {
+        border-color: #0EA5E9;
+        color: #0EA5E9;
+        transform: translateY(-2px);
     }
 
     /* Testimonials */
@@ -1432,12 +1547,39 @@
             font-size: 1rem;
         }
 
+        /* Module Showcases */
+        .module-showcase .container {
+            padding: 4rem 1rem !important;
+        }
+
+        .module-content {
+            grid-template-columns: 1fr !important;
+            gap: 2rem !important;
+        }
+
+        .module-visual {
+            order: -1 !important;
+        }
+
+        .module-text h2 {
+            font-size: 2rem !important;
+        }
+
+        .module-text p {
+            font-size: 1rem !important;
+        }
+
+        .module-mockup {
+            padding: 1.5rem !important;
+        }
+
         /* Pricing Section */
         .pricing-section {
             padding: 4rem 1rem;
         }
 
-        .pricing-grid {
+        .pricing-grid,
+        .pricing-grid-four {
             grid-template-columns: 1fr;
             gap: 2rem;
         }
@@ -1456,6 +1598,17 @@
 
         .price {
             font-size: 2.5rem;
+        }
+
+        .billing-toggle {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .savings-pill {
+            display: block;
+            margin-left: 0;
+            margin-top: 0.5rem;
         }
 
         /* Fife Banner */
@@ -1936,71 +2089,305 @@
     </div>
 </section>
 
+<!-- Module Showcases -->
+<!-- Training Module Showcase -->
+<section class="module-showcase" style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);">
+    <div class="container" style="max-width: 1280px; margin: 0 auto; padding: 6rem 2rem;">
+        <div class="module-content">
+            <div class="module-text">
+                <span class="badge" style="background: linear-gradient(135deg, #7C3AED 0%, #9333EA 100%);">
+                    <i class="fas fa-graduation-cap" style="margin-right: 0.5rem;"></i>
+                    Training Module
+                </span>
+                <h2 style="font-size: 2.75rem; font-weight: 800; color: #111827; margin: 1.5rem 0;">
+                    Upskill Your Team with Built-In LMS
+                </h2>
+                <p style="font-size: 1.25rem; color: #6B7280; margin-bottom: 2rem; line-height: 1.7;">
+                    Create and assign courses, track completion, and ensure your staff are always up to date with food safety regulations. All within your Zynthio platform.
+                </p>
+                <ul class="benefit-list" style="margin-bottom: 2.5rem;">
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Create custom training courses</li>
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Assign courses by job role</li>
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Track progress & completion</li>
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Automated reminders & certificates</li>
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Upload videos, PDFs, and quizzes</li>
+                </ul>
+                <div class="module-badge-row" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <span class="mini-badge"><i class="fas fa-book-open"></i> Course Library</span>
+                    <span class="mini-badge"><i class="fas fa-certificate"></i> Certificates</span>
+                    <span class="mini-badge"><i class="fas fa-chart-bar"></i> Analytics</span>
+                </div>
+            </div>
+            <div class="module-visual">
+                <div class="module-mockup" style="background: white; border-radius: 1.5rem; box-shadow: 0 20px 60px -12px rgba(0,0,0,0.25); padding: 3rem; border: 1px solid #E5E7EB;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid #F3F4F6;">
+                        <div style="background: linear-gradient(135deg, #7C3AED 0%, #9333EA 100%); color: white; width: 60px; height: 60px; border-radius: 1rem; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-graduation-cap" style="font-size: 1.75rem;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 1.25rem; color: #111827;">Food Safety Level 2</div>
+                            <div style="color: #6B7280; font-size: 0.875rem;">Required for all kitchen staff</div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.875rem; font-weight: 600; color: #374151;">Course Progress</span>
+                            <span style="font-size: 0.875rem; font-weight: 700; color: #10B981;">75%</span>
+                        </div>
+                        <div class="progress-bar" style="height: 12px; background: #E5E7EB; border-radius: 9999px; overflow: hidden;">
+                            <div style="height: 100%; width: 75%; background: linear-gradient(135deg, #10B981 0%, #059669 100%);"></div>
+                        </div>
+                    </div>
+                    <div style="display: grid; gap: 0.75rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #F0FDF4; border-radius: 0.5rem;">
+                            <i class="fas fa-check-circle" style="color: #10B981; font-size: 1.25rem;"></i>
+                            <span style="color: #374151; font-size: 0.9rem;">Module 1: Personal Hygiene ✓</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #EFF6FF; border-radius: 0.5rem;">
+                            <i class="fas fa-play-circle" style="color: #0EA5E9; font-size: 1.25rem;"></i>
+                            <span style="color: #374151; font-size: 0.9rem; font-weight: 600;">Module 2: Temperature Control (Current)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #F9FAFB; border-radius: 0.5rem;">
+                            <i class="fas fa-lock" style="color: #9CA3AF; font-size: 1.25rem;"></i>
+                            <span style="color: #9CA3AF; font-size: 0.9rem;">Module 3: Allergen Management</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recipes Module Showcase -->
+<section class="module-showcase" style="background: linear-gradient(135deg, #FFF7ED 0%, #FED7AA 100%);">
+    <div class="container" style="max-width: 1280px; margin: 0 auto; padding: 6rem 2rem;">
+        <div class="module-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
+            <div class="module-visual" style="order: 1;">
+                <div class="module-mockup" style="background: white; border-radius: 1.5rem; box-shadow: 0 20px 60px -12px rgba(0,0,0,0.25); padding: 3rem; border: 1px solid #E5E7EB;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid #F3F4F6;">
+                        <div style="background: linear-gradient(135deg, #EA580C 0%, #F97316 100%); color: white; width: 60px; height: 60px; border-radius: 1rem; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-utensils" style="font-size: 1.75rem;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 1.25rem; color: #111827;">Chicken Tikka Masala</div>
+                            <div style="color: #6B7280; font-size: 0.875rem;">Serves 4 • Prep: 20min • Cook: 30min</div>
+                        </div>
+                    </div>
+                    <div style="display: grid; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 1rem; border-radius: 0.5rem;">
+                            <div style="font-weight: 700; color: #78350F; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i> Allergen Alert
+                            </div>
+                            <div style="color: #92400E; font-size: 0.875rem;">Contains: Dairy, Nuts, Gluten</div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <span style="background: #DBEAFE; color: #1E40AF; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Main Course</span>
+                            <span style="background: #FEE2E2; color: #991B1B; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Spicy</span>
+                        </div>
+                    </div>
+                    <div style="color: #374151; font-size: 0.875rem; line-height: 1.6;">
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Key Ingredients:</div>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="padding: 0.25rem 0;"><i class="fas fa-check" style="color: #10B981; margin-right: 0.5rem;"></i> 500g chicken breast</li>
+                            <li style="padding: 0.25rem 0;"><i class="fas fa-check" style="color: #10B981; margin-right: 0.5rem;"></i> 200ml double cream</li>
+                            <li style="padding: 0.25rem 0;"><i class="fas fa-check" style="color: #10B981; margin-right: 0.5rem;"></i> Tikka masala paste</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="module-text" style="order: 2;">
+                <span class="badge" style="background: linear-gradient(135deg, #EA580C 0%, #F97316 100%);">
+                    <i class="fas fa-book-open" style="margin-right: 0.5rem;"></i>
+                    Recipes Module
+                </span>
+                <h2 style="font-size: 2.75rem; font-weight: 800; color: #111827; margin: 1.5rem 0;">
+                    Your Digital Recipe Book, Perfected
+                </h2>
+                <p style="font-size: 1.25rem; color: #6B7280; margin-bottom: 2rem; line-height: 1.7;">
+                    Centralize all your recipes with allergen tracking, nutritional info, and cost calculations. Never lose a recipe again.
+                </p>
+                <ul class="benefit-list" style="margin-bottom: 2.5rem;">
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Store unlimited recipes</li>
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Automatic allergen tracking</li>
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Nutritional calculations</li>
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Recipe costing & margins</li>
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Share across all sites</li>
+                </ul>
+                <div class="module-badge-row" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <span class="mini-badge"><i class="fas fa-camera"></i> Add Photos</span>
+                    <span class="mini-badge"><i class="fas fa-file-export"></i> Export PDFs</span>
+                    <span class="mini-badge"><i class="fas fa-tags"></i> Categorize</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Defects Module Showcase -->
+<section class="module-showcase" style="background: linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%);">
+    <div class="container" style="max-width: 1280px; margin: 0 auto; padding: 6rem 2rem;">
+        <div class="module-content">
+            <div class="module-text">
+                <span class="badge" style="background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);">
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
+                    Defects Module
+                </span>
+                <h2 style="font-size: 2.75rem; font-weight: 800; color: #111827; margin: 1.5rem 0;">
+                    Track & Resolve Issues Fast
+                </h2>
+                <p style="font-size: 1.25rem; color: #6B7280; margin-bottom: 2rem; line-height: 1.7;">
+                    Report defects instantly with photo evidence. Assign, track, and resolve maintenance issues before they impact operations.
+                </p>
+                <ul class="benefit-list" style="margin-bottom: 2.5rem;">
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> One-tap defect reporting</li>
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Photo & description capture</li>
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Assign to team members</li>
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Priority levels & status tracking</li>
+                    <li><i class="fas fa-check" style="color: #10B981; margin-right: 0.75rem;"></i> Resolution history & analytics</li>
+                </ul>
+                <div class="module-badge-row" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <span class="mini-badge"><i class="fas fa-bell"></i> Notifications</span>
+                    <span class="mini-badge"><i class="fas fa-history"></i> Audit Trail</span>
+                    <span class="mini-badge"><i class="fas fa-mobile-alt"></i> Mobile Friendly</span>
+                </div>
+            </div>
+            <div class="module-visual">
+                <div class="module-mockup" style="background: white; border-radius: 1.5rem; box-shadow: 0 20px 60px -12px rgba(0,0,0,0.25); padding: 3rem; border: 1px solid #E5E7EB;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid #F3F4F6;">
+                        <div style="background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%); color: white; width: 60px; height: 60px; border-radius: 1rem; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-tools" style="font-size: 1.75rem;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 1.25rem; color: #111827;">Broken Oven Door Seal</div>
+                            <div style="color: #6B7280; font-size: 0.875rem;">Reported 2 hours ago • Kitchen</div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                            <span style="background: #FEE2E2; color: #991B1B; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">HIGH PRIORITY</span>
+                            <span style="background: #FEF3C7; color: #78350F; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">IN PROGRESS</span>
+                        </div>
+                        <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.6;">
+                            Oven door seal is damaged and not sealing properly. Heat escaping causing temperature inconsistency.
+                        </p>
+                        <div style="background: #F9FAFB; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1rem;">
+                            <div style="font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">
+                                <i class="fas fa-user" style="margin-right: 0.5rem; color: #6B7280;"></i> Assigned to: John Smith
+                            </div>
+                            <div style="font-size: 0.875rem; color: #6B7280;">
+                                <i class="fas fa-clock" style="margin-right: 0.5rem;"></i> Due: Today, 5:00 PM
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+                        <div style="background: #F3F4F6; height: 80px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: #9CA3AF;">
+                            <i class="fas fa-image" style="font-size: 1.5rem;"></i>
+                        </div>
+                        <div style="background: #F3F4F6; height: 80px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: #9CA3AF;">
+                            <i class="fas fa-image" style="font-size: 1.5rem;"></i>
+                        </div>
+                        <div style="background: #F3F4F6; height: 80px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: #9CA3AF; font-size: 0.75rem; font-weight: 600;">
+                            +2 more
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Pricing Section -->
 <section id="pricing" class="pricing-section">
     <div class="section-header">
         <span class="badge">Transparent Pricing</span>
         <h2>Choose Your Plan</h2>
         <p>Simple per-site pricing. Unlimited users. No hidden fees.</p>
+
+        <!-- Billing Toggle -->
+        <div class="billing-toggle">
+            <span [class.active]="!isAnnual">Monthly</span>
+            <button class="toggle-switch" (click)="toggleBilling()" [class.annual]="isAnnual">
+                <span class="toggle-slider"></span>
+            </button>
+            <span [class.active]="isAnnual">
+                Annual
+                <span class="savings-pill">Save up to 17%</span>
+            </span>
+        </div>
     </div>
 
-    <div class="pricing-grid">
+    <div class="pricing-grid-four">
+        <!-- Free Tier -->
         <div class="pricing-card">
-            <h3>Starter</h3>
-            <div><span class="price">£12</span><span class="price-period"> per site/month</span></div>
-            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">Perfect for 1-3 sites</p>
+            <h3>{{ pricingPlans.free.name }}</h3>
+            <div>
+                <span class="price">£{{ getPrice('free') }}</span>
+                <span class="price-period"> {{ pricingPlans.free.siteRange }}</span>
+            </div>
+            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans.free.description }}</p>
 
             <ul class="pricing-features">
-                <li>Mobile-friendly web access</li>
-                <li>Digital checklists</li>
-                <li>Temperature monitoring</li>
-                <li>Photo upload</li>
-                <li>Email reports</li>
-                <li>Unlimited users</li>
-                <li>Basic support</li>
+                <li *ngFor="let feature of pricingPlans.free.features">{{ feature }}</li>
+                <li *ngFor="let limitation of pricingPlans.free.limitations" style="color: #9CA3AF; text-decoration: line-through;">{{ limitation }}</li>
             </ul>
 
-            <a routerLink="/register" class="btn-secondary" style="display: block; text-align: center;">Start Free Trial</a>
-            <div class="savings-badge">Save £144/year with annual billing</div>
+            <a routerLink="/register" class="btn-secondary" style="display: block; text-align: center;">Get Started Free</a>
+            <div class="savings-badge" style="opacity: 0;">-</div>
         </div>
 
+        <!-- Starter Tier -->
+        <div class="pricing-card">
+            <h3>{{ pricingPlans.starter.name }}</h3>
+            <div>
+                <span class="price">£{{ getPrice('starter') }}</span>
+                <span class="price-period"> per site/{{ isAnnual ? 'year' : 'month' }}</span>
+            </div>
+            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans.starter.description }}</p>
+
+            <ul class="pricing-features">
+                <li *ngFor="let feature of pricingPlans.starter.features">{{ feature }}</li>
+            </ul>
+
+            <a routerLink="/register" class="btn-secondary" style="display: block; text-align: center;">Start Trial</a>
+            <div class="savings-badge" *ngIf="isAnnual">Save £{{ getAnnualSavings('starter') }}/year</div>
+            <div class="savings-badge" *ngIf="!isAnnual">Save with annual billing</div>
+        </div>
+
+        <!-- Professional Tier -->
         <div class="pricing-card popular">
             <div class="popular-badge">Most Popular</div>
-            <h3>Professional</h3>
-            <div><span class="price">£10</span><span class="price-period"> per site/month</span></div>
-            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">Best for 4-10 sites</p>
+            <h3>{{ pricingPlans.professional.name }}</h3>
+            <div>
+                <span class="price">£{{ getPrice('professional') }}</span>
+                <span class="price-period"> per site/{{ isAnnual ? 'year' : 'month' }}</span>
+            </div>
+            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans.professional.description }}</p>
 
             <ul class="pricing-features">
-                <li><strong>Everything in Starter, plus:</strong></li>
-                <li>Priority support</li>
-                <li>Custom branding</li>
-                <li>Advanced analytics</li>
-                <li>Multi-site dashboard</li>
-                <li>Documents module</li>
-                <li>API access</li>
+                <li *ngFor="let feature of pricingPlans.professional.features">{{ feature }}</li>
             </ul>
 
-            <a routerLink="/register" class="btn-primary" style="display: block; text-align: center;">Start Free Trial</a>
-            <div class="savings-badge">Save £180/year with annual billing</div>
+            <a routerLink="/register" class="btn-primary" style="display: block; text-align: center;">Start Trial</a>
+            <div class="savings-badge" *ngIf="isAnnual">Save £{{ getAnnualSavings('professional') }}/year</div>
+            <div class="savings-badge" *ngIf="!isAnnual">Save with annual billing</div>
         </div>
 
+        <!-- Enterprise Tier -->
         <div class="pricing-card">
-            <h3>Enterprise</h3>
-            <div><span class="price">£8</span><span class="price-period"> per site/month</span></div>
-            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">For 11+ sites</p>
+            <h3>{{ pricingPlans.enterprise.name }}</h3>
+            <div>
+                <span class="price">£{{ getPrice('enterprise') }}</span>
+                <span class="price-period"> per site/{{ isAnnual ? 'year' : 'month' }}</span>
+            </div>
+            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans.enterprise.description }}</p>
 
             <ul class="pricing-features">
-                <li><strong>Everything in Pro, plus:</strong></li>
-                <li>Dedicated account manager</li>
-                <li>E-learning module</li>
-                <li>Custom integrations</li>
-                <li>SLA guarantee</li>
-                <li>Onboarding assistance</li>
-                <li>White-label options</li>
+                <li *ngFor="let feature of pricingPlans.enterprise.features">{{ feature }}</li>
             </ul>
 
             <a routerLink="/contact" class="btn-secondary" style="display: block; text-align: center;">Contact Sales</a>
-            <div class="savings-badge">Save £216/year with annual billing</div>
+            <div class="savings-badge" *ngIf="isAnnual">Save £{{ getAnnualSavings('enterprise') }}/year</div>
+            <div class="savings-badge" *ngIf="!isAnnual">Save with annual billing</div>
         </div>
     </div>
 </section>

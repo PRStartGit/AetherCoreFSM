@@ -23,55 +23,75 @@ export class LandingPageComponent implements OnInit {
 
   // Pricing data
   pricingPlans = {
+    free: {
+      name: 'Free',
+      description: 'Try Zynthio at no cost',
+      monthlyPrice: 0,
+      annualPrice: 0,
+      siteRange: '1 site only',
+      features: [
+        'Mobile-friendly web access',
+        'Digital checklists',
+        'Temperature monitoring',
+        'Photo upload',
+        'Email reports',
+        'Unlimited users',
+        'Basic support'
+      ],
+      limitations: [
+        'No Training module access',
+        'No Recipes module access'
+      ]
+    },
     starter: {
       name: 'Starter',
-      description: 'Perfect for independent venues',
+      description: 'Perfect for 1-3 sites',
       monthlyPrice: 12,
-      annualPrice: 10.20,
+      annualPrice: 10,
       siteRange: '1-3 sites',
       features: [
-        'Mobile app access',
-        'Digital safety checklists',
-        'Photo upload & evidence',
-        'Email reports',
-        'Basic support',
-        'Unlimited users',
-        'Cloud storage',
-        'EHO inspection ready'
+        'Everything in Free, plus:',
+        'Multiple sites (up to 3)',
+        'Training module access',
+        'Recipes module access',
+        'Defects tracking',
+        'Advanced reporting',
+        'Priority support'
       ]
     },
     professional: {
       name: 'Professional',
-      description: 'For growing restaurant groups',
+      description: 'Best for 4-10 sites',
       monthlyPrice: 10,
-      annualPrice: 8.50,
+      annualPrice: 8.30,
       siteRange: '4-10 sites',
       popular: true,
       features: [
         'Everything in Starter, plus:',
+        'Multiple sites (up to 10)',
         'Documents module',
-        'Priority support',
         'Custom branding',
         'Advanced analytics',
         'Multi-site dashboard',
-        'Staff training tracking'
+        'API access',
+        'Priority email support'
       ]
     },
     enterprise: {
       name: 'Enterprise',
-      description: 'For large hospitality groups',
+      description: 'For 11+ sites',
       monthlyPrice: 8,
-      annualPrice: 6.80,
+      annualPrice: 6.70,
       siteRange: '11+ sites',
       features: [
         'Everything in Pro, plus:',
-        'E-learning module',
+        'Unlimited sites',
         'Dedicated account manager',
-        'API access',
         'Custom integrations',
-        'Advanced permissions',
         'SLA guarantee',
-        'Onboarding assistance'
+        'Onboarding assistance',
+        'White-label options',
+        '24/7 phone support'
       ]
     }
   };
@@ -98,7 +118,7 @@ export class LandingPageComponent implements OnInit {
   /**
    * Get price for a plan based on billing period
    */
-  getPrice(plan: 'starter' | 'professional' | 'enterprise'): number {
+  getPrice(plan: 'free' | 'starter' | 'professional' | 'enterprise'): number {
     return this.isAnnual
       ? this.pricingPlans[plan].annualPrice
       : this.pricingPlans[plan].monthlyPrice;
@@ -107,10 +127,20 @@ export class LandingPageComponent implements OnInit {
   /**
    * Calculate savings percentage
    */
-  getSavings(plan: 'starter' | 'professional' | 'enterprise'): number {
+  getSavings(plan: 'free' | 'starter' | 'professional' | 'enterprise'): number {
     const monthly = this.pricingPlans[plan].monthlyPrice;
     const annual = this.pricingPlans[plan].annualPrice;
+    if (monthly === 0) return 0;
     return Math.round(((monthly - annual) / monthly) * 100);
+  }
+
+  /**
+   * Calculate annual savings in currency
+   */
+  getAnnualSavings(plan: 'free' | 'starter' | 'professional' | 'enterprise'): number {
+    const monthly = this.pricingPlans[plan].monthlyPrice;
+    const annual = this.pricingPlans[plan].annualPrice;
+    return Math.round((monthly - annual) * 12 * 100) / 100;
   }
 
   /**
