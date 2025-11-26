@@ -79,19 +79,19 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
     this.courseService.getCourse(courseId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (course) => {
+        next: (course: Course) => {
           this.course = course;
-          this.modules = course.modules?.sort((a, b) => a.order_index - b.order_index) || [];
+          this.modules = course.modules?.sort((a: CourseModule, b: CourseModule) => a.order_index - b.order_index) || [];
 
           // Load first incomplete module or first module
-          const firstIncomplete = this.modules.findIndex(m => !this.isModuleCompleted(m.id));
+          const firstIncomplete = this.modules.findIndex((m: CourseModule) => !this.isModuleCompleted(m.id));
           this.currentModuleIndex = firstIncomplete >= 0 ? firstIncomplete : 0;
           this.currentModule = this.modules[this.currentModuleIndex] || null;
 
           this.loading = false;
           this.startTime = Date.now();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error loading course:', error);
           this.error = 'Failed to load course details';
           this.loading = false;

@@ -24,14 +24,19 @@ export class TrainingLandingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentUser();
-
-    if (!this.currentUser) {
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    this.checkAccess();
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        if (!user) {
+          this.router.navigate(['/login']);
+          return;
+        }
+        this.checkAccess();
+      },
+      error: () => {
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   checkAccess(): void {
@@ -68,14 +73,14 @@ export class TrainingLandingComponent implements OnInit {
     if (!this.currentUser || !this.currentUser.organization_id) return;
 
     // Get all users from the organization who are org admins
-    this.userService.getUsers().subscribe({
-      next: (users) => {
+    this.userService.getAll(this.currentUser.organization_id).subscribe({
+      next: (users: User[]) => {
         this.orgAdmins = users.filter(
-          u => u.organization_id === this.currentUser!.organization_id &&
+          (u: User) => u.organization_id === this.currentUser!.organization_id &&
                u.role === UserRole.ORG_ADMIN
         );
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Failed to load org admins:', err);
       }
     });
