@@ -1,0 +1,25 @@
+<div *ngIf="showBanner" class="cookie-consent-banner">
+  <div class="cookie-consent-container">
+    <div class="cookie-consent-content">
+      <div class="cookie-icon">
+        <i class="fas fa-cookie-bite"></i>
+      </div>
+      <div class="cookie-text">
+        <h3>We Value Your Privacy</h3>
+        <p>
+          We use cookies to enhance your browsing experience, analyze site traffic, and personalize content.
+          By clicking "Accept All", you consent to our use of cookies.
+          <a (click)="openPrivacyPolicy()" class="privacy-link">Learn more</a>
+        </p>
+      </div>
+    </div>
+    <div class="cookie-actions">
+      <button type="button" class="btn-necessary" (click)="acceptNecessary()">
+        Necessary Only
+      </button>
+      <button type="button" class="btn-accept" (click)="acceptAll()">
+        Accept All
+      </button>
+    </div>
+  </div>
+</div>

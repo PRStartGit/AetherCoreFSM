@@ -64,6 +64,7 @@ import { FaqComponent } from './features/support/faq/faq.component';
 import { ContactComponent } from './features/contact/contact.component';
 import { SystemMessageBannerComponent } from './shared/components/system-message-banner/system-message-banner.component';
 import { BroadcastModalComponent } from './shared/components/broadcast-modal/broadcast-modal.component';
+import { CookieConsentComponent } from './shared/components/cookie-consent/cookie-consent.component';
 // Ticket Components
 import { TicketListComponent } from './features/support/ticket-list/ticket-list.component';
 import { TicketDetailComponent } from './features/support/ticket-detail/ticket-detail.component';
@@ -145,7 +146,8 @@ import { JobRoleFormComponent } from './features/super-admin/job-roles/job-role-
     TaskFieldBuilderComponent,
     DynamicTaskFormComponent,
     SystemMessageBannerComponent,
-    BroadcastModalComponent
+    BroadcastModalComponent,
+    CookieConsentComponent
   ],
   providers: [
     {
