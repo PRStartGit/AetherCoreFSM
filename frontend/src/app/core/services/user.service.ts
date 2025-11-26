@@ -13,6 +13,8 @@ export interface UserCreate {
   organization_id?: number;
   site_ids?: number[];
   is_active?: boolean;
+  job_role_id?: number | null;
+  hire_date?: string | null;
 }
 
 export interface UserUpdate {
@@ -23,6 +25,8 @@ export interface UserUpdate {
   is_active?: boolean;
   site_ids?: number[];
   password?: string;
+  job_role_id?: number | null;
+  hire_date?: string | null;
 }
 
 @Injectable({
@@ -50,7 +54,7 @@ export class UserService {
   }
 
   create(user: UserCreate): Observable<User> {
-    const payload = {
+    const payload: any = {
       email: user.email,
       password: user.password,
       first_name: user.first_name,
@@ -60,6 +64,9 @@ export class UserService {
       site_ids: user.site_ids || [],
       is_active: user.is_active !== undefined ? user.is_active : true
     };
+
+    if (user.job_role_id !== undefined) payload.job_role_id = user.job_role_id;
+    if (user.hire_date !== undefined) payload.hire_date = user.hire_date;
 
     return this.http.post<any>(this.API_URL, payload).pipe(
       map(response => this.transformUserResponse(response))
@@ -76,6 +83,8 @@ export class UserService {
     if (user.is_active !== undefined) payload.is_active = user.is_active;
     if (user.site_ids !== undefined) payload.site_ids = user.site_ids;
     if (user.password !== undefined && user.password) payload.password = user.password;
+    if (user.job_role_id !== undefined) payload.job_role_id = user.job_role_id;
+    if (user.hire_date !== undefined) payload.hire_date = user.hire_date;
 
     return this.http.put<any>(`${this.API_URL}/${id}`, payload).pipe(
       map(response => this.transformUserResponse(response))
