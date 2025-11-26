@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
 
 export interface RecipeBook {
   id: number;
@@ -53,7 +52,7 @@ export interface AddRecipeToBook {
   providedIn: 'root'
 })
 export class RecipeBookService {
-  private apiUrl = `${environment.apiUrl}/recipe-books`;
+  private apiUrl = '/api/v1/recipe-books';
 
   constructor(private http: HttpClient) {}
 
