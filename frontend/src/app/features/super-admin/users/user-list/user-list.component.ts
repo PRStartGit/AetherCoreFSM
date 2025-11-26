@@ -4,6 +4,7 @@ import { UserService } from '../../../../core/services/user.service';
 import { OrganizationService } from '../../../../core/services/organization.service';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { User, Organization } from '../../../../core/models';
+import { formatDate } from '../../../../shared/utils/date-utils';
 
 @Component({
   selector: 'app-user-list',
@@ -84,11 +85,7 @@ export class UserListComponent implements OnInit {
   }
 
   formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    return formatDate(dateString);
   }
 
   getRoleName(role: string): string {

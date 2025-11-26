@@ -149,7 +149,7 @@
                 <div class="flex-1 min-w-0">
                   <p class="text-sm font-semibold text-gray-900">{{ notif.title }}</p>
                   <p class="text-xs text-gray-600 mt-0.5">{{ notif.message }}</p>
-                  <p class="text-xs text-gray-400 mt-1">{{ notif.created_at | date:'short' }}</p>
+                  <p class="text-xs text-gray-400 mt-1">{{ notif.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
                 </div>
                 <span *ngIf="!notif.is_read" class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1.5"></span>
               </div>
@@ -166,7 +166,7 @@
                 <i class="fa-solid fa-bullhorn text-blue-500 mt-1 text-sm"></i>
                 <div class="flex-1 min-w-0">
                   <p class="text-sm text-gray-800">{{ msg.message_content }}</p>
-                  <p class="text-xs text-gray-400 mt-1">{{ msg.created_by_name }} · {{ msg.created_at | date:'short' }}</p>
+                  <p class="text-xs text-gray-400 mt-1">{{ msg.created_by_name }} · {{ msg.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
                 </div>
               </div>
             </div>

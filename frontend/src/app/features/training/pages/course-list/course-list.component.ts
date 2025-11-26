@@ -5,6 +5,7 @@ import { TrainingService } from '../../services/training.service';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { Course, CourseCategory } from '../../models/training.models';
 import { UserRole } from '../../../../core/models';
+import { formatDate } from '../../../../shared/utils/date-utils';
 
 @Component({
   selector: 'app-course-list',
@@ -122,11 +123,7 @@ export class CourseListComponent implements OnInit {
   }
 
   formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    return formatDate(dateString);
   }
 
   get currentUserRole(): string {

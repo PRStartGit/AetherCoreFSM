@@ -36,10 +36,10 @@
             <span class="message-badge" [class.super-admin]="!msg.organization_id" [class.org-admin]="msg.organization_id">
               {{ msg.organization_id ? 'Organization' : 'System' }}
             </span>
-            <span class="message-date">{{ msg.created_at | date:'medium' }}</span>
+            <span class="message-date">{{ msg.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
           </div>
           <p class="message-content">{{ msg.message_content }}</p>
-          <p class="message-expiry">Expires: {{ msg.expiry_date | date:'mediumDate' }}</p>
+          <p class="message-expiry">Expires: {{ msg.expiry_date | date:'dd/MM/yyyy' }}</p>
         </div>
       </section>
 

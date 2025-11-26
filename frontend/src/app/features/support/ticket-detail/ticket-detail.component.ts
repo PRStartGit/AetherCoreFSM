@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TicketService, Ticket, TicketMessage, TicketStatus, TicketPriority } from '../../../core/services/ticket.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { UserRole } from '../../../core/models';
+import { formatDateTime } from '../../../shared/utils/date-utils';
 
 @Component({
   selector: 'app-ticket-detail',
@@ -135,7 +136,7 @@ export class TicketDetailComponent implements OnInit {
   }
 
   formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleString();
+    return formatDateTime(dateStr);
   }
 
   getMessageClass(message: TicketMessage): string {

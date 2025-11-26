@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { TicketService, Ticket, TicketStatus, TicketType, TicketPriority, TicketStats } from '../../../core/services/ticket.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { UserRole } from '../../../core/models';
+import { formatDate } from '../../../shared/utils/date-utils';
 
 @Component({
   selector: 'app-ticket-list',
@@ -143,6 +144,6 @@ export class TicketListComponent implements OnInit {
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString();
+    return formatDate(date);
   }
 }

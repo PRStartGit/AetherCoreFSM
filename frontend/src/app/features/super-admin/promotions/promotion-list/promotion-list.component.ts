@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PromotionService, Promotion, PromotionCreate } from '../../../../core/services/promotion.service';
+import { formatDate } from '../../../../shared/utils/date-utils';
 
 @Component({
   selector: 'app-promotion-list',
@@ -99,6 +100,6 @@ export class PromotionListComponent implements OnInit {
   }
 
   formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-GB');
+    return formatDate(dateString);
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TrainingService } from '../../services/training.service';
 import { CourseEnrollmentWithCourse, EnrollmentStatus } from '../../models/training.models';
+import { formatDate } from '../../../../shared/utils/date-utils';
 
 @Component({
   selector: 'app-my-courses',
@@ -90,11 +91,7 @@ export class MyCoursesComponent implements OnInit {
 
   formatDate(dateString?: string): string {
     if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    return formatDate(dateString);
   }
 
   getStatusColor(status: EnrollmentStatus): string {
