@@ -1,7 +1,8 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, date
 from app.models.user import UserRole, Department, JobTitle
+from app.schemas.job_role import JobRoleResponse
 
 
 class UserBase(BaseModel):
@@ -15,6 +16,8 @@ class UserBase(BaseModel):
     must_change_password: bool = False
     department: Optional[Department] = None
     job_title: Optional[JobTitle] = None
+    job_role_id: Optional[int] = None
+    hire_date: Optional[date] = None
 
 
 class UserCreate(UserBase):
@@ -34,6 +37,8 @@ class UserUpdate(BaseModel):
     role: Optional[UserRole] = None
     department: Optional[Department] = None
     job_title: Optional[JobTitle] = None
+    job_role_id: Optional[int] = None
+    hire_date: Optional[date] = None
     site_ids: Optional[list[int]] = None
 
 
@@ -45,6 +50,7 @@ class UserResponse(UserBase):
     updated_at: Optional[datetime] = None
     site_ids: list[int] = []
     full_name: str  # Computed property from User model
+    job_role: Optional[JobRoleResponse] = None
 
     class Config:
         from_attributes = True

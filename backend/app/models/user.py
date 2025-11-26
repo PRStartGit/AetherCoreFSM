@@ -70,6 +70,10 @@ class User(Base):
     department = Column(SQLEnum(Department, name='department', native_enum=True, create_constraint=False), nullable=True)
     job_title = Column(SQLEnum(JobTitle, name='jobtitle', native_enum=True, create_constraint=False), nullable=True)
 
+    # Training Module - Job Role
+    job_role_id = Column(Integer, ForeignKey("job_roles.id"), nullable=True)
+    hire_date = Column(DateTime, nullable=True)
+
     # Foreign Keys
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
 
@@ -81,6 +85,8 @@ class User(Base):
     organization = relationship("Organization", back_populates="users")
     user_sites = relationship("UserSite", back_populates="user", cascade="all, delete-orphan")
     created_checklists = relationship("Checklist", back_populates="completed_by", foreign_keys="Checklist.completed_by_id")
+    job_role = relationship("JobRole", back_populates="users")
+    module_access = relationship("UserModuleAccess", foreign_keys="UserModuleAccess.user_id", back_populates="user", cascade="all, delete-orphan")
 
     @property
     def full_name(self):

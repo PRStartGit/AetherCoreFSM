@@ -229,6 +229,11 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
+        path: 'training',
+        loadChildren: () => import('./features/training/training.module').then(m => m.TrainingModule),
+        canActivate: [AuthGuard]
+      },
+      {
         path: 'support/faq',
         component: FaqComponent,
         canActivate: [AuthGuard]

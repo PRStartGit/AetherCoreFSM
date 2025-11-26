@@ -114,6 +114,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       promotions: 'fa-solid fa-percent',
       logs: 'fa-solid fa-clock-rotate-left',
       tickets: 'fa-solid fa-ticket',
+      training: 'fa-solid fa-graduation-cap',
       // Section icons
       userMgmt: 'fa-solid fa-users-gear',
       orgSection: 'fa-solid fa-building',
@@ -121,7 +122,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       maintenance: 'fa-solid fa-wrench',
       support: 'fa-solid fa-headset',
       cms: 'fa-solid fa-bullhorn',
-      system: 'fa-solid fa-gear'
+      system: 'fa-solid fa-gear',
+      trainingSection: 'fa-solid fa-graduation-cap'
     };
 
     switch (this.user.role) {
@@ -155,6 +157,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
               { label: 'Categories', icon: icons.category, route: '/categories' },
               { label: 'Tasks', icon: icons.tasks, route: '/tasks' },
               { label: 'Checklists', icon: icons.checklist, route: '/checklists' }
+            ]
+          },
+          {
+            label: 'Zynthio Training',
+            icon: icons.trainingSection,
+            expanded: false,
+            items: [
+              { label: 'My Courses', icon: icons.training, route: '/training/my-courses' },
+              { label: 'Course Management', icon: icons.category, route: '/training/courses' }
             ]
           },
           {
@@ -223,6 +234,14 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
             ]
           },
           {
+            label: 'Zynthio Training',
+            icon: icons.trainingSection,
+            expanded: false,
+            items: [
+              { label: 'My Courses', icon: icons.training, route: '/training/my-courses' }
+            ]
+          },
+          {
             label: 'Maintenance',
             icon: icons.maintenance,
             expanded: false,
@@ -251,6 +270,14 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
             expanded: false,
             items: [
               { label: 'Checklists', icon: icons.checklist, route: '/checklists' }
+            ]
+          },
+          {
+            label: 'Zynthio Training',
+            icon: icons.trainingSection,
+            expanded: false,
+            items: [
+              { label: 'My Courses', icon: icons.training, route: '/training/my-courses' }
             ]
           },
           {

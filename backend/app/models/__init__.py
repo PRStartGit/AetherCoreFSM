@@ -17,6 +17,13 @@ from app.models.task_field_response import TaskFieldResponse
 from app.models.promotion import Promotion
 from app.models.system_message import SystemMessage, MessageDismissal, VisibilityScope
 from app.models.activity_log import ActivityLog, LogType
+from app.models.job_role import JobRole
+from app.models.user_module_access import UserModuleAccess
+from app.models.course_category import CourseCategory
+from app.models.course import Course
+from app.models.course_module import CourseModule
+from app.models.course_enrollment import CourseEnrollment, EnrollmentStatus
+from app.models.module_progress import ModuleProgress
 
 __all__ = [
     "User",
@@ -38,4 +45,12 @@ __all__ = [
     "PasswordResetToken",
     "TaskField",
     "TaskFieldResponse",
+    "JobRole",
+    "UserModuleAccess",
+    "CourseCategory",
+    "Course",
+    "CourseModule",
+    "CourseEnrollment",
+    "EnrollmentStatus",
+    "ModuleProgress",
 ]

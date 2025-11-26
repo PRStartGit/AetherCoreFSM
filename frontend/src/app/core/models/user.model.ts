@@ -4,6 +4,12 @@ export enum UserRole {
   SITE_USER = 'site_user'
 }
 
+export interface JobRole {
+  id: number;
+  name: string;
+  is_system_role: boolean;
+}
+
 export interface User {
   id: number;
   email: string;
@@ -17,6 +23,9 @@ export interface User {
   created_at: string;
   updated_at: string;
   site_ids?: number[];
+  job_role_id?: number | null;
+  hire_date?: string | null;
+  job_role?: JobRole | null;
 }
 
 export interface LoginRequest {

@@ -59,7 +59,7 @@ async def health_check():
 
 
 # Import and include routers
-from app.api.v1 import auth, organizations, sites, users, categories, tasks, task_fields, checklists, defects, dashboards, reports, promotions, utils, system_messages, activity_logs, contact, tickets, ticket_settings, notifications
+from app.api.v1 import auth, organizations, sites, users, categories, tasks, task_fields, checklists, defects, dashboards, reports, promotions, utils, system_messages, activity_logs, contact, tickets, ticket_settings, notifications, job_roles, module_access, courses, enrollments, module_progress
 
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX, tags=["Authentication"])
 app.include_router(organizations.router, prefix=settings.API_V1_PREFIX, tags=["Organizations"])
@@ -80,3 +80,8 @@ app.include_router(contact.router, prefix=settings.API_V1_PREFIX + "/contact", t
 app.include_router(tickets.router, prefix=settings.API_V1_PREFIX + "/tickets", tags=["Tickets"])
 app.include_router(ticket_settings.router, prefix=settings.API_V1_PREFIX + "/ticket-settings", tags=["Ticket Settings"])
 app.include_router(notifications.router, prefix=settings.API_V1_PREFIX + "/notifications", tags=["Notifications"])
+app.include_router(job_roles.router, prefix=settings.API_V1_PREFIX + "/job-roles", tags=["Job Roles"])
+app.include_router(module_access.router, prefix=settings.API_V1_PREFIX, tags=["Module Access"])
+app.include_router(courses.router, prefix=settings.API_V1_PREFIX + "/courses", tags=["Courses"])
+app.include_router(enrollments.router, prefix=settings.API_V1_PREFIX + "/enrollments", tags=["Enrollments"])
+app.include_router(module_progress.router, prefix=settings.API_V1_PREFIX + "/progress", tags=["Module Progress"])

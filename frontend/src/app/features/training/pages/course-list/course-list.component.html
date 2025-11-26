@@ -1,0 +1,117 @@
+<div class="p-4 md:p-6">
+  <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Course Management</h1>
+      <p class="text-gray-600 mt-1 text-sm md:text-base">Create and manage training courses</p>
+    </div>
+    <button *ngIf="isSuperAdmin" (click)="navigateToCreate()"
+            class="px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-semibold flex items-center gap-2 text-sm md:text-base">
+      <i class="fa-solid fa-plus"></i>
+      Create Course
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label for="categoryFilter" class="block text-sm font-semibold text-gray-700 mb-2">
+        Filter by Category
+      </label>
+      <select id="categoryFilter"
+              [(ngModel)]="filterCategoryId"
+              (change)="onFilterChange()"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+        <option [ngValue]="null">All Categories</option>
+        <option *ngFor="let category of categories" [ngValue]="category.id">{{ category.name }}</option>
+      </select>
+    </div>
+    <div *ngIf="isSuperAdmin">
+      <label class="block text-sm font-semibold text-gray-700 mb-2">
+        Publication Status
+      </label>
+      <div class="flex items-center h-10">
+        <input type="checkbox"
+               id="publishedFilter"
+               [(ngModel)]="filterPublishedOnly"
+               (change)="onFilterChange()"
+               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+        <label for="publishedFilter" class="ml-2 text-sm text-gray-700">Show published only</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-12">
+    <svg class="animate-spin h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+    {{ error }}
+  </div>
+
+  <!-- Courses Grid -->
+  <div *ngIf="!loading && !error">
+    <div *ngIf="courses.length === 0" class="text-center py-12">
+      <i class="fa-solid fa-graduation-cap text-6xl text-gray-300 mb-4"></i>
+      <p class="text-gray-500 text-lg">No courses found</p>
+      <p class="text-gray-400 text-sm mt-2">Create your first course to get started</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let course of courses" class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+        <!-- Thumbnail -->
+        <div class="h-48 bg-gradient-to-br from-hygiene-600 to-cyan-600 flex items-center justify-center">
+          <img *ngIf="course.thumbnail_url" [src]="course.thumbnail_url" [alt]="course.title" class="w-full h-full object-cover">
+          <i *ngIf="!course.thumbnail_url" class="fa-solid fa-graduation-cap text-6xl text-white opacity-50"></i>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-2 mb-3">
+            <h3 class="text-lg font-bold text-gray-900 flex-1">{{ course.title }}</h3>
+            <span [class]="'inline-block px-2 py-1 rounded text-xs font-semibold ' + (course.is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')">
+              {{ course.is_published ? 'Published' : 'Draft' }}
+            </span>
+          </div>
+
+          <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+            {{ course.description || 'No description available' }}
+          </p>
+
+          <div class="flex items-center gap-4 text-xs text-gray-500 mb-4">
+            <div class="flex items-center gap-1">
+              <i class="fa-solid fa-tag"></i>
+              <span>{{ getCategoryName(course.category_id) }}</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <i class="fa-solid fa-calendar"></i>
+              <span>{{ formatDate(course.created_at) }}</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div *ngIf="isSuperAdmin" class="flex gap-2 pt-4 border-t border-gray-200">
+            <button (click)="navigateToEdit(course)"
+                    class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-semibold flex items-center justify-center gap-2">
+              <i class="fa-solid fa-pen"></i>
+              Edit
+            </button>
+            <button (click)="togglePublishStatus(course)"
+                    class="flex-1 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-semibold flex items-center justify-center gap-2">
+              <i [class]="course.is_published ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+              {{ course.is_published ? 'Unpublish' : 'Publish' }}
+            </button>
+            <button (click)="deleteCourse(course)"
+                    class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

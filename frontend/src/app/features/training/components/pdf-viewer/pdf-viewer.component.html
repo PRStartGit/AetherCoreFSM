@@ -1,0 +1,28 @@
+<div class="pdf-viewer-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center h-full">
+    <div class="text-center">
+      <i class="fas fa-spinner fa-spin text-4xl text-cyan-600 mb-4"></i>
+      <p class="text-white">Loading PDF...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="flex items-center justify-center h-full">
+    <div class="text-center">
+      <i class="fas fa-exclamation-circle text-4xl text-red-500 mb-4"></i>
+      <p class="text-white font-medium mb-2">Failed to load PDF</p>
+      <p class="text-gray-400 text-sm">The PDF file could not be displayed</p>
+    </div>
+  </div>
+
+  <!-- PDF Iframe -->
+  <iframe
+    *ngIf="safePdfUrl && !error"
+    [src]="safePdfUrl"
+    (load)="onLoad()"
+    (error)="onError()"
+    class="w-full h-full border-0"
+    title="PDF Viewer"
+  ></iframe>
+</div>

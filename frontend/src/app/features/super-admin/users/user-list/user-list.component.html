@@ -54,6 +54,9 @@
           <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
             Role
           </th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden xl:table-cell">
+            Job Role
+          </th>
           <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider hidden lg:table-cell">
             Organization
           </th>
@@ -80,6 +83,9 @@
             <span [class]="'inline-block px-3 py-1 rounded-lg text-sm font-semibold ' + getRoleColor(user.role)">
               {{ getRoleName(user.role) }}
             </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap hidden xl:table-cell">
+            <div class="text-sm text-gray-600">{{ getJobRoleName(user) }}</div>
           </td>
           <td class="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
             <div class="text-sm text-gray-600">{{ getOrganizationName(user.organization_id) }}</div>
@@ -113,7 +119,7 @@
           </td>
         </tr>
         <tr *ngIf="users.length === 0">
-          <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+          <td colspan="8" class="px-6 py-8 text-center text-gray-500">
             No users found
           </td>
         </tr>

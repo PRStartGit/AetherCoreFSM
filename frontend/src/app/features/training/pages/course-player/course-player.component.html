@@ -1,0 +1,195 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <i class="fas fa-spinner fa-spin text-4xl text-cyan-600 mb-4"></i>
+      <p class="text-gray-600">Loading course...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <i class="fas fa-exclamation-circle text-4xl text-red-600 mb-4"></i>
+      <p class="text-gray-800 font-medium mb-2">{{ error }}</p>
+      <button (click)="exitCourse()" class="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700">
+        Return to My Courses
+      </button>
+    </div>
+  </div>
+
+  <!-- Course Player -->
+  <div *ngIf="!loading && !error && course && currentModule" class="flex flex-col h-screen">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200 px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <button
+            (click)="exitCourse()"
+            class="text-gray-600 hover:text-gray-800 transition-colors"
+            title="Exit Course"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+          <div>
+            <h1 class="text-xl font-bold text-gray-800">{{ course.title }}</h1>
+            <p class="text-sm text-gray-600">{{ currentModule.title }}</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="text-right">
+            <p class="text-sm text-gray-600">
+              Module {{ currentModuleIndex + 1 }} of {{ totalModulesCount }}
+            </p>
+            <p class="text-xs text-gray-500">
+              {{ completedModulesCount }} completed
+            </p>
+          </div>
+          <div class="w-32">
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div
+                class="bg-gradient-to-r from-cyan-600 to-cyan-600 h-2 rounded-full transition-all duration-300"
+                [style.width.%]="courseProgressPercentage"
+              ></div>
+            </div>
+            <p class="text-xs text-gray-600 text-center mt-1">{{ courseProgressPercentage }}%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex overflow-hidden">
+      <!-- Content Viewer -->
+      <div class="flex-1 flex flex-col bg-black">
+        <!-- Video Player -->
+        <div *ngIf="currentModule.video_url" class="flex-1 flex items-center justify-center">
+          <app-video-player
+            [videoUrl]="currentModule.video_url"
+            [startPosition]="getModuleProgress(currentModule.id)?.last_position_seconds || 0"
+            (videoReady)="onVideoReady($event)"
+            (timeUpdate)="onVideoTimeUpdate($event)"
+            (videoEnded)="onVideoEnded()"
+          ></app-video-player>
+        </div>
+
+        <!-- PDF Viewer -->
+        <div *ngIf="currentModule.pdf_url && !currentModule.video_url" class="flex-1">
+          <app-pdf-viewer
+            [pdfUrl]="currentModule.pdf_url"
+          ></app-pdf-viewer>
+        </div>
+
+        <!-- Text Content -->
+        <div *ngIf="currentModule.text_content && !currentModule.video_url && !currentModule.pdf_url"
+             class="flex-1 overflow-y-auto bg-white p-8">
+          <div class="max-w-4xl mx-auto prose prose-lg">
+            <div [innerHTML]="currentModule.text_content"></div>
+          </div>
+        </div>
+
+        <!-- No Content -->
+        <div *ngIf="!currentModule.video_url && !currentModule.pdf_url && !currentModule.text_content"
+             class="flex-1 flex items-center justify-center bg-white">
+          <div class="text-center">
+            <i class="fas fa-file-alt text-6xl text-gray-300 mb-4"></i>
+            <p class="text-gray-600">No content available for this module</p>
+          </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="bg-gray-900 px-6 py-4 flex items-center justify-between">
+          <button
+            (click)="previousModule()"
+            [disabled]="!hasPreviousModule()"
+            class="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <i class="fas fa-chevron-left mr-2"></i>
+            Previous
+          </button>
+
+          <div class="flex items-center space-x-4">
+            <button
+              *ngIf="!isModuleCompleted(currentModule.id)"
+              (click)="markAsComplete()"
+              class="px-6 py-2 bg-gradient-to-r from-cyan-600 to-cyan-600 text-white rounded-lg hover:from-cyan-700 hover:to-cyan-700 transition-all"
+            >
+              <i class="fas fa-check mr-2"></i>
+              Mark as Complete
+            </button>
+            <div *ngIf="isModuleCompleted(currentModule.id)" class="flex items-center text-green-400">
+              <i class="fas fa-check-circle mr-2"></i>
+              <span>Completed</span>
+            </div>
+          </div>
+
+          <button
+            (click)="nextModule()"
+            [disabled]="!hasNextModule()"
+            class="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Next
+            <i class="fas fa-chevron-right ml-2"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sidebar - Module List -->
+      <div class="w-80 bg-white border-l border-gray-200 overflow-y-auto">
+        <div class="p-4">
+          <h2 class="text-lg font-bold text-gray-800 mb-4">Course Modules</h2>
+          <div class="space-y-2">
+            <div
+              *ngFor="let module of modules; let i = index"
+              (click)="selectModule(i)"
+              class="p-3 rounded-lg cursor-pointer transition-all"
+              [class.bg-gradient-to-r]="i === currentModuleIndex"
+              [class.from-cyan-50]="i === currentModuleIndex"
+              [class.to-cyan-50]="i === currentModuleIndex"
+              [class.border-2]="i === currentModuleIndex"
+              [class.border-cyan-600]="i === currentModuleIndex"
+              [class.hover:bg-gray-50]="i !== currentModuleIndex"
+            >
+              <div class="flex items-start space-x-3">
+                <div class="flex-shrink-0 mt-1">
+                  <div
+                    class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium"
+                    [class.bg-green-100]="isModuleCompleted(module.id)"
+                    [class.text-green-700]="isModuleCompleted(module.id)"
+                    [class.bg-cyan-100]="!isModuleCompleted(module.id) && i === currentModuleIndex"
+                    [class.text-cyan-700]="!isModuleCompleted(module.id) && i === currentModuleIndex"
+                    [class.bg-gray-100]="!isModuleCompleted(module.id) && i !== currentModuleIndex"
+                    [class.text-gray-600]="!isModuleCompleted(module.id) && i !== currentModuleIndex"
+                  >
+                    <i *ngIf="isModuleCompleted(module.id)" class="fas fa-check"></i>
+                    <span *ngIf="!isModuleCompleted(module.id)">{{ i + 1 }}</span>
+                  </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-sm font-medium text-gray-800 truncate">{{ module.title }}</h3>
+                  <div class="flex items-center mt-1 space-x-2">
+                    <span *ngIf="module.video_url" class="text-xs text-gray-500">
+                      <i class="fas fa-video mr-1"></i>Video
+                    </span>
+                    <span *ngIf="module.pdf_url" class="text-xs text-gray-500">
+                      <i class="fas fa-file-pdf mr-1"></i>PDF
+                    </span>
+                    <span *ngIf="module.text_content && !module.video_url && !module.pdf_url" class="text-xs text-gray-500">
+                      <i class="fas fa-file-alt mr-1"></i>Text
+                    </span>
+                    <span *ngIf="module.duration_minutes" class="text-xs text-gray-500">
+                      <i class="fas fa-clock mr-1"></i>{{ module.duration_minutes }} min
+                    </span>
+                  </div>
+                  <p *ngIf="module.description" class="text-xs text-gray-600 mt-1 line-clamp-2">
+                    {{ module.description }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

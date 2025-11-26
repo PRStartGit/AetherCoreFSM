@@ -6,6 +6,8 @@ import { AuthService } from '../../../../core/auth/auth.service';
 import { OrganizationService } from '../../../../core/services/organization.service';
 import { SiteService } from '../../../../core/services/site.service';
 import { User, Organization, Site, UserRole } from '../../../../core/models';
+import { TrainingService } from '../../../training/services/training.service';
+import { JobRole } from '../../../training/models/training.models';
 
 @Component({
   selector: 'app-user-form',
@@ -21,6 +23,7 @@ export class UserFormComponent implements OnInit {
 
   organizations: Organization[] = [];
   sites: Site[] = [];
+  jobRoles: JobRole[] = [];
   roles = [
     { value: UserRole.SUPER_ADMIN, label: 'Super Admin' },
     { value: UserRole.ORG_ADMIN, label: 'Org Admin' },
@@ -32,6 +35,7 @@ export class UserFormComponent implements OnInit {
     private userService: UserService,
     private organizationService: OrganizationService,
     private siteService: SiteService,
+    private trainingService: TrainingService,
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService
@@ -44,12 +48,15 @@ export class UserFormComponent implements OnInit {
       role: [UserRole.SITE_USER, Validators.required],
       organization_id: [null],
       site_ids: [[]],
-      is_active: [true]
+      is_active: [true],
+      job_role_id: [null],
+      hire_date: [null]
     });
   }
 
   ngOnInit(): void {
     this.loadOrganizations();
+    this.loadJobRoles();
 
     // For org admins, auto-set their organization and filter roles
     if (this.isOrgAdmin) {
@@ -121,6 +128,17 @@ export class UserFormComponent implements OnInit {
     });
   }
 
+  loadJobRoles(): void {
+    this.trainingService.getJobRoles().subscribe({
+      next: (roles) => {
+        this.jobRoles = roles;
+      },
+      error: (err) => {
+        console.error('Error loading job roles:', err);
+      }
+    });
+  }
+
   loadUser(): void {
     if (!this.userId) return;
 
@@ -134,7 +152,9 @@ export class UserFormComponent implements OnInit {
           role: user.role,
           organization_id: user.organization_id,
           site_ids: user.site_ids || [],
-          is_active: user.is_active
+          is_active: user.is_active,
+          job_role_id: user.job_role_id,
+          hire_date: user.hire_date
         });
 
         if (user.organization_id) {

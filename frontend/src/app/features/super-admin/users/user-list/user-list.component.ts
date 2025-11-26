@@ -115,6 +115,12 @@ export class UserListComponent implements OnInit {
     return org ? org.name : 'Unknown';
   }
 
+  getJobRoleName(user: User): string {
+    if (user.job_role) {
+      return user.job_role.name;
+    }
+    return 'Unassigned';
+  }
 
   getBaseRoute(): string {
     const currentUser = this.authService.getUser();
