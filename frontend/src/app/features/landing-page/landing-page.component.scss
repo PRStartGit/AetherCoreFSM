@@ -1,3 +1,9 @@
+// Badge styling - Add proper spacing
+.badge {
+  display: inline-block;
+  margin-bottom: 1.5rem !important;
+}
+
 // Roadmap Section - Mobile Responsive Styles
 .roadmap-section {
   .timeline-grid {
@@ -39,9 +45,18 @@
   }
 }
 
-// Module Showcases - Ensure mobile compatibility
+// Module Showcases - Ensure mobile compatibility and proper spacing
 .module-showcase {
+  .badge {
+    display: inline-block;
+    margin-bottom: 1.5rem !important;
+  }
+
   h2 {
+    margin-top: 0 !important;
+    margin-bottom: 1.5rem !important;
+    line-height: 1.2 !important;
+
     @media (max-width: 768px) {
       font-size: 2rem !important;
     }
@@ -52,6 +67,8 @@
   }
 
   p {
+    margin-top: 0 !important;
+
     @media (max-width: 480px) {
       font-size: 1rem !important;
     }
