@@ -22,6 +22,7 @@ export interface UserUpdate {
   first_name?: string;
   last_name?: string;
   role?: string;
+  organization_id?: number;
   is_active?: boolean;
   site_ids?: number[];
   password?: string;
