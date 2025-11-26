@@ -275,7 +275,9 @@ export class UserFormComponent implements OnInit {
         last_name: formValue.last_name,
         role: formValue.role,
         is_active: formValue.is_active,
-        site_ids: formValue.site_ids || []
+        site_ids: formValue.site_ids || [],
+        job_role_id: formValue.job_role_id,
+        hire_date: formValue.hire_date
       };
 
       // Only include password if it was entered
@@ -305,7 +307,9 @@ export class UserFormComponent implements OnInit {
         role: formValue.role,
         organization_id: formValue.organization_id,
         site_ids: formValue.site_ids || [],
-        is_active: formValue.is_active
+        is_active: formValue.is_active,
+        job_role_id: formValue.job_role_id,
+        hire_date: formValue.hire_date
       };
 
       this.userService.create(createData).subscribe({

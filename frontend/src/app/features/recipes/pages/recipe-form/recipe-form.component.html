@@ -188,8 +188,8 @@
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
             >
               <option value="">Unit</option>
-              <option *ngFor="let unit of units" [value]="unit.abbreviation || unit.name">
-                {{ unit.abbreviation || unit.name }}
+              <option *ngFor="let unit of units" [value]="unit.name">
+                {{ unit.display_name }}
               </option>
             </select>
           </div>
