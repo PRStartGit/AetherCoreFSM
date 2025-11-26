@@ -52,6 +52,30 @@
     margin-bottom: 1.5rem !important;
   }
 
+  .module-text {
+    padding: 2rem 0 !important;
+
+    @media (max-width: 768px) {
+      padding: 1.5rem 0 !important;
+    }
+
+    @media (max-width: 480px) {
+      padding: 1rem 0 !important;
+    }
+  }
+
+  .module-visual {
+    padding: 2rem 0 !important;
+
+    @media (max-width: 768px) {
+      padding: 1.5rem 0 !important;
+    }
+
+    @media (max-width: 480px) {
+      padding: 1rem 0 !important;
+    }
+  }
+
   h2 {
     margin-top: 0 !important;
     margin-bottom: 1.5rem !important;
