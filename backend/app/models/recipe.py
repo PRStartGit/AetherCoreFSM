@@ -5,11 +5,12 @@ from app.core.database import Base
 
 
 class Recipe(Base):
-    """Recipe model - organization-scoped recipes."""
+    """Recipe model - organization-scoped recipes with optional site-specific assignment."""
     __tablename__ = "recipes"
 
     id = Column(Integer, primary_key=True, index=True)
     organization_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True)
+    site_id = Column(Integer, ForeignKey("sites.id", ondelete="CASCADE"), nullable=True, index=True)  # NULL = global to organization
     category_id = Column(Integer, ForeignKey("recipe_categories.id", ondelete="SET NULL"), nullable=True, index=True)
     title = Column(String(255), nullable=False, index=True)
     description = Column(Text, nullable=True)
@@ -26,10 +27,12 @@ class Recipe(Base):
 
     # Relationships
     organization = relationship("Organization")
+    site = relationship("Site")
     category = relationship("RecipeCategory", back_populates="recipes")
     created_by = relationship("User")
     ingredients = relationship("RecipeIngredient", back_populates="recipe", cascade="all, delete-orphan")
     allergens = relationship("RecipeAllergen", back_populates="recipe", cascade="all, delete-orphan")
+    book_assignments = relationship("RecipeBookRecipe", back_populates="recipe", cascade="all, delete-orphan")
 
     @property
     def total_time_minutes(self):

@@ -30,6 +30,7 @@ from app.models.recipe_ingredient import RecipeIngredient
 from app.models.ingredient_unit import IngredientUnit
 from app.models.allergen_keyword import AllergenKeyword
 from app.models.recipe_allergen import RecipeAllergen
+from app.models.recipe_book import RecipeBook, RecipeBookRecipe
 
 __all__ = [
     "User",
@@ -65,4 +66,6 @@ __all__ = [
     "IngredientUnit",
     "AllergenKeyword",
     "RecipeAllergen",
+    "RecipeBook",
+    "RecipeBookRecipe",
 ]
