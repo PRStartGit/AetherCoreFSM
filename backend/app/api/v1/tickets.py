@@ -384,6 +384,21 @@ def add_message(
                     """,
                     to_name=ticket.created_by_user.full_name
                 )
+
+                # Create in-app notification for ticket owner
+                try:
+                    notification_service.notify_ticket_reply(
+                        db=db,
+                        user_id=ticket.created_by_user_id,
+                        ticket_number=ticket.ticket_number,
+                        subject=ticket.subject,
+                        ticket_id=ticket.id,
+                        from_support=True
+                    )
+                    db.commit()
+                except Exception as e:
+                    print(f"Failed to create reply notification: {e}")
+
             # If user is replying, notify support
             else:
                 email_service.send_email_sendgrid(
@@ -406,6 +421,20 @@ def add_message(
                     """,
                     to_name="Zynthio Support"
                 )
+
+                # Create in-app notification for all super admins
+                try:
+                    notification_service.notify_all_super_admins(
+                        db=db,
+                        title=f"New Reply: {ticket.ticket_number}",
+                        message=f"{current_user.full_name} replied to ticket: {ticket.subject}",
+                        notification_type="ticket_reply",
+                        related_id=ticket.id,
+                        related_url=f"/super-admin/tickets/{ticket.id}"
+                    )
+                    db.commit()
+                except Exception as e:
+                    print(f"Failed to create reply notification for admins: {e}")
         except Exception as e:
             print(f"Failed to send reply notification email: {e}")
 
@@ -432,6 +461,21 @@ def close_ticket(
     ticket.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(ticket)
+
+    # Create in-app notification for ticket owner (if closed by support)
+    if can_respond_to_ticket(current_user) and ticket.created_by_user_id != current_user.id:
+        try:
+            notification_service.notify_ticket_status_change(
+                db=db,
+                user_id=ticket.created_by_user_id,
+                ticket_number=ticket.ticket_number,
+                subject=ticket.subject,
+                new_status="Closed",
+                ticket_id=ticket.id
+            )
+            db.commit()
+        except Exception as e:
+            print(f"Failed to create close notification: {e}")
 
     return _ticket_to_response(ticket)
 
