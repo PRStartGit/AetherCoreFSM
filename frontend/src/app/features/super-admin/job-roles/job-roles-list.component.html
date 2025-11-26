@@ -1,0 +1,104 @@
+<div class="p-6">
+  <div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Job Roles</h1>
+        <p class="text-gray-600 mt-1">Manage job roles for user assignments</p>
+      </div>
+      <button (click)="createJobRole()"
+              class="px-6 py-3 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-semibold">
+        <i class="fa-solid fa-plus mr-2"></i>
+        Create Job Role
+      </button>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+      {{ error }}
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center py-12">
+      <svg class="animate-spin h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+    </div>
+
+    <!-- Job Roles Table -->
+    <div *ngIf="!loading" class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Role</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let role of jobRoles" class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-gray-900">{{ role.name }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span *ngIf="role.is_system_role" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                System
+              </span>
+              <span *ngIf="!role.is_system_role" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                Custom
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ role.created_at | date:'short' }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <button (click)="editJobRole(role.id)"
+                      class="text-blue-600 hover:text-blue-900 mr-4">
+                Edit
+              </button>
+              <button (click)="confirmDelete(role)"
+                      [disabled]="role.is_system_role"
+                      class="text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed">
+                Delete
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="jobRoles.length === 0">
+            <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+              No job roles found. Create one to get started.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div *ngIf="showDeleteConfirm" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+  <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div class="mt-3 text-center">
+      <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+        <i class="fa-solid fa-exclamation-triangle text-red-600 text-xl"></i>
+      </div>
+      <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Delete Job Role</h3>
+      <div class="mt-2 px-7 py-3">
+        <p class="text-sm text-gray-500">
+          Are you sure you want to delete "{{ roleToDelete?.name }}"? This action cannot be undone.
+        </p>
+      </div>
+      <div class="items-center px-4 py-3">
+        <button (click)="deleteJobRole()"
+                class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-red-700">
+          Delete
+        </button>
+        <button (click)="cancelDelete()"
+                class="px-4 py-2 bg-gray-300 text-gray-700 text-base font-medium rounded-md w-24 hover:bg-gray-400">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

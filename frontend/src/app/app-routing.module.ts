@@ -27,6 +27,8 @@ import { PromotionListComponent } from './features/super-admin/promotions/promot
 import { LogsComponent } from './features/super-admin/activity-logs/logs.component';
 import { ContactComponent } from './features/contact/contact.component';
 import { FaqComponent } from './features/support/faq/faq.component';
+import { JobRolesListComponent } from './features/super-admin/job-roles/job-roles-list.component';
+import { JobRoleFormComponent } from './features/super-admin/job-roles/job-role-form.component';
 
 // Ticket Components
 import { TicketListComponent } from './features/support/ticket-list/ticket-list.component';
@@ -123,6 +125,19 @@ const routes: Routes = [
       {
         path: 'super-admin/logs',
         component: LogsComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN] }
+      },
+      // Job Roles Management
+      {
+        path: 'super-admin/job-roles',
+        component: JobRolesListComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN] }
+      },
+      {
+        path: 'super-admin/job-roles/:id',
+        component: JobRoleFormComponent,
         canActivate: [RoleGuard],
         data: { roles: [UserRole.SUPER_ADMIN] }
       },

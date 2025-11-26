@@ -19,6 +19,41 @@ export class TrainingService {
   }
 
   /**
+   * Get all job roles including system roles (for management interface - Super Admin only)
+   */
+  getAllJobRoles(): Observable<JobRole[]> {
+    return this.http.get<JobRole[]>(`${this.apiUrl}/job-roles/all`);
+  }
+
+  /**
+   * Get a specific job role by ID
+   */
+  getJobRole(id: number): Observable<JobRole> {
+    return this.http.get<JobRole>(`${this.apiUrl}/job-roles/${id}`);
+  }
+
+  /**
+   * Create a new job role
+   */
+  createJobRole(jobRole: { name: string; is_system_role: boolean }): Observable<JobRole> {
+    return this.http.post<JobRole>(`${this.apiUrl}/job-roles`, jobRole);
+  }
+
+  /**
+   * Update a job role
+   */
+  updateJobRole(id: number, jobRole: { name: string; is_system_role: boolean }): Observable<JobRole> {
+    return this.http.put<JobRole>(`${this.apiUrl}/job-roles/${id}`, jobRole);
+  }
+
+  /**
+   * Delete a job role
+   */
+  deleteJobRole(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/job-roles/${id}`);
+  }
+
+  /**
    * Get user's module access
    */
   getUserModuleAccess(userId: number): Observable<string[]> {

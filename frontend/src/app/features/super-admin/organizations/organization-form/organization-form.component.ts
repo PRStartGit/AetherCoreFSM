@@ -130,6 +130,27 @@ export class OrganizationFormComponent implements OnInit {
     });
   }
 
+  grantModuleToAllUsers(module: any): void {
+    if (!this.organizationId || this.moduleLoading) return;
+
+    const confirmed = confirm(`Are you sure you want to grant ${module.displayName} access to ALL users in this organization?`);
+    if (!confirmed) return;
+
+    this.moduleLoading = true;
+
+    this.http.post(`/api/v1/organizations/${this.organizationId}/modules/${module.name}/grant-all`, {}).subscribe({
+      next: (response: any) => {
+        this.moduleLoading = false;
+        alert(`Successfully granted ${module.displayName} access to ${response.users_granted} users`);
+      },
+      error: (err) => {
+        this.error = `Failed to grant ${module.displayName} access to all users`;
+        this.moduleLoading = false;
+        console.error('Error granting module to all users:', err);
+      }
+    });
+  }
+
   onSubmit(): void {
     if (this.organizationForm.invalid) {
       this.organizationForm.markAllAsTouched();

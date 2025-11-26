@@ -69,6 +69,8 @@ import { TicketListComponent } from './features/support/ticket-list/ticket-list.
 import { TicketDetailComponent } from './features/support/ticket-detail/ticket-detail.component';
 import { AdminTicketListComponent } from './features/super-admin/tickets/admin-ticket-list/admin-ticket-list.component';
 import { TicketSettingsComponent } from './features/super-admin/tickets/ticket-settings/ticket-settings.component';
+import { JobRolesListComponent } from './features/super-admin/job-roles/job-roles-list.component';
+import { JobRoleFormComponent } from './features/super-admin/job-roles/job-role-form.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +106,10 @@ import { TicketSettingsComponent } from './features/super-admin/tickets/ticket-s
     TicketListComponent,
     TicketDetailComponent,
     AdminTicketListComponent,
-    TicketSettingsComponent
+    TicketSettingsComponent,
+    // Job Roles Components
+    JobRolesListComponent,
+    JobRoleFormComponent
   ],
   imports: [
     BrowserModule,

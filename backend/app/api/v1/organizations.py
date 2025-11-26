@@ -310,3 +310,69 @@ def disable_organization_module(
         "module_name": module_name,
         "is_enabled": org_module.is_enabled
     }
+
+
+@router.post("/organizations/{org_id}/modules/{module_name}/grant-all")
+def grant_module_to_all_users(
+    org_id: int,
+    module_name: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_super_admin)
+):
+    """Grant module access to all users in an organization (Super Admin only)."""
+    from app.models.user_module_access import UserModuleAccess
+
+    # Check if organization exists
+    organization = db.query(Organization).filter(Organization.id == org_id).first()
+    if not organization:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Organization not found"
+        )
+
+    # Check if module is enabled for organization
+    org_module = db.query(OrganizationModule).filter(
+        OrganizationModule.organization_id == org_id,
+        OrganizationModule.module_name == module_name,
+        OrganizationModule.is_enabled == True
+    ).first()
+
+    if not org_module:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Module '{module_name}' is not enabled for this organization"
+        )
+
+    # Get all users in the organization
+    users = db.query(User).filter(User.organization_id == org_id).all()
+
+    # Map module name for user_module_access table
+    module_mapping = {
+        'recipes': 'Zynthio Recipes',
+        'Zynthio Training': 'Zynthio Training'
+    }
+    user_module_name = module_mapping.get(module_name, module_name)
+
+    users_granted = 0
+    for user in users:
+        # Check if user already has access
+        existing_access = db.query(UserModuleAccess).filter(
+            UserModuleAccess.user_id == user.id,
+            UserModuleAccess.module_name == user_module_name
+        ).first()
+
+        if not existing_access:
+            access = UserModuleAccess(
+                user_id=user.id,
+                module_name=user_module_name
+            )
+            db.add(access)
+            users_granted += 1
+
+    db.commit()
+
+    return {
+        "message": f"Module '{module_name}' granted to {users_granted} users in organization {organization.name}",
+        "users_granted": users_granted,
+        "total_users": len(users)
+    }
