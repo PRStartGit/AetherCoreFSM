@@ -63,4 +63,42 @@ export class RecipeService {
   getIngredientUnits(): Observable<IngredientUnit[]> {
     return this.http.get<IngredientUnit[]>(`${this.API_URL}/units`);
   }
+
+  // Recipe Categories CRUD (Super Admin only)
+  getRecipeCategories(): Observable<RecipeCategory[]> {
+    return this.http.get<RecipeCategory[]>(`${this.API_URL}/categories`);
+  }
+
+  getRecipeCategory(id: number): Observable<RecipeCategory> {
+    return this.http.get<RecipeCategory>(`${this.API_URL}/categories/${id}`);
+  }
+
+  createRecipeCategory(category: Partial<RecipeCategory>): Observable<RecipeCategory> {
+    return this.http.post<RecipeCategory>(`${this.API_URL}/categories`, category);
+  }
+
+  updateRecipeCategory(id: number, category: Partial<RecipeCategory>): Observable<RecipeCategory> {
+    return this.http.put<RecipeCategory>(`${this.API_URL}/categories/${id}`, category);
+  }
+
+  deleteRecipeCategory(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/categories/${id}`);
+  }
+
+  // Ingredient Units CRUD (Super Admin only)
+  getIngredientUnitById(id: number): Observable<IngredientUnit> {
+    return this.http.get<IngredientUnit>(`${this.API_URL}/units/${id}`);
+  }
+
+  createIngredientUnit(unit: Partial<IngredientUnit>): Observable<IngredientUnit> {
+    return this.http.post<IngredientUnit>(`${this.API_URL}/units`, unit);
+  }
+
+  updateIngredientUnit(id: number, unit: Partial<IngredientUnit>): Observable<IngredientUnit> {
+    return this.http.put<IngredientUnit>(`${this.API_URL}/units/${id}`, unit);
+  }
+
+  deleteIngredientUnit(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/units/${id}`);
+  }
 }

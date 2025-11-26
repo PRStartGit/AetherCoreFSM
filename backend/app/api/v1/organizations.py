@@ -46,22 +46,6 @@ def create_organization(
             detail=f"A user with email {org_data.contact_email} already exists. Please use a different email address."
         )
 
-    # Create organization
-    new_org = Organization(
-        name=org_data.name,
-        org_id=org_data.org_id,
-        contact_person=org_data.contact_person,
-        contact_email=org_data.contact_email,
-        contact_phone=org_data.contact_phone,
-        address=org_data.address,
-        subscription_tier=org_data.subscription_tier,
-        custom_price_per_site=org_data.custom_price_per_site
-    )
-
-    db.add(new_org)
-    db.commit()
-    db.refresh(new_org)
-
     # Generate secure random password for the Org Admin
     def generate_password(length=12):
         alphabet = string.ascii_letters + string.digits + "!@#$%^&*"
@@ -75,23 +59,49 @@ def create_organization(
     first_name = name_parts[0]
     last_name = name_parts[1] if len(name_parts) > 1 else ""
 
-    # Create Org Admin user
-    org_admin = User(
-        email=org_data.contact_email,
-        hashed_password=get_password_hash(temp_password),
-        first_name=first_name,
-        last_name=last_name,
-        role=UserRole.ORG_ADMIN,
-        organization_id=new_org.id,
-        must_change_password=True,
-        is_active=True
-    )
+    try:
+        # Create organization
+        new_org = Organization(
+            name=org_data.name,
+            org_id=org_data.org_id,
+            contact_person=org_data.contact_person,
+            contact_email=org_data.contact_email,
+            contact_phone=org_data.contact_phone,
+            address=org_data.address,
+            subscription_tier=org_data.subscription_tier,
+            custom_price_per_site=org_data.custom_price_per_site
+        )
 
-    db.add(org_admin)
-    db.commit()
-    db.refresh(org_admin)
+        db.add(new_org)
+        db.flush()  # Flush to get the org ID without committing
 
-    # Send welcome email
+        # Create Org Admin user
+        org_admin = User(
+            email=org_data.contact_email,
+            hashed_password=get_password_hash(temp_password),
+            first_name=first_name,
+            last_name=last_name,
+            role=UserRole.ORG_ADMIN,
+            organization_id=new_org.id,
+            must_change_password=True,
+            is_active=True
+        )
+
+        db.add(org_admin)
+
+        # Commit both organization and user together
+        db.commit()
+        db.refresh(new_org)
+        db.refresh(org_admin)
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to create organization and admin user: {str(e)}"
+        )
+
+    # Send welcome email (after successful creation)
     try:
         send_org_admin_welcome_email(
             admin_email=org_data.contact_email,

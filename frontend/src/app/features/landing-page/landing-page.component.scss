@@ -1,0 +1,59 @@
+// Roadmap Section - Mobile Responsive Styles
+.roadmap-section {
+  .timeline-grid {
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  .timeline-line {
+    @media (max-width: 640px) {
+      display: none;
+    }
+  }
+
+  .section-header h2 {
+    @media (max-width: 768px) {
+      font-size: 2rem !important;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1.75rem !important;
+    }
+  }
+
+  .timeline-item h3 {
+    @media (max-width: 480px) {
+      font-size: 1.25rem !important;
+    }
+  }
+
+  .timeline-item p {
+    @media (max-width: 480px) {
+      font-size: 0.875rem !important;
+    }
+  }
+}
+
+// Module Showcases - Ensure mobile compatibility
+.module-showcase {
+  h2 {
+    @media (max-width: 768px) {
+      font-size: 2rem !important;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1.5rem !important;
+    }
+  }
+
+  p {
+    @media (max-width: 480px) {
+      font-size: 1rem !important;
+    }
+  }
+}
