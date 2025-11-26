@@ -38,6 +38,14 @@ def create_organization(
             detail="Organization ID already exists"
         )
 
+    # Check if contact email already exists
+    existing_user = db.query(User).filter(User.email == org_data.contact_email).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"A user with email {org_data.contact_email} already exists. Please use a different email address."
+        )
+
     # Create organization
     new_org = Organization(
         name=org_data.name,
