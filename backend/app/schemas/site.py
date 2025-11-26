@@ -22,6 +22,7 @@ class SiteUpdate(BaseModel):
     """Site update schema."""
     name: Optional[str] = None
     site_code: Optional[str] = None
+    organization_id: Optional[int] = None
     address: Optional[str] = None
     city: Optional[str] = None
     postcode: Optional[str] = None
@@ -39,6 +40,7 @@ class SiteResponse(SiteBase):
     """Site response schema."""
     id: int
     organization_id: int
+    organization_name: Optional[str] = None
     is_active: bool
     daily_report_enabled: bool
     daily_report_time: str

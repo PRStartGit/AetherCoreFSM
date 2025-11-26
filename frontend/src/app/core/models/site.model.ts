@@ -3,6 +3,7 @@ export interface Site {
   name: string;
   site_code: string;
   organization_id: number;
+  organization_name?: string;
   address: string;
   city: string;
   postcode: string;

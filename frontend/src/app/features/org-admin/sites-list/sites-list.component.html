@@ -38,7 +38,7 @@
           <tr>
             <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Site Name</th>
             <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Site Code</th>
-            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Address</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Organization</th>
             <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">City</th>
             <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Postcode</th>
             <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
@@ -53,8 +53,8 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm text-gray-600 font-mono">{{ site.site_code }}</div>
             </td>
-            <td class="px-6 py-4">
-              <div class="text-sm text-gray-600">{{ site.address }}</div>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-600">{{ site.organization_name || 'N/A' }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm text-gray-600">{{ site.city }}</div>
