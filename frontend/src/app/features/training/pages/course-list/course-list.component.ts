@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TrainingService } from '../../services/training.service';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { Course, CourseCategory } from '../../models/training.models';
@@ -19,11 +20,24 @@ export class CourseListComponent implements OnInit {
   filterPublishedOnly = false;
   UserRole = UserRole;
 
+  // Category management
+  activeTab: 'courses' | 'categories' = 'courses';
+  showCategoryModal = false;
+  categoryForm: FormGroup;
+  editingCategory: CourseCategory | null = null;
+
   constructor(
     private trainingService: TrainingService,
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    // Initialize category form
+    this.categoryForm = this.fb.group({
+      name: ['', Validators.required],
+      description: ['']
+    });
+  }
 
   ngOnInit(): void {
     this.loadCategories();
@@ -121,5 +135,86 @@ export class CourseListComponent implements OnInit {
 
   get isSuperAdmin(): boolean {
     return this.currentUserRole === UserRole.SUPER_ADMIN;
+  }
+
+  // ========== Category Management Methods ==========
+
+  openCategoryModal(): void {
+    this.editingCategory = null;
+    this.categoryForm.reset();
+    this.showCategoryModal = true;
+  }
+
+  closeCategoryModal(): void {
+    this.showCategoryModal = false;
+    this.categoryForm.reset();
+    this.editingCategory = null;
+  }
+
+  saveCategory(): void {
+    if (this.categoryForm.invalid) {
+      return;
+    }
+
+    const categoryData = this.categoryForm.value;
+
+    if (this.editingCategory) {
+      // Update existing category
+      this.trainingService.updateCourseCategory(this.editingCategory.id, categoryData).subscribe({
+        next: () => {
+          this.loadCategories();
+          this.closeCategoryModal();
+        },
+        error: (err) => {
+          alert('Failed to update category');
+          console.error('Error updating category:', err);
+        }
+      });
+    } else {
+      // Create new category
+      this.trainingService.createCourseCategory(categoryData).subscribe({
+        next: () => {
+          this.loadCategories();
+          this.closeCategoryModal();
+        },
+        error: (err) => {
+          alert('Failed to create category');
+          console.error('Error creating category:', err);
+        }
+      });
+    }
+  }
+
+  editCategory(category: CourseCategory): void {
+    this.editingCategory = category;
+    this.categoryForm.patchValue({
+      name: category.name,
+      description: category.description
+    });
+    this.showCategoryModal = true;
+  }
+
+  deleteCategory(category: CourseCategory): void {
+    const coursesInCategory = this.getCategoryCoursesCount(category.id);
+    const message = coursesInCategory > 0
+      ? `Delete category "${category.name}"? ${coursesInCategory} course(s) will become uncategorized. This action cannot be undone.`
+      : `Are you sure you want to delete category "${category.name}"?`;
+
+    if (confirm(message)) {
+      this.trainingService.deleteCourseCategory(category.id).subscribe({
+        next: () => {
+          this.loadCategories();
+          this.loadCourses(); // Reload courses to reflect category changes
+        },
+        error: (err) => {
+          alert('Failed to delete category');
+          console.error('Error deleting category:', err);
+        }
+      });
+    }
+  }
+
+  getCategoryCoursesCount(categoryId: number): number {
+    return this.courses.filter(c => c.category_id === categoryId).length;
   }
 }

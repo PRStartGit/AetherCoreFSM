@@ -1,15 +1,43 @@
 <div class="p-4 md:p-6">
-  <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-    <div>
-      <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Course Management</h1>
-      <p class="text-gray-600 mt-1 text-sm md:text-base">Create and manage training courses</p>
-    </div>
-    <button *ngIf="isSuperAdmin" (click)="navigateToCreate()"
-            class="px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-semibold flex items-center gap-2 text-sm md:text-base">
-      <i class="fa-solid fa-plus"></i>
-      Create Course
-    </button>
+  <div class="mb-6">
+    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Course Management</h1>
+    <p class="text-gray-600 mt-1 text-sm md:text-base">Create and manage training courses and categories</p>
   </div>
+
+  <!-- Tabs -->
+  <div class="mb-6 border-b border-gray-200">
+    <nav class="flex space-x-8">
+      <button (click)="activeTab = 'courses'"
+              [class.border-cyan-500]="activeTab === 'courses'"
+              [class.text-cyan-600]="activeTab === 'courses'"
+              [class.border-transparent]="activeTab !== 'courses'"
+              [class.text-gray-500]="activeTab !== 'courses'"
+              class="pb-3 px-1 border-b-2 font-semibold text-sm transition-colors hover:text-cyan-600">
+        <i class="fa-solid fa-graduation-cap mr-2"></i>
+        Courses
+      </button>
+      <button (click)="activeTab = 'categories'"
+              [class.border-cyan-500]="activeTab === 'categories'"
+              [class.text-cyan-600]="activeTab === 'categories'"
+              [class.border-transparent]="activeTab !== 'categories'"
+              [class.text-gray-500]="activeTab !== 'categories'"
+              class="pb-3 px-1 border-b-2 font-semibold text-sm transition-colors hover:text-cyan-600">
+        <i class="fa-solid fa-folder mr-2"></i>
+        Categories
+      </button>
+    </nav>
+  </div>
+
+  <!-- Courses Tab -->
+  <div *ngIf="activeTab === 'courses'">
+    <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div class="flex-1"></div>
+      <button *ngIf="isSuperAdmin" (click)="navigateToCreate()"
+              class="px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-semibold flex items-center gap-2 text-sm md:text-base">
+        <i class="fa-solid fa-plus"></i>
+        Create Course
+      </button>
+    </div>
 
   <!-- Filters -->
   <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -110,6 +138,118 @@
               <i class="fa-solid fa-trash"></i>
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- Categories Tab -->
+  <div *ngIf="activeTab === 'categories'">
+    <div class="mb-6 flex justify-end">
+      <button (click)="openCategoryModal()"
+              class="px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-semibold flex items-center gap-2">
+        <i class="fa-solid fa-plus"></i>
+        Add Category
+      </button>
+    </div>
+
+    <!-- Categories List -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category Name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Courses</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let category of categories" class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <i class="fa-solid fa-folder text-cyan-600 mr-3"></i>
+                <span class="text-sm font-medium text-gray-900">{{ category.name }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-sm text-gray-600">{{ category.description || 'No description' }}</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ getCategoryCoursesCount(category.id) }} courses
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <button (click)="editCategory(category)"
+                      class="text-cyan-600 hover:text-cyan-900 mr-4">
+                <i class="fa-solid fa-pen"></i> Edit
+              </button>
+              <button (click)="deleteCategory(category)"
+                      class="text-red-600 hover:text-red-900">
+                <i class="fa-solid fa-trash"></i> Delete
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="categories.length === 0">
+            <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+              <i class="fa-solid fa-folder-open text-4xl mb-3 text-gray-300"></i>
+              <p>No categories yet. Create your first category to organize courses.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Category Modal -->
+  <div *ngIf="showCategoryModal" class="fixed inset-0 z-50 overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+      <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" (click)="closeCategoryModal()"></div>
+
+      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <h3 class="text-lg font-bold text-gray-900 mb-4">
+            {{ editingCategory ? 'Edit Category' : 'Add New Category' }}
+          </h3>
+
+          <form [formGroup]="categoryForm">
+            <div class="mb-4">
+              <label for="categoryName" class="block text-sm font-semibold text-gray-700 mb-2">
+                Category Name <span class="text-red-500">*</span>
+              </label>
+              <input type="text"
+                     id="categoryName"
+                     formControlName="name"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                     placeholder="Enter category name">
+              <div *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched" class="text-red-500 text-sm mt-1">
+                Category name is required
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="categoryDescription" class="block text-sm font-semibold text-gray-700 mb-2">
+                Description
+              </label>
+              <textarea id="categoryDescription"
+                        formControlName="description"
+                        rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                        placeholder="Enter category description"></textarea>
+            </div>
+          </form>
+        </div>
+
+        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+          <button (click)="saveCategory()"
+                  [disabled]="categoryForm.invalid"
+                  class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-hygiene-600 to-cyan-600 text-white rounded-lg hover:from-hygiene-700 hover:to-cyan-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+            {{ editingCategory ? 'Update' : 'Create' }}
+          </button>
+          <button (click)="closeCategoryModal()"
+                  class="w-full sm:w-auto mt-3 sm:mt-0 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold">
+            Cancel
+          </button>
         </div>
       </div>
     </div>
