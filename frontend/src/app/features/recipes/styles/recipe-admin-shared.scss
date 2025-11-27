@@ -3,8 +3,12 @@
 
 .recipe-admin-container {
   padding: 24px;
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
+
+  @media (max-width: 1024px) {
+    padding: 16px;
+  }
 
   // Header styles
   .admin-header {
@@ -73,20 +77,20 @@
     }
   }
 
-  // Content grid
+  // Content grid - stacks on screens under 1024px for 13" laptop support
   .content-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 380px 1fr;
     gap: 24px;
 
-    @media (max-width: 1200px) {
+    @media (max-width: 1024px) {
       grid-template-columns: 1fr;
     }
 
     &.equal-cols {
       grid-template-columns: 1fr 1fr;
 
-      @media (max-width: 1200px) {
+      @media (max-width: 1024px) {
         grid-template-columns: 1fr;
       }
     }
@@ -141,8 +145,12 @@
 
     .form-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+
+      @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+      }
     }
 
     .full-width {
@@ -223,6 +231,7 @@
   .table-card {
     .mat-mdc-card-content {
       padding: 0;
+      overflow-x: auto;
     }
   }
 

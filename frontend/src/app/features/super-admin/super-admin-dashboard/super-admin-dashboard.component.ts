@@ -373,6 +373,20 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
     this.orgPerformanceChart = new Chart(this.orgPerformanceCanvas.nativeElement, config);
   }
 
+  getAverageCompletionRate(): number {
+    if (!this.orgPerformanceData || this.orgPerformanceData.length === 0) return 0;
+    const sum = this.orgPerformanceData.reduce((acc, org) => acc + (org.completion_rate || 0), 0);
+    return Math.round(sum / this.orgPerformanceData.length);
+  }
+
+  getPlatformHealthScore(): number {
+    // Calculate platform health based on RAG status distribution
+    // Green orgs contribute 100%, Amber 50%, Red 0%
+    const total = this.ragStatus.green + this.ragStatus.amber + this.ragStatus.red;
+    if (total === 0) return 100;
+    return Math.round((this.ragStatus.green * 100 + this.ragStatus.amber * 50) / total);
+  }
+
   ngOnDestroy(): void {
     // Clean up charts on component destruction
     if (this.platformGrowthChart) {

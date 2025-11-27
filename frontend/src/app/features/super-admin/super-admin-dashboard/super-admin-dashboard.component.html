@@ -16,15 +16,17 @@
 
   <!-- Dashboard Content -->
   <div *ngIf="!loading && !error && metrics">
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Primary Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
 
       <!-- Organizations Card -->
       <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow border border-gray-100">
         <div class="flex items-start justify-between mb-3">
-          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-          </svg>
+          <div class="p-2 bg-purple-100 rounded-lg">
+            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+          </div>
         </div>
         <div class="text-4xl font-bold text-gray-900 mb-2">{{ metrics.total_organizations }}</div>
         <div class="text-sm text-gray-600 font-medium">Total Organizations</div>
@@ -33,10 +35,12 @@
       <!-- Sites Card -->
       <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow border border-gray-100">
         <div class="flex items-start justify-between mb-3">
-          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-          </svg>
+          <div class="p-2 bg-blue-100 rounded-lg">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+          </div>
         </div>
         <div class="text-4xl font-bold text-gray-900 mb-2">{{ metrics.total_sites }}</div>
         <div class="text-sm text-gray-600 font-medium">Total Sites</div>
@@ -45,9 +49,11 @@
       <!-- Users Card -->
       <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow border border-gray-100">
         <div class="flex items-start justify-between mb-3">
-          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-          </svg>
+          <div class="p-2 bg-green-100 rounded-lg">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+          </div>
         </div>
         <div class="text-4xl font-bold text-gray-900 mb-2">{{ metrics.total_users }}</div>
         <div class="text-sm text-gray-600 font-medium">Total Users</div>
@@ -56,12 +62,71 @@
       <!-- Subscriptions Card -->
       <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow border border-gray-100">
         <div class="flex items-start justify-between mb-3">
-          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
+          <div class="p-2 bg-cyan-100 rounded-lg">
+            <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
         </div>
         <div class="text-4xl font-bold text-gray-900 mb-2">{{ metrics.active_subscriptions }}</div>
         <div class="text-sm text-gray-600 font-medium">Active Subscriptions</div>
+      </div>
+
+    </div>
+
+    <!-- Secondary Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+      <!-- Today's Checklists Card -->
+      <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-start justify-between mb-3">
+          <div class="p-2 bg-white/20 rounded-lg">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="text-4xl font-bold text-white mb-2">{{ metrics.total_checklists_today || 0 }}</div>
+        <div class="text-sm text-white/80 font-medium">Checklists Today</div>
+      </div>
+
+      <!-- Open Defects Card -->
+      <div class="bg-gradient-to-br from-orange-500 to-red-600 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-start justify-between mb-3">
+          <div class="p-2 bg-white/20 rounded-lg">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="text-4xl font-bold text-white mb-2">{{ metrics.total_open_defects || 0 }}</div>
+        <div class="text-sm text-white/80 font-medium">Open Defects</div>
+      </div>
+
+      <!-- Average Completion Rate Card -->
+      <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-start justify-between mb-3">
+          <div class="p-2 bg-white/20 rounded-lg">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="text-4xl font-bold text-white mb-2">{{ getAverageCompletionRate() }}%</div>
+        <div class="text-sm text-white/80 font-medium">Avg Completion Rate</div>
+      </div>
+
+      <!-- Platform Health Card -->
+      <div class="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-start justify-between mb-3">
+          <div class="p-2 bg-white/20 rounded-lg">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="text-4xl font-bold text-white mb-2">{{ getPlatformHealthScore() }}%</div>
+        <div class="text-sm text-white/80 font-medium">Platform Health</div>
       </div>
 
     </div>
