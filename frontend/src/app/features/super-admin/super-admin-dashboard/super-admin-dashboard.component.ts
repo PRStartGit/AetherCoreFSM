@@ -1,6 +1,7 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { DashboardService } from '../../../core/services/dashboard.service';
-import { SuperAdminMetrics } from '../../../core/models';
+import { SuperAdminMetrics, Alert, SiteRanking, ModuleAdoption, DefectTrend } from '../../../core/models';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -10,7 +11,7 @@ Chart.register(...registerables);
   templateUrl: './super-admin-dashboard.component.html',
   styleUrls: ['./super-admin-dashboard.component.css']
 })
-export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
+export class SuperAdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   metrics: SuperAdminMetrics | null = null;
   loading = true;
   error: string | null = null;
@@ -18,10 +19,12 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('platformGrowthChart') platformGrowthCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('subscriptionTierChart') subscriptionTierCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('orgPerformanceChart') orgPerformanceCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('defectTrendsChart') defectTrendsCanvas!: ElementRef<HTMLCanvasElement>;
 
   private platformGrowthChart?: Chart;
   private subscriptionTierChart?: Chart;
   private orgPerformanceChart?: Chart;
+  private defectTrendsChart?: Chart;
 
   ragStatus = {
     green: 0,
@@ -30,11 +33,26 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
   };
 
   orgPerformanceData: any[] = [];
-
-  // This will be populated from API metrics.recent_activity
   recentActivity: any[] = [];
 
-  constructor(private dashboardService: DashboardService) {}
+  // Pagination for recent activity
+  activityPage = 1;
+  activityPageSize = 5;
+  activityTotal = 0;
+  activityTotalPages = 1;
+  activityLoading = false;
+
+  // New enhanced data
+  alerts: Alert[] = [];
+  topSites: SiteRanking[] = [];
+  bottomSites: SiteRanking[] = [];
+  moduleAdoption: ModuleAdoption[] = [];
+  defectTrends: DefectTrend[] = [];
+
+  constructor(
+    private dashboardService: DashboardService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadMetrics();
@@ -80,6 +98,13 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
           }));
         }
 
+        // Populate new enhanced data
+        this.alerts = data.alerts || [];
+        this.topSites = data.top_sites || [];
+        this.bottomSites = data.bottom_sites || [];
+        this.moduleAdoption = data.module_adoption || [];
+        this.defectTrends = data.defect_trends || [];
+
         this.loading = false;
         // Update charts with new data
         setTimeout(() => {
@@ -92,6 +117,44 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
         console.error('Error loading metrics:', err);
       }
     });
+  }
+
+  loadRecentActivity(page: number = 1): void {
+    this.activityLoading = true;
+    this.activityPage = page;
+
+    this.dashboardService.getRecentActivity(page, this.activityPageSize).subscribe({
+      next: (response) => {
+        this.recentActivity = response.items.map((activity: any) => ({
+          type: activity.type || 'general',
+          action: activity.description || 'Activity',
+          details: activity.description || '',
+          timestamp: this.formatTimestamp(activity.timestamp),
+          icon: this.getIconForType(activity.type),
+          organization: activity.organization,
+          site: activity.site
+        }));
+        this.activityTotal = response.total;
+        this.activityTotalPages = response.total_pages;
+        this.activityLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading recent activity:', err);
+        this.activityLoading = false;
+      }
+    });
+  }
+
+  nextActivityPage(): void {
+    if (this.activityPage < this.activityTotalPages) {
+      this.loadRecentActivity(this.activityPage + 1);
+    }
+  }
+
+  prevActivityPage(): void {
+    if (this.activityPage > 1) {
+      this.loadRecentActivity(this.activityPage - 1);
+    }
   }
 
   private formatTimestamp(timestamp: string): string {
@@ -163,6 +226,10 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
     this.createPlatformGrowthChart();
     this.createSubscriptionTierChart();
     this.createOrgPerformanceChart();
+
+    if (this.defectTrendsCanvas) {
+      this.createDefectTrendsChart();
+    }
   }
 
   private createPlatformGrowthChart(): void {
@@ -373,6 +440,104 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
     this.orgPerformanceChart = new Chart(this.orgPerformanceCanvas.nativeElement, config);
   }
 
+  private createDefectTrendsChart(): void {
+    if (this.defectTrendsChart) {
+      this.defectTrendsChart.destroy();
+    }
+
+    if (!this.defectTrends || this.defectTrends.length === 0) return;
+
+    const labels = this.defectTrends.map(d => d.date);
+    const created = this.defectTrends.map(d => d.created);
+    const resolved = this.defectTrends.map(d => d.resolved);
+
+    const config: ChartConfiguration = {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Created',
+            data: created,
+            backgroundColor: '#ef4444',
+            borderColor: '#dc2626',
+            borderWidth: 1
+          },
+          {
+            label: 'Resolved',
+            data: resolved,
+            backgroundColor: '#22c55e',
+            borderColor: '#16a34a',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        }
+      }
+    };
+
+    this.defectTrendsChart = new Chart(this.defectTrendsCanvas.nativeElement, config);
+  }
+
+  // Quick action navigation methods
+  navigateToOrganizations(): void {
+    this.router.navigate(['/super-admin/organizations']);
+  }
+
+  navigateToSites(): void {
+    this.router.navigate(['/org-admin/sites']);
+  }
+
+  navigateToUsers(): void {
+    this.router.navigate(['/org-admin/users']);
+  }
+
+  navigateToDefects(): void {
+    this.router.navigate(['/defects']);
+  }
+
+  navigateToReports(): void {
+    this.router.navigate(['/super-admin/reports']);
+  }
+
+  // Alert helper methods
+  getAlertIcon(type: string): string {
+    switch (type) {
+      case 'error': return 'error';
+      case 'warning': return 'warning';
+      default: return 'info';
+    }
+  }
+
+  getAlertColor(type: string): string {
+    switch (type) {
+      case 'error': return 'bg-red-100 text-red-800 border-red-200';
+      case 'warning': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      default: return 'bg-blue-100 text-blue-800 border-blue-200';
+    }
+  }
+
+  // Format currency
+  formatCurrency(value: number): string {
+    return '£' + value.toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
   getAverageCompletionRate(): number {
     if (!this.orgPerformanceData || this.orgPerformanceData.length === 0) return 0;
     const sum = this.orgPerformanceData.reduce((acc, org) => acc + (org.completion_rate || 0), 0);
@@ -397,6 +562,9 @@ export class SuperAdminDashboardComponent implements OnInit, AfterViewInit {
     }
     if (this.orgPerformanceChart) {
       this.orgPerformanceChart.destroy();
+    }
+    if (this.defectTrendsChart) {
+      this.defectTrendsChart.destroy();
     }
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SuperAdminMetrics, OrgAdminMetrics, SiteUserMetrics } from '../models';
+import { SuperAdminMetrics, OrgAdminMetrics, SiteUserMetrics, RecentActivityResponse } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +13,13 @@ export class DashboardService {
 
   getSuperAdminMetrics(): Observable<SuperAdminMetrics> {
     return this.http.get<SuperAdminMetrics>(`${this.API_URL}/super-admin`);
+  }
+
+  getRecentActivity(page: number = 1, pageSize: number = 5): Observable<RecentActivityResponse> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('page_size', pageSize.toString());
+    return this.http.get<RecentActivityResponse>(`${this.API_URL}/super-admin/recent-activity`, { params });
   }
 
   getOrgAdminMetrics(): Observable<OrgAdminMetrics> {

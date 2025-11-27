@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 
 class SuperAdminDashboard(BaseModel):
@@ -15,6 +15,24 @@ class SuperAdminDashboard(BaseModel):
     rag_summary: Dict[str, int] = {}
     org_performance: List[Dict[str, Any]] = []
     growth_data: List[Dict[str, Any]] = []
+    # New enhanced metrics
+    revenue_metrics: Dict[str, Any] = {}
+    user_engagement: Dict[str, Any] = {}
+    module_adoption: List[Dict[str, Any]] = []
+    defect_trends: List[Dict[str, Any]] = []
+    top_sites: List[Dict[str, Any]] = []
+    bottom_sites: List[Dict[str, Any]] = []
+    alerts: List[Dict[str, Any]] = []
+    checklists_today: int = 0
+
+
+class RecentActivityResponse(BaseModel):
+    """Paginated recent activity response."""
+    items: List[Dict[str, Any]] = []
+    total: int = 0
+    page: int = 1
+    page_size: int = 5
+    total_pages: int = 1
 
 
 class OrgAdminDashboard(BaseModel):
