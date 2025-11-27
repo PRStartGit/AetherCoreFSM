@@ -78,10 +78,19 @@ def populate_assaggini_recipes():
 
         # Get common units
         units = {}
-        for unit_name in ["g", "ml", "each", "tsp", "tbsp"]:
-            unit = db.query(IngredientUnit).filter(IngredientUnit.unit == unit_name).first()
+        unit_mapping = {
+            "g": "g",
+            "ml": "ml",
+            "each": "piece",  # Map 'each' to 'piece' which exists in DB
+            "tsp": "tsp",
+            "tbsp": "tbsp"
+        }
+
+        for recipe_unit, db_unit in unit_mapping.items():
+            unit = db.query(IngredientUnit).filter(IngredientUnit.name == db_unit).first()
             if unit:
-                units[unit_name] = unit.id
+                units[recipe_unit] = unit.id
+                print(f"[OK] Found unit: {recipe_unit} -> {db_unit} (ID: {unit.id})")
 
         # Define all 13 recipes
         recipes_data = [
