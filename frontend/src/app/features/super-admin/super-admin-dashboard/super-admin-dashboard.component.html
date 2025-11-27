@@ -64,7 +64,7 @@
           <h2 class="text-base font-semibold text-gray-900">Alerts & Notifications</h2>
           <span class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded-full">{{ alerts.length }} alerts</span>
         </div>
-        <div class="p-3 space-y-2 max-h-32 overflow-y-auto">
+        <div class="p-3 space-y-2">
           <div *ngFor="let alert of alerts" class="p-2 rounded-lg border text-xs" [ngClass]="getAlertColor(alert.type)">
             <div class="flex items-start gap-2">
               <svg *ngIf="alert.type === 'error'" class="w-4 h-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
