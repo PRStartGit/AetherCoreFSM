@@ -23,10 +23,10 @@
 
   <!-- Checklist Content -->
   <div *ngIf="!loading && !error && checklist" class="checklist-content">
-    <!-- Overdue Warning -->
+    <!-- Missed Warning -->
     <div *ngIf="isOverdue" class="overdue-warning">
       <mat-icon>warning</mat-icon>
-      <span>This checklist is overdue and cannot be completed.</span>
+      <span>This checklist was missed and cannot be completed.</span>
     </div>
 
     <!-- Progress Bar -->

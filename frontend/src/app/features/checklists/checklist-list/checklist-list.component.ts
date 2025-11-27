@@ -181,6 +181,16 @@ export class ChecklistListComponent implements OnInit {
     return statusMap[checklist.status] || 'bg-gray-100 text-gray-800';
   }
 
+  getStatusLabel(status: string): string {
+    const labelMap: { [key: string]: string } = {
+      'pending': 'Pending',
+      'in_progress': 'In Progress',
+      'completed': 'Completed',
+      'overdue': 'Missed'
+    };
+    return labelMap[status] || status.replace('_', ' ');
+  }
+
 isSuperAdmin(): boolean {    return this.authService.isSuperAdmin();  }
   isSiteUser(): boolean {
     return this.authService.isSiteUser();

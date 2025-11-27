@@ -423,9 +423,9 @@ export class SiteUserDashboardComponent implements OnInit {
     } else if (diffDays > 7 && diffDays <= 30) {
       return 'Due this month';
     } else if (diffDays < 0 && diffDays >= -7) {
-      return `Overdue by ${Math.abs(diffDays)} days`;
+      return `Missed by ${Math.abs(diffDays)} days`;
     } else if (diffDays < -7) {
-      return 'Overdue';
+      return 'Missed';
     }
 
     return this.formatDate(dueDate);
