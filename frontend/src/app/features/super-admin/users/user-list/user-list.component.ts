@@ -13,10 +13,22 @@ import { formatDate } from '../../../../shared/utils/date-utils';
 })
 export class UserListComponent implements OnInit {
   users: User[] = [];
+  filteredUsers: User[] = [];
   organizations: Organization[] = [];
   loading = true;
   error: string | null = null;
+
+  // Filter properties
+  searchTerm: string = '';
   filterOrganizationId: number | null = null;
+  filterRole: string | null = null;
+
+  // Available roles for filter
+  roles = [
+    { value: 'super_admin', label: 'Super Admin' },
+    { value: 'org_admin', label: 'Org Admin' },
+    { value: 'site_user', label: 'Site User' }
+  ];
 
   constructor(
     private userService: UserService,
@@ -48,6 +60,7 @@ export class UserListComponent implements OnInit {
     this.userService.getAll(this.filterOrganizationId || undefined).subscribe({
       next: (users) => {
         this.users = users;
+        this.applyFilters();
         this.loading = false;
       },
       error: (err) => {
@@ -58,7 +71,42 @@ export class UserListComponent implements OnInit {
     });
   }
 
+  applyFilters(): void {
+    let result = [...this.users];
+
+    // Apply search filter (name or email)
+    if (this.searchTerm && this.searchTerm.trim()) {
+      const term = this.searchTerm.toLowerCase().trim();
+      result = result.filter(user =>
+        user.full_name.toLowerCase().includes(term) ||
+        user.email.toLowerCase().includes(term)
+      );
+    }
+
+    // Apply role filter
+    if (this.filterRole) {
+      result = result.filter(user => user.role === this.filterRole);
+    }
+
+    this.filteredUsers = result;
+  }
+
+  onSearchChange(): void {
+    this.applyFilters();
+  }
+
+  onRoleFilterChange(): void {
+    this.applyFilters();
+  }
+
   onFilterChange(): void {
+    this.loadUsers();
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.filterOrganizationId = null;
+    this.filterRole = null;
     this.loadUsers();
   }
 
