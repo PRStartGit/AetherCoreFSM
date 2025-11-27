@@ -76,7 +76,7 @@ def populate_assaggini_recipes():
         else:
             print(f"[OK] Using existing category: Pasta (ID: {category.id})")
 
-        # Get common units
+        # Get common units - note: recipe_ingredients.unit is a string, not a foreign key
         units = {}
         unit_mapping = {
             "g": "g",
@@ -89,8 +89,8 @@ def populate_assaggini_recipes():
         for recipe_unit, db_unit in unit_mapping.items():
             unit = db.query(IngredientUnit).filter(IngredientUnit.name == db_unit).first()
             if unit:
-                units[recipe_unit] = unit.id
-                print(f"[OK] Found unit: {recipe_unit} -> {db_unit} (ID: {unit.id})")
+                units[recipe_unit] = unit.name  # Store unit name, not ID
+                print(f"[OK] Found unit: {recipe_unit} -> {db_unit} (name: {unit.name})")
 
         # Define all 13 recipes
         recipes_data = [
@@ -425,7 +425,7 @@ def populate_assaggini_recipes():
                     recipe_id=recipe.id,
                     name=name,
                     quantity=Decimal(str(quantity)),
-                    unit_id=units.get(unit_name),
+                    unit=units.get(unit_name),  # unit is a string field, not a foreign key
                     order_index=idx
                 )
                 db.add(ingredient)
