@@ -43,6 +43,28 @@ def create_site(
     return new_site
 
 
+@router.get("/sites/all", response_model=List[SiteResponse])
+def list_all_sites(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """List all sites across all organizations (Super Admin only)."""
+    if current_user.role != UserRole.SUPER_ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only super admins can view all sites"
+        )
+
+    sites = db.query(Site).options(joinedload(Site.organization)).all()
+
+    # Populate organization_name for each site
+    for site in sites:
+        if site.organization:
+            site.organization_name = site.organization.name
+
+    return sites
+
+
 @router.get("/sites", response_model=List[SiteResponse])
 def list_sites(
     organization_id: int = None,

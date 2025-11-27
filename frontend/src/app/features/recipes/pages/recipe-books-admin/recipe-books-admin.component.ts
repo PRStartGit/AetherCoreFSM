@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,11 +16,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RecipeBookService, RecipeBook, RecipeBookWithRecipes, RecipeInBook } from '../../services/recipe-book.service';
 import { RecipeService } from '../../services/recipe.service';
 import { SiteService } from '../../../../core/services/site.service';
 import { AuthService } from '../../../../core/auth/auth.service';
-import { Site } from '../../../../core/models';
+import { Site, UserRole } from '../../../../core/models';
 
 @Component({
   selector: 'app-recipe-books-admin',
@@ -40,10 +42,12 @@ import { Site } from '../../../../core/models';
     MatSelectModule,
     MatExpansionModule,
     MatChipsModule,
-    MatDividerModule
+    MatDividerModule,
+    MatTooltipModule
   ],
   templateUrl: './recipe-books-admin.component.html',
-  styleUrls: ['./recipe-books-admin.component.scss']
+  styleUrls: ['./recipe-books-admin.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class RecipeBooksAdminComponent implements OnInit {
   recipeBooks: RecipeBook[] = [];
@@ -63,7 +67,8 @@ export class RecipeBooksAdminComponent implements OnInit {
     private authService: AuthService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private http: HttpClient
   ) {
     this.bookForm = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(255)]],
@@ -92,7 +97,21 @@ export class RecipeBooksAdminComponent implements OnInit {
 
   loadSites(): void {
     const user = this.authService.getUser();
-    if (user?.organization_id) {
+
+    // Super admin can see all sites across all organizations
+    if (user?.role === UserRole.SUPER_ADMIN) {
+      this.http.get<Site[]>('/api/v1/sites/all').subscribe({
+        next: (sites) => {
+          this.sites = sites;
+        },
+        error: (error) => {
+          console.error('Error loading all sites:', error);
+          // Fallback to empty array
+          this.sites = [];
+        }
+      });
+    } else if (user?.organization_id) {
+      // Regular users see only their organization's sites
       this.siteService.getAll(user.organization_id).subscribe({
         next: (sites) => {
           this.sites = sites;
