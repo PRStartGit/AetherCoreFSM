@@ -8,8 +8,8 @@ from app.core.dependencies import get_current_org_admin, get_current_user, get_c
 from app.models.user import User, UserRole
 from app.models.site import Site
 from app.models.organization import Organization
-from app.models.category import Category
-from app.models.checklist import Checklist, ChecklistStatus, ChecklistFrequency
+from app.models.category import Category, ChecklistFrequency
+from app.models.checklist import Checklist, ChecklistStatus
 from app.models.checklist_item import ChecklistItem
 from app.models.task import Task
 from app.schemas.site import SiteCreate, SiteUpdate, SiteResponse
