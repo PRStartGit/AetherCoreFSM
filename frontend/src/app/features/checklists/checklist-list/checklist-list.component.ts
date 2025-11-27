@@ -158,16 +158,18 @@ export class ChecklistListComponent implements OnInit {
   }
 
   getDisplayStatus(checklist: Checklist): string {
-    // Show "Missed" for past-day checklists that are still pending or in progress
-    if (this.isPastDay(checklist) && (checklist.status === ChecklistStatus.PENDING || checklist.status === ChecklistStatus.IN_PROGRESS)) {
+    // Show "Missed" for overdue checklists or past-day checklists that are still pending/in progress
+    if (checklist.status === ChecklistStatus.OVERDUE ||
+        (this.isPastDay(checklist) && (checklist.status === ChecklistStatus.PENDING || checklist.status === ChecklistStatus.IN_PROGRESS))) {
       return 'Missed';
     }
     return checklist.status.replace('_', ' ');
   }
 
   getStatusBadgeClass(checklist: Checklist): string {
-    // Use red styling for missed past-day checklists
-    if (this.isPastDay(checklist) && (checklist.status === ChecklistStatus.PENDING || checklist.status === ChecklistStatus.IN_PROGRESS)) {
+    // Use red styling for missed/overdue checklists
+    if (checklist.status === ChecklistStatus.OVERDUE ||
+        (this.isPastDay(checklist) && (checklist.status === ChecklistStatus.PENDING || checklist.status === ChecklistStatus.IN_PROGRESS))) {
       return 'bg-red-100 text-red-800';
     }
 
