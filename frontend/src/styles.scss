@@ -43,6 +43,34 @@ body {
 .p-3 { padding: 24px; }
 .p-4 { padding: 32px; }
 
+/* Global Back Button - Unified Style */
+.back-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B7280;
+  background: white;
+  border: 1px solid #E5E7EB;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #F3F4F6;
+    color: #10B981;
+    border-color: #10B981;
+  }
+
+  i, mat-icon {
+    font-size: 16px;
+    line-height: 1;
+  }
+}
+
 /* RAG Status Colors */
 .rag-green {
   background-color: #4caf50;
