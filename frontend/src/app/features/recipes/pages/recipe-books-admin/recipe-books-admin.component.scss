@@ -1,7 +1,129 @@
+// Angular Material overrides for recipe books admin
 .recipe-books-admin-container {
   padding: 24px;
   max-width: 1600px;
   margin: 0 auto;
+
+  // Material Card overrides
+  .mat-mdc-card {
+    border-radius: 12px !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+
+    .mat-mdc-card-header {
+      padding: 16px 16px 16px 16px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .mat-mdc-card-content {
+      padding: 16px;
+    }
+  }
+
+  // Material Form Field overrides
+  .mat-mdc-form-field {
+    width: 100%;
+
+    .mat-mdc-text-field-wrapper {
+      background-color: #fff;
+    }
+
+    .mdc-text-field--outlined {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #d1d5db;
+      }
+
+      &:hover .mdc-notched-outline {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: #10b981;
+        }
+      }
+    }
+
+    &.mat-focused {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #10b981 !important;
+      }
+    }
+  }
+
+  // Material Table overrides
+  .mat-mdc-table {
+    width: 100%;
+    background: transparent;
+
+    .mat-mdc-header-row {
+      background-color: #f9fafb;
+    }
+
+    .mat-mdc-header-cell {
+      font-weight: 600;
+      color: #374151;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mat-mdc-row {
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #f9fafb;
+      }
+    }
+
+    .mat-mdc-cell {
+      padding: 16px 12px;
+    }
+  }
+
+  // Material Select overrides
+  .mat-mdc-select {
+    .mat-mdc-select-trigger {
+      min-height: 40px;
+    }
+  }
+
+  // Material Button overrides
+  .mat-mdc-raised-button {
+    &.mat-primary {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+      color: white !important;
+    }
+  }
+
+  // Material Chip overrides
+  .mat-mdc-chip {
+    &.site-chip {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+      color: white !important;
+    }
+
+    &.active-chip {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+      color: white !important;
+    }
+
+    &.inactive-chip {
+      background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
+      color: white !important;
+    }
+  }
+
+  // Material Checkbox overrides
+  .mat-mdc-checkbox {
+    &.mat-mdc-checkbox-checked {
+      .mdc-checkbox__background {
+        background-color: #10b981 !important;
+        border-color: #10b981 !important;
+      }
+    }
+  }
 }
 
 .header {
@@ -190,14 +312,24 @@
     }
   }
 
+  .site-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
   .site-chip {
-    font-size: 12px;
-    min-height: 32px;
-    padding: 6px 14px;
-    border-radius: 16px;
+    font-size: 11px;
+    min-height: 24px;
+    padding: 4px 10px;
+    border-radius: 12px;
     font-weight: 500;
     background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     color: white;
+
+    &.all-sites {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
   }
 
   .active-chip {

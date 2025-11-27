@@ -1,7 +1,16 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.core.database import Base
+
+
+# Junction table for recipe book to site (many-to-many)
+recipe_book_sites = Table(
+    'recipe_book_sites',
+    Base.metadata,
+    Column('recipe_book_id', Integer, ForeignKey('recipe_books.id', ondelete='CASCADE'), primary_key=True),
+    Column('site_id', Integer, ForeignKey('sites.id', ondelete='CASCADE'), primary_key=True)
+)
 
 
 class RecipeBook(Base):
@@ -10,7 +19,7 @@ class RecipeBook(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     organization_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True)
-    site_id = Column(Integer, ForeignKey("sites.id", ondelete="CASCADE"), nullable=True, index=True)  # NULL = global to organization
+    site_id = Column(Integer, ForeignKey("sites.id", ondelete="CASCADE"), nullable=True, index=True)  # Deprecated - use sites relationship
     title = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
@@ -20,7 +29,8 @@ class RecipeBook(Base):
 
     # Relationships
     organization = relationship("Organization")
-    site = relationship("Site")
+    site = relationship("Site", foreign_keys=[site_id])  # Legacy single site
+    sites = relationship("Site", secondary=recipe_book_sites, backref="recipe_books")  # Multiple sites
     created_by = relationship("User")
     recipe_assignments = relationship("RecipeBookRecipe", back_populates="recipe_book", cascade="all, delete-orphan")
 

@@ -75,6 +75,7 @@ export interface RecipeCreateRequest {
   cost_per_unit?: number;
   notes?: string;
   ingredients: RecipeIngredient[];
+  allergens?: string[];
 }
 
 export interface RecipeUpdateRequest extends Partial<RecipeCreateRequest> {}

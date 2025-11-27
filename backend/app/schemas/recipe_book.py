@@ -3,11 +3,21 @@ from typing import Optional, List
 from datetime import datetime
 
 
+class SiteInfo(BaseModel):
+    """Minimal site info"""
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+
+
 class RecipeBookBase(BaseModel):
     """Base schema for RecipeBook"""
     title: str
     description: Optional[str] = None
-    site_id: Optional[int] = None  # NULL = global to organization
+    site_id: Optional[int] = None  # Legacy single site - deprecated
+    site_ids: Optional[List[int]] = None  # Multiple sites
     is_active: bool = True
 
 
@@ -20,14 +30,20 @@ class RecipeBookUpdate(BaseModel):
     """Update schema for RecipeBook"""
     title: Optional[str] = None
     description: Optional[str] = None
-    site_id: Optional[int] = None
+    site_id: Optional[int] = None  # Legacy
+    site_ids: Optional[List[int]] = None  # Multiple sites
     is_active: Optional[bool] = None
 
 
-class RecipeBookResponse(RecipeBookBase):
+class RecipeBookResponse(BaseModel):
     """Response schema for RecipeBook"""
     id: int
     organization_id: int
+    title: str
+    description: Optional[str] = None
+    site_id: Optional[int] = None  # Legacy
+    sites: List[SiteInfo] = []  # Multiple sites with names
+    is_active: bool = True
     created_by_user_id: int
     created_at: datetime
     updated_at: Optional[datetime] = None

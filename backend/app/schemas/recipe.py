@@ -21,6 +21,7 @@ class RecipeBase(BaseModel):
 class RecipeCreate(RecipeBase):
     """Create schema for Recipe"""
     ingredients: List[RecipeIngredientCreate] = []
+    allergens: List[str] = []  # Manual allergen selection
 
 
 class RecipeUpdate(BaseModel):
@@ -36,6 +37,7 @@ class RecipeUpdate(BaseModel):
     photo_url: Optional[str] = None
     is_archived: Optional[bool] = None
     ingredients: Optional[List[RecipeIngredientCreate]] = None
+    allergens: Optional[List[str]] = None  # Manual allergen selection
 
 
 class RecipeResponse(RecipeBase):

@@ -60,6 +60,8 @@ export class RecipeBooksAdminComponent implements OnInit {
   availableRecipes: any[] = [];
   sites: Site[] = [];
 
+  selectedSiteIds: number[] = [];
+
   constructor(
     private recipeBookService: RecipeBookService,
     private recipeService: RecipeService,
@@ -73,7 +75,7 @@ export class RecipeBooksAdminComponent implements OnInit {
     this.bookForm = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(255)]],
       description: [''],
-      site_id: [null],
+      site_ids: [[]],  // Multiple sites
       is_active: [true]
     });
   }
@@ -160,10 +162,11 @@ export class RecipeBooksAdminComponent implements OnInit {
   editBook(book: RecipeBook): void {
     this.isEditing = true;
     this.editingId = book.id;
+    const siteIds = book.sites?.map(s => s.id) || [];
     this.bookForm.patchValue({
       title: book.title,
       description: book.description,
-      site_id: book.site_id,
+      site_ids: siteIds,
       is_active: book.is_active
     });
   }
@@ -248,7 +251,7 @@ export class RecipeBooksAdminComponent implements OnInit {
     this.bookForm.reset({
       title: '',
       description: '',
-      site_id: null,
+      site_ids: [],
       is_active: true
     });
     this.isEditing = false;
@@ -268,6 +271,16 @@ export class RecipeBooksAdminComponent implements OnInit {
     if (!siteId) return 'All Sites';
     const site = this.sites.find(s => s.id === siteId);
     return site ? site.name : 'Unknown Site';
+  }
+
+  getSiteNames(book: RecipeBook): string {
+    if (book.sites && book.sites.length > 0) {
+      return book.sites.map(s => s.name).join(', ');
+    }
+    if (book.site_id) {
+      return this.getSiteName(book.site_id);
+    }
+    return 'All Sites';
   }
 
   getRecipeCount(bookId: number): string {

@@ -1,0 +1,31 @@
+// Allergen Keywords Admin Component Styles
+
+.mat-mdc-card {
+  border-radius: 8px;
+}
+
+.mat-expansion-panel {
+  margin-bottom: 8px;
+  border-radius: 8px !important;
+
+  &:first-of-type {
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+  }
+
+  &:last-of-type {
+    border-bottom-left-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+  }
+}
+
+.mat-mdc-chip {
+  &.mat-mdc-chip-selected {
+    background-color: #f97316 !important;
+    color: white !important;
+  }
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}

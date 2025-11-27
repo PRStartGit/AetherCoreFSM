@@ -19,6 +19,14 @@ export class RecipeFormComponent implements OnInit {
   submitting = false;
   error: string | null = null;
 
+  // UK 14 Allergens
+  allergens: string[] = [
+    'Celery', 'Cereals containing gluten', 'Crustaceans', 'Eggs', 'Fish',
+    'Lupin', 'Milk', 'Molluscs', 'Mustard', 'Nuts', 'Peanuts',
+    'Sesame seeds', 'Soybeans', 'Sulphur dioxide and sulphites'
+  ];
+  selectedAllergens: Set<string> = new Set();
+
   constructor(
     private fb: FormBuilder,
     private recipeService: RecipeService,
@@ -121,6 +129,11 @@ export class RecipeFormComponent implements OnInit {
           this.ingredients.push(ingredientGroup);
         });
 
+        // Load allergens
+        if (recipe.allergens) {
+          this.selectedAllergens = new Set(recipe.allergens);
+        }
+
         this.loading = false;
       },
       error: (err) => {
@@ -129,6 +142,22 @@ export class RecipeFormComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  toggleAllergen(allergen: string): void {
+    if (this.selectedAllergens.has(allergen)) {
+      this.selectedAllergens.delete(allergen);
+    } else {
+      this.selectedAllergens.add(allergen);
+    }
+  }
+
+  isAllergenSelected(allergen: string): boolean {
+    return this.selectedAllergens.has(allergen);
+  }
+
+  getSelectedAllergensArray(): string[] {
+    return Array.from(this.selectedAllergens);
   }
 
   onSubmit(): void {
@@ -140,7 +169,10 @@ export class RecipeFormComponent implements OnInit {
     this.submitting = true;
     this.error = null;
 
-    const formValue = this.recipeForm.value;
+    const formValue = {
+      ...this.recipeForm.value,
+      allergens: Array.from(this.selectedAllergens)
+    };
 
     if (this.isEditMode && this.recipeId) {
       this.recipeService.updateRecipe(this.recipeId, formValue).subscribe({

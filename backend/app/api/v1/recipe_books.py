@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 from datetime import datetime
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.core.recipe_permissions import has_recipe_access, has_recipe_crud
 from app.models.user import User
+from app.models.site import Site
 from app.models.recipe_book import RecipeBook, RecipeBookRecipe
 from app.models.recipe import Recipe
 from app.schemas.recipe_book import (
@@ -15,10 +16,29 @@ from app.schemas.recipe_book import (
     RecipeBookWithRecipes,
     RecipeInBook,
     AddRecipeToBook,
-    RemoveRecipeFromBook
+    RemoveRecipeFromBook,
+    SiteInfo
 )
 
 router = APIRouter()
+
+
+def _build_book_response(book: RecipeBook) -> RecipeBookResponse:
+    """Build RecipeBookResponse with sites info"""
+    sites_info = [SiteInfo(id=site.id, name=site.name) for site in book.sites] if book.sites else []
+
+    return RecipeBookResponse(
+        id=book.id,
+        organization_id=book.organization_id,
+        title=book.title,
+        description=book.description,
+        site_id=book.site_id,
+        sites=sites_info,
+        is_active=book.is_active,
+        created_by_user_id=book.created_by_user_id,
+        created_at=book.created_at,
+        updated_at=book.updated_at
+    )
 
 
 @router.post("", response_model=RecipeBookResponse, status_code=status.HTTP_201_CREATED)
@@ -52,7 +72,7 @@ def create_recipe_book(
     # Create recipe book
     new_book = RecipeBook(
         organization_id=current_user.organization_id,
-        site_id=book.site_id,
+        site_id=book.site_id,  # Legacy support
         title=book.title,
         description=book.description,
         is_active=book.is_active,
@@ -60,10 +80,18 @@ def create_recipe_book(
     )
 
     db.add(new_book)
+    db.flush()  # Get the ID
+
+    # Handle multi-site assignment
+    if book.site_ids:
+        sites = db.query(Site).filter(Site.id.in_(book.site_ids)).all()
+        new_book.sites = sites
+
     db.commit()
     db.refresh(new_book)
 
-    return new_book
+    # Build response with sites
+    return _build_book_response(new_book)
 
 
 @router.get("", response_model=List[RecipeBookResponse])
@@ -86,7 +114,7 @@ def get_recipe_books(
             detail="You do not have access to the Recipe Book module"
         )
 
-    query = db.query(RecipeBook)
+    query = db.query(RecipeBook).options(joinedload(RecipeBook.sites))
 
     # Super admin can see all recipe books or filter by organization
     if current_user.role == UserRole.SUPER_ADMIN:
@@ -102,16 +130,20 @@ def get_recipe_books(
             )
         query = query.filter(RecipeBook.organization_id == current_user.organization_id)
 
-    # Filter by site if specified
+    # Filter by site if specified (check both legacy site_id and multi-site)
     if site_id is not None:
-        query = query.filter(RecipeBook.site_id == site_id)
+        from app.models.recipe_book import recipe_book_sites
+        query = query.filter(
+            (RecipeBook.site_id == site_id) |
+            RecipeBook.sites.any(Site.id == site_id)
+        )
 
     # Filter by active status
     if not include_inactive:
         query = query.filter(RecipeBook.is_active == True)
 
     books = query.offset(skip).limit(limit).all()
-    return books
+    return [_build_book_response(book) for book in books]
 
 
 @router.get("/{book_id}", response_model=RecipeBookWithRecipes)
@@ -130,7 +162,7 @@ def get_recipe_book(
             detail="You do not have access to the Recipe Book module"
         )
 
-    book = db.query(RecipeBook).filter(RecipeBook.id == book_id).first()
+    book = db.query(RecipeBook).options(joinedload(RecipeBook.sites)).filter(RecipeBook.id == book_id).first()
     if not book:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -163,14 +195,13 @@ def get_recipe_book(
             added_at=assignment.added_at
         ))
 
-    # Build response
-    response_dict = {
-        **RecipeBookResponse.model_validate(book).model_dump(),
-        "recipes": recipes,
-        "recipe_count": len(recipes)
-    }
-
-    return RecipeBookWithRecipes(**response_dict)
+    # Build response with sites
+    book_response = _build_book_response(book)
+    return RecipeBookWithRecipes(
+        **book_response.model_dump(),
+        recipes=recipes,
+        recipe_count=len(recipes)
+    )
 
 
 @router.put("/{book_id}", response_model=RecipeBookResponse)
@@ -196,7 +227,7 @@ def update_recipe_book(
         )
 
     # Check book exists
-    db_book = db.query(RecipeBook).filter(RecipeBook.id == book_id).first()
+    db_book = db.query(RecipeBook).options(joinedload(RecipeBook.sites)).filter(RecipeBook.id == book_id).first()
     if not db_book:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -210,15 +241,20 @@ def update_recipe_book(
             detail="Recipe book belongs to a different organization"
         )
 
-    # Update fields
-    update_data = book.model_dump(exclude_unset=True)
+    # Update fields (excluding site_ids which needs special handling)
+    update_data = book.model_dump(exclude_unset=True, exclude={'site_ids'})
     for field, value in update_data.items():
         setattr(db_book, field, value)
+
+    # Handle multi-site assignment
+    if book.site_ids is not None:
+        sites = db.query(Site).filter(Site.id.in_(book.site_ids)).all() if book.site_ids else []
+        db_book.sites = sites
 
     db.commit()
     db.refresh(db_book)
 
-    return db_book
+    return _build_book_response(db_book)
 
 
 @router.delete("/{book_id}", status_code=status.HTTP_204_NO_CONTENT)

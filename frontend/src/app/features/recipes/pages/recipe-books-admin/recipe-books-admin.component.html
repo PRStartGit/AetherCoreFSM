@@ -36,14 +36,13 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Site</mat-label>
-              <mat-select formControlName="site_id">
-                <mat-option [value]="null">All Sites (Organization-wide)</mat-option>
+              <mat-label>Sites</mat-label>
+              <mat-select formControlName="site_ids" multiple>
                 <mat-option *ngFor="let site of sites" [value]="site.id">
                   {{ site.name }}
                 </mat-option>
               </mat-select>
-              <mat-hint>Leave as "All Sites" for organization-wide access</mat-hint>
+              <mat-hint>Select sites for this recipe book. Leave empty for all sites.</mat-hint>
             </mat-form-field>
 
             <div class="checkbox-field">
@@ -83,11 +82,16 @@
 
             <!-- Site Column -->
             <ng-container matColumnDef="site">
-              <th mat-header-cell *matHeaderCellDef>Site</th>
+              <th mat-header-cell *matHeaderCellDef>Sites</th>
               <td mat-cell *matCellDef="let book">
-                <mat-chip class="site-chip">
-                  {{ getSiteName(book.site_id) }}
-                </mat-chip>
+                <div class="site-chips">
+                  <mat-chip *ngIf="!book.sites || book.sites.length === 0" class="site-chip all-sites">
+                    All Sites
+                  </mat-chip>
+                  <mat-chip *ngFor="let site of book.sites" class="site-chip">
+                    {{ site.name }}
+                  </mat-chip>
+                </div>
               </td>
             </ng-container>
 
@@ -161,7 +165,7 @@
 
         <mat-card-content>
           <div class="book-info">
-            <p><strong>Site:</strong> {{ getSiteName(selectedBook.site_id) }}</p>
+            <p><strong>Sites:</strong> {{ getSiteNames(selectedBook) }}</p>
             <p><strong>Status:</strong>
               <mat-chip [class.active-chip]="selectedBook.is_active" [class.inactive-chip]="!selectedBook.is_active">
                 {{ selectedBook.is_active ? 'Active' : 'Inactive' }}

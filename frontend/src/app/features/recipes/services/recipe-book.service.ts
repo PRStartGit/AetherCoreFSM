@@ -2,10 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface SiteInfo {
+  id: number;
+  name: string;
+}
+
 export interface RecipeBook {
   id: number;
   organization_id: number;
-  site_id?: number | null;
+  site_id?: number | null;  // Legacy single site
+  sites: SiteInfo[];  // Multiple sites
   title: string;
   description?: string | null;
   is_active: boolean;
@@ -32,14 +38,16 @@ export interface RecipeBookWithRecipes extends RecipeBook {
 export interface RecipeBookCreate {
   title: string;
   description?: string | null;
-  site_id?: number | null;
+  site_id?: number | null;  // Legacy
+  site_ids?: number[];  // Multiple sites
   is_active?: boolean;
 }
 
 export interface RecipeBookUpdate {
   title?: string;
   description?: string | null;
-  site_id?: number | null;
+  site_id?: number | null;  // Legacy
+  site_ids?: number[];  // Multiple sites
   is_active?: boolean;
 }
 

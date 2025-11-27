@@ -38,6 +38,13 @@ const routes: Routes = [
     data: { roles: ['super_admin'] }
   },
   {
+    path: 'admin/allergens',
+    loadComponent: () => import('./pages/allergen-keywords-admin/allergen-keywords-admin.component')
+      .then(m => m.AllergenKeywordsAdminComponent),
+    canActivate: [RoleGuard],
+    data: { roles: ['super_admin'] }
+  },
+  {
     path: 'admin/books',
     loadComponent: () => import('./pages/recipe-books-admin/recipe-books-admin.component')
       .then(m => m.RecipeBooksAdminComponent),

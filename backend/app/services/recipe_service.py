@@ -36,7 +36,7 @@ class RecipeService:
             Created Recipe
         """
         # Create recipe
-        recipe_dict = recipe_data.model_dump(exclude={'ingredients'})
+        recipe_dict = recipe_data.model_dump(exclude={'ingredients', 'allergens'})
         db_recipe = Recipe(
             **recipe_dict,
             organization_id=organization_id,
@@ -57,10 +57,15 @@ class RecipeService:
         db.commit()
         db.refresh(db_recipe)
 
-        # Detect and save allergens
-        ingredient_names = [ing.name for ing in recipe_data.ingredients]
-        allergens = AllergenService.detect_allergens(ingredient_names, db)
-        AllergenService.update_recipe_allergens(db_recipe.id, allergens, db)
+        # Handle allergens: use manual selection if provided, otherwise auto-detect
+        if recipe_data.allergens:
+            # Use manually selected allergens
+            AllergenService.update_recipe_allergens(db_recipe.id, set(recipe_data.allergens), db)
+        else:
+            # Auto-detect allergens from ingredients
+            ingredient_names = [ing.name for ing in recipe_data.ingredients]
+            allergens = AllergenService.detect_allergens(ingredient_names, db)
+            AllergenService.update_recipe_allergens(db_recipe.id, allergens, db)
 
         return db_recipe
 
@@ -151,7 +156,7 @@ class RecipeService:
         if not db_recipe:
             return None
 
-        update_dict = recipe_data.model_dump(exclude_unset=True, exclude={'ingredients'})
+        update_dict = recipe_data.model_dump(exclude_unset=True, exclude={'ingredients', 'allergens'})
 
         for key, value in update_dict.items():
             setattr(db_recipe, key, value)
@@ -172,7 +177,12 @@ class RecipeService:
                 )
                 db.add(db_ingredient)
 
-            # Re-detect allergens
+        # Handle allergens: use manual selection if provided, otherwise auto-detect
+        if recipe_data.allergens is not None:
+            # Use manually selected allergens
+            AllergenService.update_recipe_allergens(recipe_id, set(recipe_data.allergens), db)
+        elif recipe_data.ingredients is not None:
+            # Auto-detect allergens from new ingredients
             ingredient_names = [ing.name for ing in recipe_data.ingredients]
             allergens = AllergenService.detect_allergens(ingredient_names, db)
             AllergenService.update_recipe_allergens(recipe_id, allergens, db)

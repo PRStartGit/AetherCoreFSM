@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecipeService } from '../../services/recipe.service';
+import { RecipeBookService, RecipeBook } from '../../services/recipe-book.service';
 import { RecipeWithDetails } from '../../models/recipe.models';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { User, UserRole } from '../../../../core/models';
@@ -19,10 +20,18 @@ export class RecipeDetailComponent implements OnInit {
   showDeleteConfirm = false;
   deleting = false;
 
+  // Add to collection modal
+  showAddToCollectionModal = false;
+  recipeBooks: RecipeBook[] = [];
+  loadingBooks = false;
+  addingToBook = false;
+  selectedBookId: number | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private recipeService: RecipeService,
+    private recipeBookService: RecipeBookService,
     private authService: AuthService
   ) {}
 
@@ -116,5 +125,52 @@ export class RecipeDetailComponent implements OnInit {
 
   backToList(): void {
     this.router.navigate(['/recipes/list']);
+  }
+
+  openAddToCollectionModal(): void {
+    this.showAddToCollectionModal = true;
+    this.loadRecipeBooks();
+  }
+
+  closeAddToCollectionModal(): void {
+    this.showAddToCollectionModal = false;
+    this.selectedBookId = null;
+  }
+
+  loadRecipeBooks(): void {
+    this.loadingBooks = true;
+    this.recipeBookService.getAll({ include_inactive: false }).subscribe({
+      next: (books) => {
+        this.recipeBooks = books;
+        this.loadingBooks = false;
+      },
+      error: (err) => {
+        console.error('Failed to load recipe books:', err);
+        this.loadingBooks = false;
+      }
+    });
+  }
+
+  addToCollection(): void {
+    if (!this.selectedBookId || !this.recipe) return;
+
+    this.addingToBook = true;
+    this.recipeBookService.addRecipe(this.selectedBookId, { recipe_id: this.recipe.id }).subscribe({
+      next: () => {
+        this.addingToBook = false;
+        this.closeAddToCollectionModal();
+        // Show success message (could use a snackbar)
+        alert('Recipe added to collection successfully!');
+      },
+      error: (err) => {
+        console.error('Failed to add recipe to collection:', err);
+        this.addingToBook = false;
+        if (err.error?.detail) {
+          alert(err.error.detail);
+        } else {
+          alert('Failed to add recipe to collection. Please try again.');
+        }
+      }
+    });
   }
 }
