@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { RecipeService } from '../../services/recipe.service';
 import { Recipe, RecipeCategory } from '../../models/recipe.models';
 import { AuthService } from '../../../../core/auth/auth.service';
@@ -33,7 +34,8 @@ export class RecipeListComponent implements OnInit {
   constructor(
     private recipeService: RecipeService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -112,5 +114,9 @@ export class RecipeListComponent implements OnInit {
 
   createRecipe(): void {
     this.router.navigate(['/recipes/create']);
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

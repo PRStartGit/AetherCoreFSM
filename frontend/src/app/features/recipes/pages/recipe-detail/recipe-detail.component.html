@@ -91,11 +91,11 @@
           </span>
           <span *ngIf="recipe.yield_quantity" class="flex items-center gap-1">
             <i class="fa-solid fa-utensils text-green-600"></i>
-            Yield: {{ recipe.yield_quantity }} {{ recipe.yield_unit }}
+            Yield: {{ recipe.yield_quantity | number:'1.0-2' }} {{ recipe.yield_unit }}
           </span>
           <span *ngIf="recipe.cost_per_unit" class="flex items-center gap-1">
             <i class="fa-solid fa-pound-sign text-green-600"></i>
-            £{{ recipe.cost_per_unit }}
+            £{{ recipe.cost_per_unit | number:'1.2-2' }}
           </span>
         </div>
       </div>
@@ -132,7 +132,7 @@
                  class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
               <i class="fa-solid fa-check-circle text-green-600 mt-1"></i>
               <div class="flex-1">
-                <span class="font-medium">{{ ingredient.quantity }}</span>
+                <span class="font-medium">{{ ingredient.quantity | number:'1.0-2' }}</span>
                 <span class="text-gray-600 mx-1">{{ ingredient.unit }}</span>
                 <span>{{ ingredient.name }}</span>
               </div>

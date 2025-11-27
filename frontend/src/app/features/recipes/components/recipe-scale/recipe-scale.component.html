@@ -22,7 +22,7 @@
         <div class="bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-4 mb-4">
           <p class="text-blue-800 text-sm">
             <i class="fa-solid fa-info-circle mr-2"></i>
-            Original recipe yields: <strong>{{ recipe.yield_quantity }} {{ recipe.yield_unit }}</strong>
+            Original recipe yields: <strong>{{ recipe.yield_quantity | number:'1.0-2' }} {{ recipe.yield_unit }}</strong>
           </p>
         </div>
 
@@ -68,11 +68,11 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div>
               <span class="text-purple-800">Original Yield:</span>
-              <span class="font-semibold ml-2">{{ scaledRecipe.original_yield }} {{ scaledRecipe.yield_unit }}</span>
+              <span class="font-semibold ml-2">{{ scaledRecipe.original_yield | number:'1.0-2' }} {{ scaledRecipe.yield_unit }}</span>
             </div>
             <div>
               <span class="text-purple-800">New Yield:</span>
-              <span class="font-semibold ml-2">{{ scaledRecipe.scaled_yield }} {{ scaledRecipe.yield_unit }}</span>
+              <span class="font-semibold ml-2">{{ scaledRecipe.scaled_yield | number:'1.0-2' }} {{ scaledRecipe.yield_unit }}</span>
             </div>
             <div>
               <span class="text-purple-800">Scale Factor:</span>
@@ -110,7 +110,7 @@
                 <span class="font-bold text-purple-600">{{ ingredient.scaled_quantity | number:'1.0-2' }}</span>
                 <span class="text-gray-600 mx-1">{{ ingredient.unit }}</span>
                 <span>{{ ingredient.name }}</span>
-                <span class="text-sm text-gray-500 ml-2">(was {{ ingredient.original_quantity }})</span>
+                <span class="text-sm text-gray-500 ml-2">(was {{ ingredient.original_quantity | number:'1.0-2' }})</span>
               </div>
             </div>
           </div>
