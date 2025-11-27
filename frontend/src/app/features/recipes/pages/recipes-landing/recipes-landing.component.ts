@@ -91,6 +91,10 @@ export class RecipesLandingComponent implements OnInit {
     });
   }
 
+  isSuperAdmin(): boolean {
+    return this.currentUser?.role === UserRole.SUPER_ADMIN;
+  }
+
   hasCrudAccess(): boolean {
     if (!this.currentUser) return false;
 
