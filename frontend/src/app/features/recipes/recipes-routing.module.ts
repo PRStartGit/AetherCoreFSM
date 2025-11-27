@@ -4,9 +4,6 @@ import { RecipesLandingComponent } from './pages/recipes-landing/recipes-landing
 import { RecipeListComponent } from './pages/recipe-list/recipe-list.component';
 import { RecipeFormComponent } from './pages/recipe-form/recipe-form.component';
 import { RecipeDetailComponent } from './pages/recipe-detail/recipe-detail.component';
-import { RecipeCategoriesAdminComponent } from './pages/recipe-categories-admin/recipe-categories-admin.component';
-import { IngredientUnitsAdminComponent } from './pages/ingredient-units-admin/ingredient-units-admin.component';
-import { RecipeBooksAdminComponent } from './pages/recipe-books-admin/recipe-books-admin.component';
 import { RecipesAccessGuard } from './guards/recipes-access.guard';
 import { RecipesEditGuard } from './guards/recipes-edit.guard';
 import { RoleGuard } from '../../core/guards/role.guard';
@@ -28,19 +25,22 @@ const routes: Routes = [
   },
   {
     path: 'admin/categories',
-    component: RecipeCategoriesAdminComponent,
+    loadComponent: () => import('./pages/recipe-categories-admin/recipe-categories-admin.component')
+      .then(m => m.RecipeCategoriesAdminComponent),
     canActivate: [RoleGuard],
     data: { roles: ['super_admin'] }
   },
   {
     path: 'admin/units',
-    component: IngredientUnitsAdminComponent,
+    loadComponent: () => import('./pages/ingredient-units-admin/ingredient-units-admin.component')
+      .then(m => m.IngredientUnitsAdminComponent),
     canActivate: [RoleGuard],
     data: { roles: ['super_admin'] }
   },
   {
     path: 'admin/books',
-    component: RecipeBooksAdminComponent,
+    loadComponent: () => import('./pages/recipe-books-admin/recipe-books-admin.component')
+      .then(m => m.RecipeBooksAdminComponent),
     canActivate: [RecipesEditGuard]
   },
   {
