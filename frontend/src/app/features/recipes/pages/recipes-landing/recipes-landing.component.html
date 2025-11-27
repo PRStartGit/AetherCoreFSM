@@ -109,6 +109,20 @@
           </div>
         </div>
       </a>
+
+      <a *ngIf="hasCrudAccess()" routerLink="/recipes/admin/books" class="block">
+        <div class="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-green-500">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+              <i class="fa-solid fa-book-bookmark text-3xl text-white"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-gray-900">Recipe Books</h2>
+              <p class="text-gray-600 text-sm mt-1">Manage recipe book collections</p>
+            </div>
+          </div>
+        </div>
+      </a>
     </div>
 
     <!-- Future: Phase 2/3 features will appear here -->
