@@ -34,7 +34,22 @@ export class RecipesAccessGuard implements CanActivate {
           return of(true);
         }
 
-        // Org admins have access if module is enabled for their organization
+        // Org admins have automatic access if recipes module is enabled for their org
+        if (currentUser.role === UserRole.ORG_ADMIN) {
+          return this.checkOrgModuleEnabled('recipes').pipe(
+            map(enabled => {
+              if (!enabled) {
+                this.router.navigate(['/recipes']);
+              }
+              return enabled;
+            }),
+            catchError(() => {
+              this.router.navigate(['/recipes']);
+              return of(false);
+            })
+          );
+        }
+
         // Regular users need "Zynthio Recipes" module access
         return this.getUserModuleAccess(currentUser.id).pipe(
           map(modules => {
@@ -60,5 +75,9 @@ export class RecipesAccessGuard implements CanActivate {
 
   private getUserModuleAccess(userId: number): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/users/${userId}/module-access`);
+  }
+
+  private checkOrgModuleEnabled(moduleName: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/organizations/modules/${moduleName}/enabled`);
   }
 }

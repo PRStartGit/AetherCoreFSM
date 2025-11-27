@@ -254,6 +254,25 @@ def get_organization_modules(
     ]
 
 
+@router.get("/organizations/modules/{module_name}/enabled")
+def check_module_enabled_for_current_org(
+    module_name: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Check if a module is enabled for the current user's organization."""
+    if not current_user.organization_id:
+        return False
+
+    org_module = db.query(OrganizationModule).filter(
+        OrganizationModule.organization_id == current_user.organization_id,
+        OrganizationModule.module_name == module_name,
+        OrganizationModule.is_enabled == True
+    ).first()
+
+    return org_module is not None
+
+
 @router.post("/organizations/{org_id}/modules/{module_name}/enable")
 def enable_organization_module(
     org_id: int,

@@ -43,14 +43,33 @@ export class RecipesLandingComponent implements OnInit {
   checkAccess(): void {
     if (!this.currentUser) return;
 
-    // Super admins have automatic access
+    // Super admins always have access
     if (this.currentUser.role === UserRole.SUPER_ADMIN) {
       this.hasRecipeAccess = true;
       this.loading = false;
       return;
     }
 
-    // Check module access for other users
+    // Org admins have automatic access if their organization has the recipes module enabled
+    if (this.currentUser.role === UserRole.ORG_ADMIN) {
+      // Check if organization has recipes module enabled
+      this.checkOrgModuleEnabled('recipes').subscribe({
+        next: (enabled) => {
+          this.hasRecipeAccess = enabled;
+          if (!this.hasRecipeAccess) {
+            this.loadOrgAdmins();
+          }
+          this.loading = false;
+        },
+        error: () => {
+          this.hasRecipeAccess = false;
+          this.loading = false;
+        }
+      });
+      return;
+    }
+
+    // Check module access for regular users
     this.getUserModuleAccess(this.currentUser.id).subscribe({
       next: (modules) => {
         this.hasRecipeAccess = modules.includes('Zynthio Recipes');
@@ -72,6 +91,10 @@ export class RecipesLandingComponent implements OnInit {
 
   getUserModuleAccess(userId: number) {
     return this.http.get<string[]>(`${this.apiUrl}/users/${userId}/module-access`);
+  }
+
+  checkOrgModuleEnabled(moduleName: string) {
+    return this.http.get<boolean>(`${this.apiUrl}/organizations/modules/${moduleName}/enabled`);
   }
 
   loadOrgAdmins(): void {
