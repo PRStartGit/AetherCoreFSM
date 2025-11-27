@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RecipeService } from '../../services/recipe.service';
 import { RecipeCategory } from '../../models/recipe.models';
 
@@ -17,6 +19,7 @@ import { RecipeCategory } from '../../models/recipe.models';
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     ReactiveFormsModule,
     MatTableModule,
     MatButtonModule,
@@ -25,10 +28,12 @@ import { RecipeCategory } from '../../models/recipe.models';
     MatFormFieldModule,
     MatInputModule,
     MatCardModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTooltipModule
   ],
   templateUrl: './recipe-categories-admin.component.html',
-  styleUrls: ['./recipe-categories-admin.component.scss']
+  styleUrls: ['./recipe-categories-admin.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class RecipeCategoriesAdminComponent implements OnInit {
   categories: RecipeCategory[] = [];

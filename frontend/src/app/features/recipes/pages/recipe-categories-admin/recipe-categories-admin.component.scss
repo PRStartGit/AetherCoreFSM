@@ -1,81 +1,13 @@
-.container {
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+// Import shared admin styles
+@import '../../styles/recipe-admin-shared.scss';
 
-  h1 {
-    margin-bottom: 24px;
-    color: #333;
-  }
-}
-
-.header-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-
-  h1 {
-    margin: 0;
-  }
-
-  .back-button {
-    color: #666;
-  }
-}
-
-.form-card, .table-card {
-  margin-bottom: 24px;
-}
-
-.form-row {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-
-  mat-form-field {
-    flex: 1;
-
-    &:last-child {
-      max-width: 200px;
+// Component-specific overrides if needed
+.recipe-admin-container {
+  .categories-table {
+    .sort-order-cell {
+      text-align: center;
+      font-weight: 500;
+      color: #6b7280;
     }
   }
-}
-
-.full-width {
-  width: 100%;
-}
-
-.form-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-table {
-  width: 100%;
-
-  th {
-    font-weight: 600;
-    color: #666;
-  }
-
-  td, th {
-    padding: 12px 8px;
-  }
-}
-
-.no-data {
-  text-align: center;
-  padding: 48px 24px;
-  color: #999;
-
-  p {
-    margin: 0;
-    font-size: 16px;
-  }
-}
-
-button[mat-icon-button] {
-  margin: 0 4px;
 }

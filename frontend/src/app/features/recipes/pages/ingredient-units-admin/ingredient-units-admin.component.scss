@@ -1,81 +1,55 @@
-.container {
-  padding: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
+// Import shared admin styles
+@import '../../styles/recipe-admin-shared.scss';
 
-  h1 {
-    margin-bottom: 24px;
-    color: #333;
-  }
-}
+// Component-specific overrides
+.recipe-admin-container {
+  .units-table {
+    .category-cell {
+      text-transform: capitalize;
+    }
 
-.header-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
+    .sort-order-cell {
+      text-align: center;
+      font-weight: 500;
+      color: #6b7280;
+    }
 
-  h1 {
-    margin: 0;
-  }
-
-  .back-button {
-    color: #666;
-  }
-}
-
-.form-card, .table-card {
-  margin-bottom: 24px;
-}
-
-.form-row {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-
-  mat-form-field {
-    flex: 1;
-
-    &.sort-order-field {
-      max-width: 150px;
+    .name-cell {
+      font-family: 'Fira Code', 'Monaco', monospace;
+      font-size: 13px;
+      background: #f3f4f6;
+      padding: 4px 8px;
+      border-radius: 4px;
     }
   }
-}
 
-.full-width {
-  width: 100%;
-}
+  // Category badges
+  .category-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
 
-.form-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-}
+    &.weight {
+      background: #dbeafe;
+      color: #1e40af;
+    }
 
-table {
-  width: 100%;
+    &.volume {
+      background: #dcfce7;
+      color: #166534;
+    }
 
-  th {
-    font-weight: 600;
-    color: #666;
+    &.count {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    &.other {
+      background: #f3f4f6;
+      color: #374151;
+    }
   }
-
-  td, th {
-    padding: 12px 8px;
-  }
-}
-
-.no-data {
-  text-align: center;
-  padding: 48px 24px;
-  color: #999;
-
-  p {
-    margin: 0;
-    font-size: 16px;
-  }
-}
-
-button[mat-icon-button] {
-  margin: 0 4px;
 }

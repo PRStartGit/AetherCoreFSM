@@ -1,31 +1,42 @@
-// Allergen Keywords Admin Component Styles
+// Import shared admin styles
+@import '../../styles/recipe-admin-shared.scss';
 
-.mat-mdc-card {
-  border-radius: 8px;
-}
+// Component-specific overrides
+.recipe-admin-container {
+  // Keyword chips in expansion panels
+  .keyword-chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 0;
 
-.mat-expansion-panel {
-  margin-bottom: 8px;
-  border-radius: 8px !important;
+    .mat-mdc-chip {
+      cursor: pointer;
+      transition: all 0.2s ease;
 
-  &:first-of-type {
-    border-top-left-radius: 8px !important;
-    border-top-right-radius: 8px !important;
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+      }
+    }
   }
 
-  &:last-of-type {
-    border-bottom-left-radius: 8px !important;
-    border-bottom-right-radius: 8px !important;
+  // Expansion panel count badge
+  .allergen-count {
+    padding: 4px 12px;
+    background: #fff7ed;
+    color: #c2410c;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
   }
-}
 
-.mat-mdc-chip {
-  &.mat-mdc-chip-selected {
-    background-color: #f97316 !important;
-    color: white !important;
+  // Empty state in panels
+  .empty-allergen {
+    color: #9ca3af;
+    font-size: 14px;
+    padding: 16px 0;
+    text-align: center;
+    font-style: italic;
   }
-}
-
-.mat-mdc-form-field {
-  width: 100%;
 }
