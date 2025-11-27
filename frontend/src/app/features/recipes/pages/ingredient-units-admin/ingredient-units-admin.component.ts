@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -45,7 +45,8 @@ export class IngredientUnitsAdminComponent implements OnInit {
     private recipeService: RecipeService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private location: Location
   ) {
     this.unitForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(50)]],
@@ -137,5 +138,9 @@ export class IngredientUnitsAdminComponent implements OnInit {
     this.unitForm.reset({ sort_order: 0, category: '' });
     this.isEditing = false;
     this.editingId = null;
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

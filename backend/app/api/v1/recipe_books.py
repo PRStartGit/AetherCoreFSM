@@ -70,12 +70,15 @@ def create_recipe_book(
 def get_recipe_books(
     site_id: Optional[int] = Query(None, description="Filter by site (NULL = organization-global)"),
     include_inactive: bool = Query(False, description="Include inactive recipe books"),
+    organization_id: Optional[int] = Query(None, description="Filter by organization (super admin only)"),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=100),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Get recipe books for user's organization"""
+    """Get recipe books for user's organization (super admin can see all)"""
+    from app.models.user import UserRole
+
     # Check access permission
     if not has_recipe_access(current_user, db):
         raise HTTPException(
@@ -83,15 +86,21 @@ def get_recipe_books(
             detail="You do not have access to the Recipe Book module"
         )
 
-    if not current_user.organization_id:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User must belong to an organization"
-        )
+    query = db.query(RecipeBook)
 
-    query = db.query(RecipeBook).filter(
-        RecipeBook.organization_id == current_user.organization_id
-    )
+    # Super admin can see all recipe books or filter by organization
+    if current_user.role == UserRole.SUPER_ADMIN:
+        if organization_id is not None:
+            query = query.filter(RecipeBook.organization_id == organization_id)
+        # If no organization_id, show all
+    else:
+        # Non-super admins can only see their own organization
+        if not current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User must belong to an organization"
+            )
+        query = query.filter(RecipeBook.organization_id == current_user.organization_id)
 
     # Filter by site if specified
     if site_id is not None:
@@ -112,6 +121,8 @@ def get_recipe_book(
     current_user: User = Depends(get_current_user)
 ):
     """Get recipe book by ID with its recipes"""
+    from app.models.user import UserRole
+
     # Check access permission
     if not has_recipe_access(current_user, db):
         raise HTTPException(
@@ -126,12 +137,13 @@ def get_recipe_book(
             detail="Recipe book not found"
         )
 
-    # Check organization match
-    if book.organization_id != current_user.organization_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Recipe book belongs to a different organization"
-        )
+    # Super admin can view any book; others must match organization
+    if current_user.role != UserRole.SUPER_ADMIN:
+        if book.organization_id != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Recipe book belongs to a different organization"
+            )
 
     # Get recipes in this book
     recipe_assignments = db.query(RecipeBookRecipe).filter(

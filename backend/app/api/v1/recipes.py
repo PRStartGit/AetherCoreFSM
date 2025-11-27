@@ -61,12 +61,15 @@ def get_recipes(
     category_id: Optional[int] = Query(None, description="Filter by category"),
     allergen: Optional[str] = Query(None, description="Exclude recipes with this allergen"),
     include_archived: bool = Query(False, description="Include archived recipes"),
+    organization_id: Optional[int] = Query(None, description="Filter by organization (super admin only)"),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=100),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Get recipes for user's organization"""
+    """Get recipes for user's organization (super admin can see all)"""
+    from app.models.user import UserRole
+
     # Check access permission
     if not has_recipe_access(current_user, db):
         raise HTTPException(
@@ -74,14 +77,21 @@ def get_recipes(
             detail="You do not have access to the Recipe Book module"
         )
 
-    if not current_user.organization_id:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User must belong to an organization"
-        )
+    # Super admin can see all recipes or filter by organization
+    if current_user.role == UserRole.SUPER_ADMIN:
+        # If organization_id specified, filter by that; otherwise get all
+        org_filter = organization_id
+    else:
+        # Non-super admins can only see their own organization
+        if not current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User must belong to an organization"
+            )
+        org_filter = current_user.organization_id
 
     return RecipeService.get_recipes(
-        current_user.organization_id,
+        org_filter,
         db,
         search=search,
         category_id=category_id,
@@ -99,6 +109,8 @@ def get_recipe(
     current_user: User = Depends(get_current_user)
 ):
     """Get recipe by ID with ingredients and allergens"""
+    from app.models.user import UserRole
+
     # Check access permission
     if not has_recipe_access(current_user, db):
         raise HTTPException(
@@ -113,12 +125,13 @@ def get_recipe(
             detail="Recipe not found"
         )
 
-    # Check organization match
-    if recipe.organization_id != current_user.organization_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Recipe belongs to a different organization"
-        )
+    # Super admin can view any recipe; others must match organization
+    if current_user.role != UserRole.SUPER_ADMIN:
+        if recipe.organization_id != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Recipe belongs to a different organization"
+            )
 
     # Build response with details
     allergens = AllergenService.get_recipe_allergens(recipe.id, db)

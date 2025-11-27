@@ -75,7 +75,7 @@ class RecipeService:
 
     @staticmethod
     def get_recipes(
-        organization_id: int,
+        organization_id: Optional[int],
         db: Session,
         search: Optional[str] = None,
         category_id: Optional[int] = None,
@@ -88,7 +88,7 @@ class RecipeService:
         Get recipes for an organization with filters
 
         Args:
-            organization_id: Organization ID
+            organization_id: Organization ID (None = all organizations for super admin)
             db: Database session
             search: Search term for recipe title
             category_id: Filter by category
@@ -100,9 +100,11 @@ class RecipeService:
         Returns:
             List of recipes
         """
-        query = db.query(Recipe).filter(
-            Recipe.organization_id == organization_id
-        )
+        query = db.query(Recipe)
+
+        # Filter by organization if specified
+        if organization_id is not None:
+            query = query.filter(Recipe.organization_id == organization_id)
 
         if not include_archived:
             query = query.filter(Recipe.is_archived == False)
