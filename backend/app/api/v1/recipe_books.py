@@ -234,6 +234,8 @@ def update_recipe_book(
             detail="You do not have access to the Recipe Book module"
         )
 
+    from app.models.user import UserRole
+
     # Check book exists
     db_book = db.query(RecipeBook).options(joinedload(RecipeBook.sites)).filter(RecipeBook.id == book_id).first()
     if not db_book:
@@ -242,8 +244,8 @@ def update_recipe_book(
             detail="Recipe book not found"
         )
 
-    # Check organization match
-    if db_book.organization_id != current_user.organization_id:
+    # Check organization match (super admin can edit any org's books)
+    if current_user.role != UserRole.SUPER_ADMIN and db_book.organization_id != current_user.organization_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Recipe book belongs to a different organization"
@@ -286,6 +288,8 @@ def delete_recipe_book(
             detail="You do not have access to the Recipe Book module"
         )
 
+    from app.models.user import UserRole
+
     # Check book exists
     db_book = db.query(RecipeBook).filter(RecipeBook.id == book_id).first()
     if not db_book:
@@ -294,8 +298,8 @@ def delete_recipe_book(
             detail="Recipe book not found"
         )
 
-    # Check organization match
-    if db_book.organization_id != current_user.organization_id:
+    # Check organization match (super admin can delete any org's books)
+    if current_user.role != UserRole.SUPER_ADMIN and db_book.organization_id != current_user.organization_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Recipe book belongs to a different organization"
