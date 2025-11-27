@@ -31,7 +31,7 @@ class ModuleUpdate(BaseModel):
     is_core: Optional[bool] = None
     addon_price_per_site: Optional[float] = None
     addon_price_per_org: Optional[float] = None
-    stripe_addon_price_id: Optional[str] = None
+    gocardless_addon_plan_id: Optional[str] = None
     is_active: Optional[bool] = None
     display_order: Optional[int] = None
 
@@ -39,7 +39,7 @@ class ModuleUpdate(BaseModel):
 class ModuleResponse(ModuleBase):
     """Module response schema."""
     id: int
-    stripe_addon_price_id: Optional[str] = None
+    gocardless_addon_plan_id: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
 
@@ -77,8 +77,8 @@ class SubscriptionPackageUpdate(BaseModel):
     max_sites: Optional[int] = None
     monthly_price: Optional[float] = None
     annual_price: Optional[float] = None
-    stripe_monthly_price_id: Optional[str] = None
-    stripe_annual_price_id: Optional[str] = None
+    gocardless_plan_id: Optional[str] = None
+    gocardless_annual_plan_id: Optional[str] = None
     features_json: Optional[str] = None
     is_active: Optional[bool] = None
     is_popular: Optional[bool] = None
@@ -100,8 +100,8 @@ class PackageModuleResponse(BaseModel):
 class SubscriptionPackageResponse(SubscriptionPackageBase):
     """Subscription package response schema."""
     id: int
-    stripe_monthly_price_id: Optional[str] = None
-    stripe_annual_price_id: Optional[str] = None
+    gocardless_plan_id: Optional[str] = None
+    gocardless_annual_plan_id: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
     included_modules: List[PackageModuleResponse] = []
