@@ -1,22 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSelectModule } from '@angular/material/select';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { RecipeBookService, RecipeBook, RecipeBookWithRecipes, RecipeInBook } from '../../services/recipe-book.service';
 import { RecipeService } from '../../services/recipe.service';
 import { SiteService } from '../../../../core/services/site.service';
@@ -30,24 +17,10 @@ import { Site, UserRole } from '../../../../core/models';
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatCheckboxModule,
-    MatSelectModule,
-    MatExpansionModule,
-    MatChipsModule,
-    MatDividerModule,
-    MatTooltipModule
+    MatSnackBarModule
   ],
   templateUrl: './recipe-books-admin.component.html',
-  styleUrls: ['./recipe-books-admin.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./recipe-books-admin.component.scss']
 })
 export class RecipeBooksAdminComponent implements OnInit {
   recipeBooks: RecipeBook[] = [];
@@ -69,7 +42,6 @@ export class RecipeBooksAdminComponent implements OnInit {
     private authService: AuthService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog,
     private http: HttpClient
   ) {
     this.bookForm = this.fb.group({

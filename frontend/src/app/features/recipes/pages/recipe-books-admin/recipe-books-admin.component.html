@@ -1,231 +1,126 @@
-<div class="recipe-admin-container">
+<div class="admin-page">
   <!-- Header -->
-  <div class="admin-header">
-    <div class="header-content">
-      <div class="title-section">
-        <a routerLink="/recipes" class="back-btn">
-          <i class="fa-solid fa-arrow-left"></i>
-        </a>
-        <div>
-          <h1>Recipe Books</h1>
-          <p class="subtitle">Manage recipe book collections for your organization</p>
-        </div>
-      </div>
+  <div class="page-header">
+    <a routerLink="/recipes" class="back-btn">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div>
+      <h1>Recipe Books</h1>
+      <p class="subtitle">Manage recipe book collections for your organization</p>
     </div>
   </div>
 
+  <!-- Content Grid -->
   <div class="content-grid">
-    <!-- Left Panel: Form -->
-    <div class="left-panel">
-      <mat-card class="form-card">
-        <mat-card-header>
-          <mat-card-title>
-            <i class="fa-solid fa-plus-circle text-green-600 mr-2" *ngIf="!isEditing"></i>
-            <i class="fa-solid fa-edit text-green-600 mr-2" *ngIf="isEditing"></i>
-            {{ isEditing ? 'Edit Recipe Book' : 'Add New Recipe Book' }}
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="bookForm" (ngSubmit)="onSubmit()">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Title</mat-label>
-              <input matInput formControlName="title" placeholder="E.g., Italian Pasta Collection">
-              <mat-error *ngIf="bookForm.get('title')?.hasError('required')">Title is required</mat-error>
-              <mat-error *ngIf="bookForm.get('title')?.hasError('maxlength')">Title is too long</mat-error>
-            </mat-form-field>
+    <!-- Form Card -->
+    <div class="form-card">
+      <div class="card-header">
+        <i class="fa-solid" [ngClass]="isEditing ? 'fa-edit' : 'fa-plus-circle'"></i>
+        <h2>{{ isEditing ? 'Edit Recipe Book' : 'Add New Recipe Book' }}</h2>
+      </div>
 
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Description</mat-label>
-              <textarea matInput formControlName="description" rows="3"
-                        placeholder="Brief description of this recipe book"></textarea>
-            </mat-form-field>
+      <form [formGroup]="bookForm" (ngSubmit)="onSubmit()" class="admin-form">
+        <div class="form-group">
+          <label for="title">Title *</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-book"></i>
+            <input type="text" id="title" formControlName="title" placeholder="E.g., Italian Pasta Collection">
+          </div>
+          <span class="error-message" *ngIf="bookForm.get('title')?.touched && bookForm.get('title')?.invalid">
+            Title is required
+          </span>
+        </div>
 
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Sites</mat-label>
-              <mat-select formControlName="site_ids" multiple>
-                <mat-option *ngFor="let site of sites" [value]="site.id">
-                  {{ site.name }}
-                </mat-option>
-              </mat-select>
-              <mat-hint>Select sites for this recipe book. Leave empty for all sites.</mat-hint>
-            </mat-form-field>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" formControlName="description" rows="3"
+                    placeholder="Brief description of this recipe book"></textarea>
+        </div>
 
-            <div class="checkbox-field">
-              <mat-checkbox formControlName="is_active">Active</mat-checkbox>
-            </div>
+        <div class="form-group">
+          <label for="site_ids">Sites</label>
+          <div class="input-wrapper select-wrapper">
+            <i class="fa-solid fa-building"></i>
+            <select id="site_ids" formControlName="site_ids" multiple>
+              <option *ngFor="let site of sites" [value]="site.id">{{ site.name }}</option>
+            </select>
+          </div>
+          <span class="hint">Leave empty for all sites</span>
+        </div>
 
-            <div class="form-actions">
-              <button mat-raised-button color="primary" type="submit" [disabled]="bookForm.invalid">
-                <i class="fa-solid" [ngClass]="isEditing ? 'fa-save' : 'fa-plus'"></i>
-                {{ isEditing ? 'Update' : 'Create' }} Book
-              </button>
-              <button mat-button type="button" (click)="cancelEdit()" *ngIf="isEditing">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="is_active">
+            <span>Active</span>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="bookForm.invalid">
+            <i class="fa-solid" [ngClass]="isEditing ? 'fa-save' : 'fa-plus'"></i>
+            {{ isEditing ? 'Update' : 'Create' }} Book
+          </button>
+          <button type="button" class="btn-secondary" (click)="cancelEdit()" *ngIf="isEditing">
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
 
-    <!-- Right Panel: Table -->
-    <div class="right-panel">
-      <mat-card class="table-card">
-        <mat-card-header>
-          <mat-card-title>Existing Recipe Books</mat-card-title>
-          <mat-card-subtitle>{{ recipeBooks.length }} books</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <table mat-table [dataSource]="recipeBooks" class="recipe-books-table">
-            <!-- Title Column -->
-            <ng-container matColumnDef="title">
-              <th mat-header-cell *matHeaderCellDef>Title</th>
-              <td mat-cell *matCellDef="let book">
-                <div class="book-info-cell">
-                  <span class="font-medium text-gray-900">{{ book.title }}</span>
-                  <span class="text-xs text-gray-500" *ngIf="book.description">{{ book.description }}</span>
-                </div>
-              </td>
-            </ng-container>
+    <!-- Table Card -->
+    <div class="table-card">
+      <div class="card-header">
+        <div>
+          <i class="fa-solid fa-list"></i>
+          <h2>Existing Recipe Books</h2>
+        </div>
+        <span class="count-badge">{{ recipeBooks.length }}</span>
+      </div>
 
-            <!-- Site Column -->
-            <ng-container matColumnDef="site">
-              <th mat-header-cell *matHeaderCellDef>Sites</th>
-              <td mat-cell *matCellDef="let book">
-                <div class="site-chips">
-                  <span class="site-badge all" *ngIf="!book.sites || book.sites.length === 0">All Sites</span>
-                  <span class="site-badge" *ngFor="let site of book.sites">{{ site.name }}</span>
-                </div>
+      <div class="table-wrapper" *ngIf="recipeBooks.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Sites</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let book of recipeBooks">
+              <td>
+                <strong>{{ book.title }}</strong>
+                <span class="description" *ngIf="book.description">{{ book.description }}</span>
               </td>
-            </ng-container>
-
-            <!-- Recipe Count Column -->
-            <ng-container matColumnDef="recipe_count">
-              <th mat-header-cell *matHeaderCellDef>Recipes</th>
-              <td mat-cell *matCellDef="let book" class="text-center">
-                {{ book.recipe_count || '—' }}
+              <td>
+                <span class="site-badge all" *ngIf="!book.sites || book.sites.length === 0">All Sites</span>
+                <span class="site-badge" *ngFor="let site of book.sites">{{ site.name }}</span>
               </td>
-            </ng-container>
-
-            <!-- Active Column -->
-            <ng-container matColumnDef="is_active">
-              <th mat-header-cell *matHeaderCellDef>Status</th>
-              <td mat-cell *matCellDef="let book">
+              <td>
                 <span class="status-badge" [class.active]="book.is_active" [class.inactive]="!book.is_active">
                   {{ book.is_active ? 'Active' : 'Inactive' }}
                 </span>
               </td>
-            </ng-container>
-
-            <!-- Actions Column -->
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>Actions</th>
-              <td mat-cell *matCellDef="let book">
-                <button mat-icon-button class="view-btn" (click)="viewBook(book)" matTooltip="View & Manage Recipes">
-                  <mat-icon>library_books</mat-icon>
-                </button>
-                <button mat-icon-button class="edit-btn" (click)="editBook(book)" matTooltip="Edit">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button class="delete-btn" (click)="deleteBook(book)" color="warn" matTooltip="Delete">
-                  <mat-icon>delete</mat-icon>
-                </button>
+              <td>
+                <div class="action-buttons">
+                  <button class="action-btn edit" (click)="editBook(book)" title="Edit">
+                    <i class="fa-solid fa-edit"></i>
+                  </button>
+                  <button class="action-btn delete" (click)="deleteBook(book)" title="Delete">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
               </td>
-            </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
-
-          <div class="no-data" *ngIf="recipeBooks.length === 0">
-            <i class="fa-solid fa-book-bookmark"></i>
-            <p>No recipe books found. Create your first recipe book using the form.</p>
-          </div>
-        </mat-card-content>
-      </mat-card>
+      <div class="empty-state" *ngIf="recipeBooks.length === 0">
+        <i class="fa-solid fa-book-bookmark"></i>
+        <p>No recipe books found. Create your first recipe book using the form.</p>
+      </div>
     </div>
-  </div>
-
-  <!-- Book Detail Panel (shows when a book is selected) -->
-  <div class="detail-panel" *ngIf="selectedBook">
-    <mat-card class="detail-card">
-      <mat-card-header>
-        <mat-card-title>
-          <div class="detail-header">
-            <span>{{ selectedBook.title }}</span>
-            <button mat-icon-button (click)="closeBookView()" matTooltip="Close">
-              <mat-icon>close</mat-icon>
-            </button>
-          </div>
-        </mat-card-title>
-        <mat-card-subtitle *ngIf="selectedBook.description">
-          {{ selectedBook.description }}
-        </mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content>
-        <div class="book-meta">
-          <p><strong>Sites:</strong> {{ getSiteNames(selectedBook) }}</p>
-          <p><strong>Status:</strong>
-            <span class="status-badge" [class.active]="selectedBook.is_active" [class.inactive]="!selectedBook.is_active">
-              {{ selectedBook.is_active ? 'Active' : 'Inactive' }}
-            </span>
-          </p>
-          <p><strong>Total Recipes:</strong> {{ selectedBook.recipe_count }}</p>
-        </div>
-
-        <mat-divider></mat-divider>
-
-        <!-- Recipes in Book -->
-        <div class="recipes-section">
-          <h3><i class="fa-solid fa-utensils"></i> Recipes in this Book</h3>
-          <div class="recipes-list" *ngIf="selectedBook.recipes.length > 0">
-            <div class="recipe-item" *ngFor="let recipe of selectedBook.recipes">
-              <div class="recipe-info">
-                <i class="fa-solid fa-receipt recipe-icon"></i>
-                <div class="recipe-details">
-                  <h4>{{ recipe.title }}</h4>
-                  <p *ngIf="recipe.description">{{ recipe.description }}</p>
-                </div>
-              </div>
-              <button mat-icon-button color="warn" (click)="removeRecipeFromBook(recipe.id)"
-                      matTooltip="Remove from book">
-                <mat-icon>remove_circle</mat-icon>
-              </button>
-            </div>
-          </div>
-          <div class="empty-state" *ngIf="selectedBook.recipes.length === 0">
-            <i class="fa-solid fa-info-circle"></i>
-            <p>No recipes in this book yet. Add recipes from the list below.</p>
-          </div>
-        </div>
-
-        <mat-divider></mat-divider>
-
-        <!-- Available Recipes -->
-        <div class="recipes-section">
-          <h3><i class="fa-solid fa-plus-circle"></i> Add Recipes to Book</h3>
-          <div class="recipes-list" *ngIf="availableRecipes.length > 0">
-            <div class="recipe-item" *ngFor="let recipe of availableRecipes">
-              <div class="recipe-info">
-                <i class="fa-solid fa-receipt recipe-icon"></i>
-                <div class="recipe-details">
-                  <h4>{{ recipe.title }}</h4>
-                  <p *ngIf="recipe.description">{{ recipe.description }}</p>
-                </div>
-              </div>
-              <button mat-icon-button color="primary" (click)="addRecipeToBook(recipe.id)"
-                      matTooltip="Add to book">
-                <mat-icon>add_circle</mat-icon>
-              </button>
-            </div>
-          </div>
-          <div class="empty-state" *ngIf="availableRecipes.length === 0">
-            <i class="fa-solid fa-check-circle"></i>
-            <p>All available recipes have been added to this book.</p>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
   </div>
 </div>
