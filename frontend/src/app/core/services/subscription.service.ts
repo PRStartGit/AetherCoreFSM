@@ -12,7 +12,7 @@ export interface Module {
   is_core: boolean;
   addon_price_per_site: number | null;
   addon_price_per_org: number | null;
-  stripe_addon_price_id: string | null;
+  gocardless_addon_plan_id: string | null;
   is_active: boolean;
   display_order: number;
   created_at: string;
@@ -38,7 +38,7 @@ export interface ModuleUpdate {
   is_core?: boolean;
   addon_price_per_site?: number | null;
   addon_price_per_org?: number | null;
-  stripe_addon_price_id?: string;
+  gocardless_addon_plan_id?: string;
   is_active?: boolean;
   display_order?: number;
 }
@@ -59,8 +59,8 @@ export interface SubscriptionPackage {
   max_sites: number | null;
   monthly_price: number;
   annual_price: number | null;
-  stripe_monthly_price_id: string | null;
-  stripe_annual_price_id: string | null;
+  gocardless_plan_id: string | null;
+  gocardless_annual_plan_id: string | null;
   features_json: string | null;
   is_active: boolean;
   is_popular: boolean;
@@ -92,8 +92,8 @@ export interface SubscriptionPackageUpdate {
   max_sites?: number | null;
   monthly_price?: number;
   annual_price?: number | null;
-  stripe_monthly_price_id?: string;
-  stripe_annual_price_id?: string;
+  gocardless_plan_id?: string;
+  gocardless_annual_plan_id?: string;
   features_json?: string;
   is_active?: boolean;
   is_popular?: boolean;

@@ -103,8 +103,8 @@ export class SubscriptionSettingsComponent implements OnInit {
       is_active: pkg.is_active,
       is_popular: pkg.is_popular,
       display_order: pkg.display_order,
-      stripe_monthly_price_id: pkg.stripe_monthly_price_id || '',
-      stripe_annual_price_id: pkg.stripe_annual_price_id || ''
+      gocardless_plan_id: pkg.gocardless_plan_id || '',
+      gocardless_annual_plan_id: pkg.gocardless_annual_plan_id || ''
     };
     this.selectedModuleIds = pkg.included_modules.map(m => m.module_id);
     this.showPackageForm = true;
@@ -197,7 +197,7 @@ export class SubscriptionSettingsComponent implements OnInit {
       is_core: module.is_core,
       addon_price_per_site: module.addon_price_per_site,
       addon_price_per_org: module.addon_price_per_org,
-      stripe_addon_price_id: module.stripe_addon_price_id || '',
+      gocardless_addon_plan_id: module.gocardless_addon_plan_id || '',
       is_active: module.is_active,
       display_order: module.display_order
     };
