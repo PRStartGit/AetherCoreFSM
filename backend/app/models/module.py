@@ -22,7 +22,7 @@ class Module(Base):
     addon_price_per_org = Column(Float, nullable=True)   # e.g., 5.00 for training (flat rate)
 
     # Stripe price ID for add-on billing
-    stripe_addon_price_id = Column(String, nullable=True)
+    gocardless_addon_plan_id = Column(String, nullable=True)
 
     # Status
     is_active = Column(Boolean, default=True)

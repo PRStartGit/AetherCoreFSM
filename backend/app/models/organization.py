@@ -26,9 +26,10 @@ class Organization(Base):
     subscription_end_date = Column(DateTime(timezone=True), nullable=True)
     is_trial = Column(Boolean, default=True)
 
-    # Stripe Integration
-    stripe_customer_id = Column(String, nullable=True, index=True)
-    stripe_subscription_id = Column(String, nullable=True)
+    # GoCardless Integration (Direct Debit)
+    gocardless_customer_id = Column(String, nullable=True, index=True)
+    gocardless_mandate_id = Column(String, nullable=True)  # Direct Debit mandate
+    gocardless_subscription_id = Column(String, nullable=True)
 
     # Link to subscription package (new tier system)
     package_id = Column(Integer, ForeignKey("subscription_packages.id"), nullable=True)

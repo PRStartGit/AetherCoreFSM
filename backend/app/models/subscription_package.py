@@ -22,8 +22,8 @@ class SubscriptionPackage(Base):
     annual_price = Column(Float, nullable=True)  # If set, offers annual discount
 
     # Stripe price IDs
-    stripe_monthly_price_id = Column(String, nullable=True)
-    stripe_annual_price_id = Column(String, nullable=True)
+    gocardless_plan_id = Column(String, nullable=True)
+    gocardless_annual_plan_id = Column(String, nullable=True)
 
     # Features for landing page display
     features_json = Column(Text, nullable=True)  # JSON array of feature strings
