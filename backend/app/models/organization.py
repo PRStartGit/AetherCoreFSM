@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Float
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.core.database import Base
@@ -26,6 +26,13 @@ class Organization(Base):
     subscription_end_date = Column(DateTime(timezone=True), nullable=True)
     is_trial = Column(Boolean, default=True)
 
+    # Stripe Integration
+    stripe_customer_id = Column(String, nullable=True, index=True)
+    stripe_subscription_id = Column(String, nullable=True)
+
+    # Link to subscription package (new tier system)
+    package_id = Column(Integer, ForeignKey("subscription_packages.id"), nullable=True)
+
     # Organization-wide Email Reporting
     org_report_enabled = Column(Boolean, default=False)
     org_report_day = Column(Integer, default=1)  # 1=Monday, 7=Sunday
@@ -41,6 +48,8 @@ class Organization(Base):
     sites = relationship("Site", back_populates="organization", cascade="all, delete-orphan")
     categories = relationship("Category", back_populates="organization", cascade="all, delete-orphan")
     org_modules = relationship("OrganizationModule", back_populates="organization", cascade="all, delete-orphan")
+    subscription_package = relationship("SubscriptionPackage", back_populates="organizations")
+    module_addons = relationship("OrganizationModuleAddon", back_populates="organization", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Organization {self.name} ({self.org_id})>"

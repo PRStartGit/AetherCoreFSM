@@ -31,6 +31,10 @@ from app.models.ingredient_unit import IngredientUnit
 from app.models.allergen_keyword import AllergenKeyword
 from app.models.recipe_allergen import RecipeAllergen
 from app.models.recipe_book import RecipeBook, RecipeBookRecipe
+from app.models.module import Module
+from app.models.subscription_package import SubscriptionPackage
+from app.models.package_module import PackageModule
+from app.models.organization_module_addon import OrganizationModuleAddon
 
 __all__ = [
     "User",
@@ -68,4 +72,8 @@ __all__ = [
     "RecipeAllergen",
     "RecipeBook",
     "RecipeBookRecipe",
+    "Module",
+    "SubscriptionPackage",
+    "PackageModule",
+    "OrganizationModuleAddon",
 ]
