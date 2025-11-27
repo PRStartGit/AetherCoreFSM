@@ -2401,16 +2401,16 @@
     <div class="pricing-grid-four">
         <!-- Free Tier -->
         <div class="pricing-card">
-            <h3>{{ pricingPlans.free.name }}</h3>
+            <h3>{{ pricingPlans['free'].name }}</h3>
             <div>
                 <span class="price">£{{ getPrice('free') }}</span>
-                <span class="price-period"> {{ pricingPlans.free.siteRange }}</span>
+                <span class="price-period"> {{ pricingPlans['free'].siteRange }}</span>
             </div>
-            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans.free.description }}</p>
+            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans['free'].description }}</p>
 
             <ul class="pricing-features">
-                <li *ngFor="let feature of pricingPlans.free.features">{{ feature }}</li>
-                <li *ngFor="let limitation of pricingPlans.free.limitations" style="color: #9CA3AF; text-decoration: line-through;">{{ limitation }}</li>
+                <li *ngFor="let feature of pricingPlans['free']?.features || []">{{ feature }}</li>
+                <li *ngFor="let limitation of pricingPlans['free'].limitations" style="color: #9CA3AF; text-decoration: line-through;">{{ limitation }}</li>
             </ul>
 
             <a routerLink="/register" class="btn-secondary" style="display: block; text-align: center;">Get Started Free</a>
@@ -2419,15 +2419,15 @@
 
         <!-- Starter Tier -->
         <div class="pricing-card">
-            <h3>{{ pricingPlans.starter.name }}</h3>
+            <h3>{{ pricingPlans['starter'].name }}</h3>
             <div>
                 <span class="price">£{{ getPrice('starter') }}</span>
                 <span class="price-period"> per site/{{ isAnnual ? 'year' : 'month' }}</span>
             </div>
-            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans.starter.description }}</p>
+            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans['starter'].description }}</p>
 
             <ul class="pricing-features">
-                <li *ngFor="let feature of pricingPlans.starter.features">{{ feature }}</li>
+                <li *ngFor="let feature of pricingPlans['starter']?.features || []">{{ feature }}</li>
             </ul>
 
             <a routerLink="/register" class="btn-secondary" style="display: block; text-align: center;">Start Trial</a>
@@ -2438,15 +2438,15 @@
         <!-- Professional Tier -->
         <div class="pricing-card popular">
             <div class="popular-badge">Most Popular</div>
-            <h3>{{ pricingPlans.professional.name }}</h3>
+            <h3>{{ pricingPlans['professional'].name }}</h3>
             <div>
                 <span class="price">£{{ getPrice('professional') }}</span>
                 <span class="price-period"> per site/{{ isAnnual ? 'year' : 'month' }}</span>
             </div>
-            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans.professional.description }}</p>
+            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans['professional'].description }}</p>
 
             <ul class="pricing-features">
-                <li *ngFor="let feature of pricingPlans.professional.features">{{ feature }}</li>
+                <li *ngFor="let feature of pricingPlans['professional']?.features || []">{{ feature }}</li>
             </ul>
 
             <a routerLink="/register" class="btn-primary" style="display: block; text-align: center;">Start Trial</a>
@@ -2456,15 +2456,15 @@
 
         <!-- Enterprise Tier -->
         <div class="pricing-card">
-            <h3>{{ pricingPlans.enterprise.name }}</h3>
+            <h3>{{ pricingPlans['enterprise'].name }}</h3>
             <div>
                 <span class="price">£{{ getPrice('enterprise') }}</span>
                 <span class="price-period"> per site/{{ isAnnual ? 'year' : 'month' }}</span>
             </div>
-            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans.enterprise.description }}</p>
+            <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans['enterprise'].description }}</p>
 
             <ul class="pricing-features">
-                <li *ngFor="let feature of pricingPlans.enterprise.features">{{ feature }}</li>
+                <li *ngFor="let feature of pricingPlans['enterprise']?.features || []">{{ feature }}</li>
             </ul>
 
             <a routerLink="/contact" class="btn-secondary" style="display: block; text-align: center;">Contact Sales</a>

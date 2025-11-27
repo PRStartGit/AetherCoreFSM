@@ -44,3 +44,6 @@ psycopg2-binary==2.9.9
 
 # Utils
 pytz==2023.3
+
+# Payment processing
+gocardless_pro==1.47.0

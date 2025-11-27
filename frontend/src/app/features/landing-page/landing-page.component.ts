@@ -129,39 +129,18 @@ export class LandingPageComponent implements OnInit {
   }
 
   private mapPricingResponse(response: PricingResponse): void {
-    response.packages.forEach((pkg: SubscriptionPackage) => {
-      const code = pkg.code.toLowerCase();
-      let features: string[] = [];
-      let limitations: string[] = [];
-
-      if (pkg.features_json) {
-        try {
-          const parsed = JSON.parse(pkg.features_json);
-          features = parsed.features || [];
-          limitations = parsed.limitations || [];
-        } catch (e) {
-          console.warn('Failed to parse features JSON for package:', pkg.code);
-        }
-      }
-
-      let siteRange = '';
-      if (pkg.min_sites === 1 && pkg.max_sites === 1) {
-        siteRange = '1 site only';
-      } else if (pkg.max_sites === null) {
-        siteRange = pkg.min_sites + '+ sites';
-      } else {
-        siteRange = pkg.min_sites + '-' + pkg.max_sites + ' sites';
-      }
+    response.tiers.forEach((tier) => {
+      const code = tier.code.toLowerCase();
 
       this.pricingPlans[code] = {
-        name: pkg.name,
-        description: pkg.description || this.pricingPlans[code]?.description || '',
-        monthlyPrice: pkg.monthly_price,
-        annualPrice: pkg.annual_price || Math.round(pkg.monthly_price * 0.83 * 100) / 100,
-        siteRange: siteRange,
-        features: features.length > 0 ? features : (this.pricingPlans[code]?.features || []),
-        limitations: limitations.length > 0 ? limitations : (this.pricingPlans[code]?.limitations || []),
-        popular: pkg.is_popular
+        name: tier.name,
+        description: tier.description || this.pricingPlans[code]?.description || '',
+        monthlyPrice: tier.monthly_price,
+        annualPrice: tier.annual_price || Math.round(tier.monthly_price * 0.83 * 100) / 100,
+        siteRange: tier.site_range,
+        features: tier.features.length > 0 ? tier.features : (this.pricingPlans[code]?.features || []),
+        limitations: this.pricingPlans[code]?.limitations || [],
+        popular: tier.is_popular
       };
     });
   }

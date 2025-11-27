@@ -1,0 +1,20 @@
+<div class="upgrade-page">
+  <div class="back-navigation">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fa-solid fa-arrow-left"></i>
+      Back to Dashboard
+    </button>
+  </div>
+
+  <div class="content-container" *ngIf="!loading">
+    <app-upgrade-prompt
+      [moduleInfo]="moduleInfo"
+      [showAsModal]="false"
+    ></app-upgrade-prompt>
+  </div>
+
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+</div>

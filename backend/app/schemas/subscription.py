@@ -174,3 +174,37 @@ class PricingResponse(BaseModel):
     """Full pricing response for landing page."""
     tiers: List[PricingTier] = []
     available_addons: List[ModuleResponse] = []
+
+
+# ============ Module Access Control Schemas ============
+
+class ModuleAccessInfo(BaseModel):
+    """Information about a module and access status."""
+    code: str
+    name: str
+    description: Optional[str] = None
+    icon: Optional[str] = None
+    has_access: bool
+    access_type: Optional[str] = None  # "core", "package", "addon", None
+    addon_price_per_site: Optional[float] = None
+    addon_price_per_org: Optional[float] = None
+
+
+class ModuleAccessResponse(BaseModel):
+    """Response containing all module access information for an organization."""
+    organization_id: int
+    organization_name: str
+    package_code: Optional[str] = None
+    package_name: Optional[str] = None
+    is_trial: bool = False
+    modules: List[ModuleAccessInfo] = []
+
+
+class UpgradeOption(BaseModel):
+    """Upgrade option for module access."""
+    type: str  # "package_upgrade" or "addon_purchase"
+    package_code: Optional[str] = None
+    package_name: Optional[str] = None
+    monthly_price: Optional[float] = None
+    addon_price_per_site: Optional[float] = None
+    addon_price_per_org: Optional[float] = None

@@ -45,7 +45,7 @@ export class SubscriptionSettingsComponent implements OnInit {
         this.packages = packages;
         this.loadingPackages = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         this.error = 'Failed to load packages';
         this.loadingPackages = false;
         console.error(err);
@@ -60,7 +60,7 @@ export class SubscriptionSettingsComponent implements OnInit {
         this.modules = modules;
         this.loadingModules = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         this.error = 'Failed to load modules';
         this.loadingModules = false;
         console.error(err);
@@ -131,7 +131,7 @@ export class SubscriptionSettingsComponent implements OnInit {
           this.closePackageForm();
           this.loadPackages();
         },
-        error: (err) => alert(err.error?.detail || 'Failed to update package')
+        error: (err: any) => alert(err.error?.detail || 'Failed to update package')
       });
     } else {
       this.subscriptionService.createPackage(data).subscribe({
@@ -139,7 +139,7 @@ export class SubscriptionSettingsComponent implements OnInit {
           this.closePackageForm();
           this.loadPackages();
         },
-        error: (err) => alert(err.error?.detail || 'Failed to create package')
+        error: (err: any) => alert(err.error?.detail || 'Failed to create package')
       });
     }
   }
@@ -148,7 +148,7 @@ export class SubscriptionSettingsComponent implements OnInit {
     if (confirm(`Delete package "${pkg.name}"? This cannot be undone.`)) {
       this.subscriptionService.deletePackage(pkg.id).subscribe({
         next: () => this.loadPackages(),
-        error: (err) => alert(err.error?.detail || 'Failed to delete package')
+        error: (err: any) => alert(err.error?.detail || 'Failed to delete package')
       });
     }
   }
@@ -222,7 +222,7 @@ export class SubscriptionSettingsComponent implements OnInit {
           this.closeModuleForm();
           this.loadModules();
         },
-        error: (err) => alert(err.error?.detail || 'Failed to update module')
+        error: (err: any) => alert(err.error?.detail || 'Failed to update module')
       });
     } else {
       this.subscriptionService.createModule(data).subscribe({
@@ -230,7 +230,7 @@ export class SubscriptionSettingsComponent implements OnInit {
           this.closeModuleForm();
           this.loadModules();
         },
-        error: (err) => alert(err.error?.detail || 'Failed to create module')
+        error: (err: any) => alert(err.error?.detail || 'Failed to create module')
       });
     }
   }
@@ -243,7 +243,7 @@ export class SubscriptionSettingsComponent implements OnInit {
     if (confirm(`Delete module "${module.name}"? This cannot be undone.`)) {
       this.subscriptionService.deleteModule(module.id).subscribe({
         next: () => this.loadModules(),
-        error: (err) => alert(err.error?.detail || 'Failed to delete module')
+        error: (err: any) => alert(err.error?.detail || 'Failed to delete module')
       });
     }
   }

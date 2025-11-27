@@ -65,6 +65,13 @@ class Settings(BaseSettings):
     DEFAULT_SUBSCRIPTION_PRICE_PER_SITE: float = 50.0  # Monthly price per site
     FREE_TRIAL_DAYS: int = 365  # First year free
 
+    # GoCardless Integration
+    GOCARDLESS_ACCESS_TOKEN: Optional[str] = None
+    GOCARDLESS_ENVIRONMENT: str = "live"  # "sandbox" or "live"
+    GOCARDLESS_WEBHOOK_SECRET: Optional[str] = None
+    GOCARDLESS_SUCCESS_REDIRECT_URL: str = "http://localhost:4200/subscription/success"
+    GOCARDLESS_EXIT_REDIRECT_URL: str = "http://localhost:4200/subscription/cancelled"
+
     class Config:
         env_file = ".env"
         case_sensitive = True

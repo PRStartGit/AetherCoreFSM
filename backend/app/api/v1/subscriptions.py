@@ -8,17 +8,20 @@ from typing import List
 import json
 
 from app.core.database import get_db
-from app.core.security import get_current_user, require_super_admin
+from app.core.dependencies import get_current_user
+from app.core.dependencies import get_current_super_admin
 from app.models.user import User
 from app.models.module import Module
 from app.models.subscription_package import SubscriptionPackage
 from app.models.package_module import PackageModule
 from app.models.organization_module_addon import OrganizationModuleAddon
+from app.models.organization import Organization
 from app.schemas.subscription import (
     ModuleCreate, ModuleUpdate, ModuleResponse,
     SubscriptionPackageCreate, SubscriptionPackageUpdate, SubscriptionPackageResponse,
     SubscriptionPackagePublic, PackageModuleResponse,
-    PricingTier, PricingResponse
+    PricingTier, PricingResponse,
+    ModuleAccessInfo, ModuleAccessResponse
 )
 
 router = APIRouter()
@@ -29,7 +32,7 @@ router = APIRouter()
 @router.get("/modules", response_model=List[ModuleResponse])
 def get_all_modules(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_super_admin)
+    current_user: User = Depends(get_current_super_admin)
 ):
     """Get all modules (Super Admin only)."""
     modules = db.query(Module).order_by(Module.display_order, Module.name).all()
@@ -40,7 +43,7 @@ def get_all_modules(
 def create_module(
     module_data: ModuleCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_super_admin)
+    current_user: User = Depends(get_current_super_admin)
 ):
     """Create a new module (Super Admin only)."""
     # Check if code already exists
@@ -60,7 +63,7 @@ def update_module(
     module_id: int,
     module_data: ModuleUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_super_admin)
+    current_user: User = Depends(get_current_super_admin)
 ):
     """Update a module (Super Admin only)."""
     module = db.query(Module).filter(Module.id == module_id).first()
@@ -80,7 +83,7 @@ def update_module(
 def delete_module(
     module_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_super_admin)
+    current_user: User = Depends(get_current_super_admin)
 ):
     """Delete a module (Super Admin only)."""
     module = db.query(Module).filter(Module.id == module_id).first()
@@ -101,7 +104,7 @@ def delete_module(
 @router.get("/packages", response_model=List[SubscriptionPackageResponse])
 def get_all_packages(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_super_admin)
+    current_user: User = Depends(get_current_super_admin)
 ):
     """Get all subscription packages with included modules (Super Admin only)."""
     packages = db.query(SubscriptionPackage).order_by(
@@ -150,7 +153,7 @@ def get_all_packages(
 def create_package(
     package_data: SubscriptionPackageCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_super_admin)
+    current_user: User = Depends(get_current_super_admin)
 ):
     """Create a new subscription package (Super Admin only)."""
     # Check if code already exists
@@ -191,7 +194,7 @@ def update_package(
     package_id: int,
     package_data: SubscriptionPackageUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_super_admin)
+    current_user: User = Depends(get_current_super_admin)
 ):
     """Update a subscription package (Super Admin only)."""
     package = db.query(SubscriptionPackage).filter(SubscriptionPackage.id == package_id).first()
@@ -232,7 +235,7 @@ def update_package(
 def delete_package(
     package_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_super_admin)
+    current_user: User = Depends(get_current_super_admin)
 ):
     """Delete a subscription package (Super Admin only)."""
     package = db.query(SubscriptionPackage).filter(SubscriptionPackage.id == package_id).first()
@@ -342,4 +345,134 @@ def get_package_with_modules(package: SubscriptionPackage, db: Session) -> dict:
             }
             for pm in package.package_modules if pm.is_included
         ]
+    }
+
+
+# ============ Module Access Endpoints ============
+
+@router.get("/my-access", response_model=ModuleAccessResponse)
+def get_my_module_access(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get module access information for the current user's organization."""
+    if not current_user.organization_id:
+        raise HTTPException(status_code=400, detail="User has no organization")
+    
+    org = db.query(Organization).filter(Organization.id == current_user.organization_id).first()
+    if not org:
+        raise HTTPException(status_code=404, detail="Organization not found")
+    
+    # Get all active modules
+    all_modules = db.query(Module).filter(Module.is_active == True).order_by(Module.display_order, Module.name).all()
+    
+    # Get modules included in the org's package
+    package_module_codes = set()
+    if org.package_id:
+        package_modules = db.query(PackageModule).filter(
+            PackageModule.package_id == org.package_id,
+            PackageModule.is_included == True
+        ).all()
+        for pm in package_modules:
+            module = db.query(Module).filter(Module.id == pm.module_id).first()
+            if module:
+                package_module_codes.add(module.code)
+    
+    # Get addon modules purchased by the org
+    addon_module_codes = set()
+    org_addons = db.query(OrganizationModuleAddon).filter(
+        OrganizationModuleAddon.organization_id == org.id,
+        OrganizationModuleAddon.is_active == True
+    ).all()
+    for addon in org_addons:
+        module = db.query(Module).filter(Module.id == addon.module_id).first()
+        if module:
+            addon_module_codes.add(module.code)
+    
+    # Build module access list
+    modules_access = []
+    for module in all_modules:
+        has_access = False
+        access_type = None
+        
+        if module.is_core:
+            has_access = True
+            access_type = "core"
+        elif module.code in package_module_codes:
+            has_access = True
+            access_type = "package"
+        elif module.code in addon_module_codes:
+            has_access = True
+            access_type = "addon"
+        
+        modules_access.append(ModuleAccessInfo(
+            code=module.code,
+            name=module.name,
+            description=module.description,
+            icon=module.icon,
+            has_access=has_access,
+            access_type=access_type,
+            addon_price_per_site=module.addon_price_per_site,
+            addon_price_per_org=module.addon_price_per_org
+        ))
+    
+    return ModuleAccessResponse(
+        organization_id=org.id,
+        organization_name=org.name,
+        package_code=org.subscription_package.code if org.subscription_package else None,
+        package_name=org.subscription_package.name if org.subscription_package else None,
+        is_trial=org.is_trial,
+        modules=modules_access
+    )
+
+
+@router.get("/check-access/{module_code}")
+def check_module_access(
+    module_code: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Check if the current user's organization has access to a specific module."""
+    if not current_user.organization_id:
+        return {"has_access": False, "reason": "no_organization"}
+    
+    org = db.query(Organization).filter(Organization.id == current_user.organization_id).first()
+    if not org:
+        return {"has_access": False, "reason": "organization_not_found"}
+    
+    # Check if module exists
+    module = db.query(Module).filter(Module.code == module_code, Module.is_active == True).first()
+    if not module:
+        return {"has_access": False, "reason": "module_not_found"}
+    
+    # Core modules are always accessible
+    if module.is_core:
+        return {"has_access": True, "access_type": "core"}
+    
+    # Check if module is included in org's package
+    if org.package_id:
+        package_module = db.query(PackageModule).filter(
+            PackageModule.package_id == org.package_id,
+            PackageModule.module_id == module.id,
+            PackageModule.is_included == True
+        ).first()
+        if package_module:
+            return {"has_access": True, "access_type": "package"}
+    
+    # Check if org has purchased this module as an addon
+    addon = db.query(OrganizationModuleAddon).filter(
+        OrganizationModuleAddon.organization_id == org.id,
+        OrganizationModuleAddon.module_id == module.id,
+        OrganizationModuleAddon.is_active == True
+    ).first()
+    if addon:
+        return {"has_access": True, "access_type": "addon"}
+    
+    # No access - return upgrade info
+    return {
+        "has_access": False,
+        "reason": "not_in_package",
+        "module_name": module.name,
+        "addon_price_per_site": module.addon_price_per_site,
+        "addon_price_per_org": module.addon_price_per_org
     }

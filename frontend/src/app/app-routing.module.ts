@@ -40,6 +40,13 @@ import { TicketSettingsComponent } from './features/super-admin/tickets/ticket-s
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { UserRole } from './core/models';
+import { UpgradeComponent } from './features/upgrade/upgrade.component';
+
+// Subscription Components
+import { SubscriptionSuccessComponent } from './features/subscription/subscription-success/subscription-success.component';
+import { SubscriptionCancelledComponent } from './features/subscription/subscription-cancelled/subscription-cancelled.component';
+import { SubscriptionUpgradeComponent } from './features/subscription/subscription-upgrade/subscription-upgrade.component';
+import { SubscriptionManageComponent } from './features/subscription/subscription-manage/subscription-manage.component';
 
 const routes: Routes = [
   {
@@ -81,6 +88,32 @@ const routes: Routes = [
   {
     path: 'contact',
     component: ContactComponent
+  },
+  {
+    path: 'upgrade',
+    component: UpgradeComponent,
+    canActivate: [AuthGuard]
+  },
+  // Subscription Flow Routes
+  {
+    path: 'subscription/success',
+    component: SubscriptionSuccessComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'subscription/cancelled',
+    component: SubscriptionCancelledComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'subscription/upgrade',
+    component: SubscriptionUpgradeComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'subscription/manage',
+    component: SubscriptionManageComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: '',

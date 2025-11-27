@@ -4,6 +4,7 @@ import { User, UserRole } from '../../../core/models';
 import { Router } from '@angular/router';
 import { SystemMessageService, SystemMessage } from '../../../core/services/system-message.service';
 import { NotificationService, Notification } from '../../../core/services/notification.service';
+import { SubscriptionService, ModuleAccessResponse } from '../../../core/services/subscription.service';
 import { Subscription } from 'rxjs';
 
 interface NavItem {
@@ -50,7 +51,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     private router: Router,
     private systemMessageService: SystemMessageService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private subscriptionService: SubscriptionService
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +61,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       this.updateNavigation();
       if (this.user) {
         this.loadNotifications();
+        this.loadModuleAccess();
       }
     });
     this.subscription = this.systemMessageService.messages$.subscribe(messages => {
@@ -336,6 +339,16 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   dismissNotification(id: number): void {
     this.systemMessageService.dismissMessage(id).subscribe(() => {
       this.loadNotifications();
+    });
+  }
+
+  loadModuleAccess(): void {
+    // Load module access and cache it in the subscription service
+    this.subscriptionService.getMyModuleAccess().subscribe({
+      error: (error: any) => {
+        // Fail silently - module access will be checked on-demand
+        console.warn('Failed to load module access:', error);
+      }
     });
   }
 

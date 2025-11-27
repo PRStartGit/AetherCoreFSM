@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
+
 
 export interface Module {
   id: number;
@@ -119,11 +119,45 @@ export interface PricingResponse {
   available_addons: Module[];
 }
 
+// Module Access Control Types
+export interface ModuleAccessInfo {
+  code: string;
+  name: string;
+  description: string | null;
+  icon: string | null;
+  has_access: boolean;
+  access_type: 'core' | 'package' | 'addon' | null;
+  addon_price_per_site: number | null;
+  addon_price_per_org: number | null;
+}
+
+export interface ModuleAccessResponse {
+  organization_id: number;
+  organization_name: string;
+  package_code: string | null;
+  package_name: string | null;
+  is_trial: boolean;
+  modules: ModuleAccessInfo[];
+}
+
+export interface ModuleAccessCheck {
+  has_access: boolean;
+  access_type?: 'core' | 'package' | 'addon';
+  reason?: 'no_organization' | 'organization_not_found' | 'module_not_found' | 'not_in_package';
+  module_name?: string;
+  addon_price_per_site?: number | null;
+  addon_price_per_org?: number | null;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class SubscriptionService {
-  private readonly API_URL = `${environment.apiUrl}/subscriptions`;
+  private readonly API_URL = '/api/v1/subscriptions';
+
+  // Cache for module access - refreshed on login/navigation
+  private moduleAccessSubject = new BehaviorSubject<ModuleAccessResponse | null>(null);
+  public moduleAccess$ = this.moduleAccessSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -138,11 +172,11 @@ export class SubscriptionService {
   }
 
   updateModule(id: number, data: ModuleUpdate): Observable<Module> {
-    return this.http.put<Module>(`${this.API_URL}/modules/${id}`, data);
+    return this.http.put<Module>(`${this.API_URL}/modules/\${id}`, data);
   }
 
   deleteModule(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/modules/${id}`);
+    return this.http.delete<void>(`${this.API_URL}/modules/\${id}`);
   }
 
   // ============ Package Methods ============
@@ -156,16 +190,63 @@ export class SubscriptionService {
   }
 
   updatePackage(id: number, data: SubscriptionPackageUpdate): Observable<SubscriptionPackage> {
-    return this.http.put<SubscriptionPackage>(`${this.API_URL}/packages/${id}`, data);
+    return this.http.put<SubscriptionPackage>(`${this.API_URL}/packages/\${id}`, data);
   }
 
   deletePackage(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/packages/${id}`);
+    return this.http.delete<void>(`${this.API_URL}/packages/\${id}`);
   }
 
   // ============ Public Pricing ============
 
   getPricing(): Observable<PricingResponse> {
     return this.http.get<PricingResponse>(`${this.API_URL}/pricing`);
+  }
+
+  // ============ Module Access Control ============
+
+  /**
+   * Get all module access information for the current user's organization.
+   * Results are cached in moduleAccess$ BehaviorSubject.
+   */
+  getMyModuleAccess(): Observable<ModuleAccessResponse> {
+    return this.http.get<ModuleAccessResponse>(`${this.API_URL}/my-access`).pipe(
+      tap(response => this.moduleAccessSubject.next(response))
+    );
+  }
+
+  /**
+   * Check if the current user has access to a specific module.
+   */
+  checkModuleAccess(moduleCode: string): Observable<ModuleAccessCheck> {
+    return this.http.get<ModuleAccessCheck>(`${this.API_URL}/check-access/\${moduleCode}`);
+  }
+
+  /**
+   * Quick synchronous check using cached data.
+   * Returns true if module is accessible, false otherwise.
+   * Falls back to false if cache is empty.
+   */
+  hasModuleAccess(moduleCode: string): boolean {
+    const access = this.moduleAccessSubject.value;
+    if (!access) return false;
+    const module = access.modules.find(m => m.code === moduleCode);
+    return module?.has_access ?? false;
+  }
+
+  /**
+   * Get cached module info by code.
+   */
+  getModuleInfo(moduleCode: string): ModuleAccessInfo | undefined {
+    const access = this.moduleAccessSubject.value;
+    if (!access) return undefined;
+    return access.modules.find(m => m.code === moduleCode);
+  }
+
+  /**
+   * Clear the cached module access (call on logout).
+   */
+  clearModuleAccessCache(): void {
+    this.moduleAccessSubject.next(null);
   }
 }

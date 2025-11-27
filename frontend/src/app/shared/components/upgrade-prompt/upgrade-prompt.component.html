@@ -1,0 +1,44 @@
+<div class="upgrade-prompt" [class.modal-overlay]="showAsModal">
+  <div class="upgrade-card" [class.modal-card]="showAsModal">
+    <!-- Close button for modal -->
+    <button *ngIf="showAsModal" class="close-btn" (click)="onClose()">
+      <i class="fa-solid fa-times"></i>
+    </button>
+
+    <!-- Lock icon -->
+    <div class="lock-icon">
+      <i class="fa-solid fa-lock"></i>
+    </div>
+
+    <!-- Title -->
+    <h2 class="title">Upgrade Required</h2>
+
+    <!-- Description -->
+    <p class="description">
+      Access to <strong>{{ moduleName }}</strong> is not included in your current subscription plan.
+    </p>
+
+    <!-- Pricing info if available -->
+    <div *ngIf="hasAddonPricing" class="addon-pricing">
+      <p class="addon-label">Add as standalone module:</p>
+      <p class="addon-price">{{ addonPriceDisplay }}</p>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn-primary" (click)="onUpgradeClick()">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        Upgrade Plan
+      </button>
+      <button class="btn-secondary" (click)="onViewPlans()">
+        <i class="fa-solid fa-list"></i>
+        View All Plans
+      </button>
+    </div>
+
+    <!-- Help text -->
+    <p class="help-text">
+      Contact your administrator or our support team for assistance.
+    </p>
+  </div>
+</div>
