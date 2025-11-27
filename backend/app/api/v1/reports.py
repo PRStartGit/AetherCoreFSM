@@ -238,13 +238,14 @@ def send_weekly_report_for_site(
         db.close()
 
 
-@router.post("/reports/daily/{site_id}")
-def send_daily_report_for_site(
-    site_id: int,
+@router.post("/reports/organization/{org_id}")
+def send_org_wide_report(
+    org_id: int,
     current_user: User = Depends(get_current_super_admin)
 ):
-    """Generate and send daily performance report for a specific site"""
-    
+    """Generate and send organization-wide weekly performance report"""
+
+    from app.models.organization import Organization
     from app.models.site import Site
     from app.models.checklist import Checklist
     from app.models.defect import Defect
@@ -252,7 +253,193 @@ def send_daily_report_for_site(
     from sqlalchemy.orm import Session
     from app.core.database import SessionLocal
     from datetime import datetime
-    
+
+    db: Session = SessionLocal()
+
+    try:
+        # Get organization
+        organization = db.query(Organization).filter(Organization.id == org_id).first()
+        if not organization:
+            return {"status": "error", "message": f"Organization {org_id} not found"}
+
+        if not organization.org_report_recipients:
+            return {"status": "error", "message": "No report recipients configured for this organization"}
+
+        # Calculate week range
+        week_end = date.today()
+        week_start = week_end - timedelta(days=6)
+
+        # Get all active sites for this organization
+        sites = db.query(Site).filter(
+            Site.organization_id == org_id,
+            Site.is_active == True
+        ).all()
+
+        if not sites:
+            return {"status": "error", "message": "No active sites found for this organization"}
+
+        # Aggregate data across all sites
+        total_checklists = 0
+        completed_checklists = 0
+        all_defects = []
+        site_stats = []
+
+        for site in sites:
+            # Get checklists for the week for this site
+            site_checklists = db.query(Checklist).filter(
+                Checklist.site_id == site.id,
+                Checklist.checklist_date >= week_start,
+                Checklist.checklist_date <= week_end
+            ).all()
+
+            site_total = len(site_checklists)
+            site_completed = len([c for c in site_checklists if c.status == ChecklistStatus.COMPLETED])
+            site_rate = (site_completed / site_total * 100) if site_total > 0 else 0
+
+            total_checklists += site_total
+            completed_checklists += site_completed
+
+            # Get defects for this site
+            site_defects = db.query(Defect).filter(
+                Defect.site_id == site.id,
+                Defect.created_at >= datetime.combine(week_start, datetime.min.time())
+            ).all()
+
+            for d in site_defects:
+                all_defects.append({
+                    'title': f"[{site.name}] {d.title}",
+                    'severity': d.severity,
+                    'created_at': d.created_at.strftime('%Y-%m-%d'),
+                    'description': d.description or ''
+                })
+
+            # Determine performance class
+            if site_rate >= 80:
+                perf_class = 'positive'
+                perf_color = '#10b981'
+            else:
+                perf_class = 'negative'
+                perf_color = '#ef4444'
+
+            site_stats.append({
+                'site_name': site.name,
+                'tasks_completed': site_completed,
+                'tasks_total': site_total,
+                'performance_percentage': round(site_rate),
+                'performance_class': perf_class,
+                'performance_color': perf_color
+            })
+
+        # Sort sites by performance
+        site_stats.sort(key=lambda x: x['performance_percentage'], reverse=True)
+        top_sites = [s for s in site_stats if s['performance_percentage'] >= 80][:5]
+        attention_sites = [s for s in site_stats if s['performance_percentage'] < 80]
+
+        # Calculate overall completion rate
+        overall_rate = (completed_checklists / total_checklists * 100) if total_checklists > 0 else 0
+
+        # Get category stats across all sites
+        categories = db.query(Category).filter(
+            Category.organization_id == org_id,
+            Category.is_active == True
+        ).all()
+
+        category_stats = []
+        for cat in categories:
+            cat_checklists = db.query(Checklist).filter(
+                Checklist.category_id == cat.id,
+                Checklist.site_id.in_([s.id for s in sites]),
+                Checklist.checklist_date >= week_start,
+                Checklist.checklist_date <= week_end
+            ).all()
+            cat_total = len(cat_checklists)
+            cat_completed = len([c for c in cat_checklists if c.status == ChecklistStatus.COMPLETED])
+            cat_rate = (cat_completed / cat_total * 100) if cat_total > 0 else 0
+            if cat_total > 0:
+                category_stats.append({
+                    'category_name': cat.name,
+                    'completion_rate': round(cat_rate, 1)
+                })
+
+        # Build insights
+        insights = []
+        if attention_sites:
+            insights.append(f"{len(attention_sites)} site(s) need attention (below 80% completion)")
+        if top_sites:
+            insights.append(f"{len(top_sites)} site(s) performing excellently (80%+ completion)")
+        if all_defects:
+            critical_defects = len([d for d in all_defects if d['severity'] == 'CRITICAL'])
+            if critical_defects > 0:
+                insights.append(f"{critical_defects} critical defect(s) require immediate attention")
+
+        report_data = {
+            'completion_rate': round(overall_rate, 1),
+            'tasks_completed': completed_checklists,
+            'total_tasks': total_checklists,
+            'top_sites': top_sites,
+            'attention_sites': attention_sites,
+            'category_stats': sorted(category_stats, key=lambda x: x['completion_rate'], reverse=True)[:5],
+            'insights': insights,
+            'defects': sorted(all_defects, key=lambda x: ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW').index(x['severity']) if x['severity'] in ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW') else 4)[:10],
+            'recommendations': [
+                f"Total sites monitored: {len(sites)}",
+                f"Completed {completed_checklists} out of {total_checklists} checklists organization-wide",
+                f"Overall completion rate: {round(overall_rate, 1)}%",
+                f"{len(all_defects)} defects reported this week across all sites"
+            ]
+        }
+
+        # Send to all recipients
+        recipients = [email.strip() for email in organization.org_report_recipients.split(',')]
+        for recipient in recipients:
+            if recipient:
+                email_service.send_weekly_performance_email(
+                    recipient_email=recipient,
+                    recipient_name="Organization Admin",
+                    organization_name=f"{organization.name} - Organization Wide Report",
+                    week_start=week_start.strftime('%Y-%m-%d'),
+                    week_end=week_end.strftime('%Y-%m-%d'),
+                    report_data=report_data
+                )
+
+        logger.info(f"Organization-wide report sent for org {org_id} to {len(recipients)} recipients")
+
+        return {
+            "status": "success",
+            "message": f"Organization-wide report sent to {len(recipients)} recipients",
+            "organization_name": organization.name,
+            "recipients": recipients,
+            "sites_included": len(sites),
+            "completion_rate": round(overall_rate, 1),
+            "week_start": week_start.strftime('%Y-%m-%d'),
+            "week_end": week_end.strftime('%Y-%m-%d')
+        }
+
+    except Exception as e:
+        logger.error(f"Error sending org-wide report: {str(e)}", exc_info=True)
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+    finally:
+        db.close()
+
+
+@router.post("/reports/daily/{site_id}")
+def send_daily_report_for_site(
+    site_id: int,
+    current_user: User = Depends(get_current_super_admin)
+):
+    """Generate and send daily performance report for a specific site"""
+
+    from app.models.site import Site
+    from app.models.checklist import Checklist
+    from app.models.defect import Defect
+    from app.models.category import Category
+    from sqlalchemy.orm import Session
+    from app.core.database import SessionLocal
+    from datetime import datetime
+
     db: Session = SessionLocal()
     
     try:

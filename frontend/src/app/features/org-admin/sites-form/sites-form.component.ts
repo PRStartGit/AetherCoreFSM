@@ -27,6 +27,7 @@ export class SitesFormComponent implements OnInit {
   postcodeLookupError: string | null = null;
   addressList: any[] = [];
   selectedAddressIndex: number | null = null;
+  checklistRegenerating = false;
 
   constructor(
     private fb: FormBuilder,
@@ -300,5 +301,27 @@ export class SitesFormComponent implements OnInit {
     }
     const parts = [addr.line_1, addr.line_2, addr.town_or_city].filter(l => l && l.trim());
     return parts.join(', ');
+  }
+
+  regenerateChecklists(): void {
+    if (!this.siteId || this.checklistRegenerating) return;
+
+    const confirmed = confirm('Are you sure you want to regenerate checklists for this site? This will create missing checklists for today.');
+    if (!confirmed) return;
+
+    this.checklistRegenerating = true;
+
+    this.http.post<any>(`/api/v1/sites/${this.siteId}/regenerate-checklists`, {}).subscribe({
+      next: (response) => {
+        this.checklistRegenerating = false;
+        alert(`Successfully regenerated checklists!\n\nSite: ${response.site_name}\nCreated: ${response.created}\nSkipped: ${response.skipped}`);
+      },
+      error: (err) => {
+        this.checklistRegenerating = false;
+        this.error = 'Failed to regenerate checklists';
+        console.error('Error regenerating checklists:', err);
+        alert('Failed to regenerate checklists. Please try again.');
+      }
+    });
   }
 }

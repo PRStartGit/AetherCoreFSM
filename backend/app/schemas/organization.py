@@ -29,6 +29,11 @@ class OrganizationUpdate(BaseModel):
     is_active: Optional[bool] = None
     subscription_tier: Optional[str] = None
     custom_price_per_site: Optional[float] = None
+    # Organization-wide email reporting
+    org_report_enabled: Optional[bool] = None
+    org_report_day: Optional[int] = None
+    org_report_time: Optional[str] = None
+    org_report_recipients: Optional[str] = None
 
 
 class OrganizationResponse(OrganizationBase):
@@ -40,6 +45,11 @@ class OrganizationResponse(OrganizationBase):
     subscription_start_date: Optional[datetime] = None
     subscription_end_date: Optional[datetime] = None
     is_trial: bool
+    # Organization-wide email reporting
+    org_report_enabled: bool = False
+    org_report_day: int = 1
+    org_report_time: str = "09:00"
+    org_report_recipients: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
 

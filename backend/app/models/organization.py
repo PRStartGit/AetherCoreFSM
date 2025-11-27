@@ -26,6 +26,12 @@ class Organization(Base):
     subscription_end_date = Column(DateTime(timezone=True), nullable=True)
     is_trial = Column(Boolean, default=True)
 
+    # Organization-wide Email Reporting
+    org_report_enabled = Column(Boolean, default=False)
+    org_report_day = Column(Integer, default=1)  # 1=Monday, 7=Sunday
+    org_report_time = Column(String, default="09:00")
+    org_report_recipients = Column(Text, nullable=True)  # Comma-separated emails
+
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

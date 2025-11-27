@@ -32,6 +32,18 @@ export class OrganizationFormComponent implements OnInit {
   moduleLoading = false;
   checklistRegenerating = false;
 
+  // Org-wide report
+  sendingOrgReport = false;
+  weekDays = [
+    { value: 1, label: 'Monday' },
+    { value: 2, label: 'Tuesday' },
+    { value: 3, label: 'Wednesday' },
+    { value: 4, label: 'Thursday' },
+    { value: 5, label: 'Friday' },
+    { value: 6, label: 'Saturday' },
+    { value: 7, label: 'Sunday' }
+  ];
+
   constructor(
     private fb: FormBuilder,
     private organizationService: OrganizationService,
@@ -49,7 +61,12 @@ export class OrganizationFormComponent implements OnInit {
       subscription_tier: ['basic', Validators.required],
       custom_price_per_site: [null, [Validators.min(0)]],
       subscription_end_date: [null],
-      is_active: [true]
+      is_active: [true],
+      // Org-wide email reporting
+      org_report_enabled: [false],
+      org_report_day: [1],
+      org_report_time: ['09:00'],
+      org_report_recipients: ['']
     });
   }
 
@@ -78,7 +95,12 @@ export class OrganizationFormComponent implements OnInit {
           subscription_tier: org.subscription_tier,
           custom_price_per_site: org.custom_price_per_site,
           subscription_end_date: org.subscription_end_date ? org.subscription_end_date.split('T')[0] : null,
-          is_active: org.is_active
+          is_active: org.is_active,
+          // Org-wide email reporting
+          org_report_enabled: org.org_report_enabled || false,
+          org_report_day: org.org_report_day || 1,
+          org_report_time: org.org_report_time || '09:00',
+          org_report_recipients: org.org_report_recipients || ''
         });
         // Disable org_id editing for existing organizations
         this.organizationForm.get('org_id')?.disable();
@@ -290,6 +312,38 @@ export class OrganizationFormComponent implements OnInit {
         this.error = 'Failed to regenerate checklists';
         console.error('Error regenerating checklists:', err);
         alert('Failed to regenerate checklists. Please try again.');
+      }
+    });
+  }
+
+  sendOrgReport(): void {
+    if (!this.organizationId || this.sendingOrgReport) return;
+
+    const recipients = this.organizationForm.get('org_report_recipients')?.value;
+    if (!recipients || recipients.trim() === '') {
+      alert('Please enter at least one email recipient before sending a report.');
+      return;
+    }
+
+    const confirmed = confirm('Send an organization-wide report now? This will email the configured recipients with the current week\'s performance data.');
+    if (!confirmed) return;
+
+    this.sendingOrgReport = true;
+
+    this.http.post<any>(`/api/v1/reports/organization/${this.organizationId}`, {}).subscribe({
+      next: (response) => {
+        this.sendingOrgReport = false;
+        if (response.status === 'success') {
+          alert(`Report sent successfully!\n\nOrganization: ${response.organization_name}\nSites Included: ${response.sites_included}\nRecipients: ${response.recipients.join(', ')}`);
+        } else {
+          alert(`Error: ${response.message}`);
+        }
+      },
+      error: (err) => {
+        this.sendingOrgReport = false;
+        this.error = 'Failed to send organization report';
+        console.error('Error sending org report:', err);
+        alert('Failed to send organization report. Please try again.');
       }
     });
   }
