@@ -72,6 +72,7 @@ import { AdminTicketListComponent } from './features/super-admin/tickets/admin-t
 import { TicketSettingsComponent } from './features/super-admin/tickets/ticket-settings/ticket-settings.component';
 import { JobRolesListComponent } from './features/super-admin/job-roles/job-roles-list.component';
 import { JobRoleFormComponent } from './features/super-admin/job-roles/job-role-form.component';
+import { SubscriptionSettingsComponent } from './features/super-admin/subscription-settings/subscription-settings.component';
 
 @NgModule({
   declarations: [
@@ -110,7 +111,9 @@ import { JobRoleFormComponent } from './features/super-admin/job-roles/job-role-
     TicketSettingsComponent,
     // Job Roles Components
     JobRolesListComponent,
-    JobRoleFormComponent
+    JobRoleFormComponent,
+    // Subscription Settings
+    SubscriptionSettingsComponent
   ],
   imports: [
     BrowserModule,

@@ -29,6 +29,7 @@ import { ContactComponent } from './features/contact/contact.component';
 import { FaqComponent } from './features/support/faq/faq.component';
 import { JobRolesListComponent } from './features/super-admin/job-roles/job-roles-list.component';
 import { JobRoleFormComponent } from './features/super-admin/job-roles/job-role-form.component';
+import { SubscriptionSettingsComponent } from './features/super-admin/subscription-settings/subscription-settings.component';
 
 // Ticket Components
 import { TicketListComponent } from './features/support/ticket-list/ticket-list.component';
@@ -125,6 +126,12 @@ const routes: Routes = [
       {
         path: 'super-admin/logs',
         component: LogsComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN] }
+      },
+      {
+        path: 'super-admin/subscriptions',
+        component: SubscriptionSettingsComponent,
         canActivate: [RoleGuard],
         data: { roles: [UserRole.SUPER_ADMIN] }
       },

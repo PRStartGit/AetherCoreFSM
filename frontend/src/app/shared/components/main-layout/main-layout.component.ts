@@ -188,11 +188,12 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
             ]
           },
           {
-            label: 'CMS',
+            label: 'Sales',
             icon: icons.cms,
             expanded: false,
             items: [
-              { label: 'Promotions', icon: icons.promotions, route: '/super-admin/promotions' }
+              { label: 'Promotions', icon: icons.promotions, route: '/super-admin/promotions' },
+              { label: 'Subscriptions', icon: 'fa-solid fa-credit-card', route: '/super-admin/subscriptions' }
             ]
           },
           {
