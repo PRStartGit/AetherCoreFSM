@@ -26,20 +26,23 @@ def populate_assaggini_recipes():
     try:
         print("\n[*] Populating Assaggini Pasta Recipes...")
 
-        # Get Assaggini organization
-        org = db.query(Organization).filter(Organization.name.ilike("%assaggini%")).first()
+        # Get Viva Italia Group organization
+        org = db.query(Organization).filter(Organization.name.ilike("%viva%italia%")).first()
         if not org:
-            print("\n[!] Assaggini organization not found. Please create it first.")
+            print("\n[!] Viva Italia Group organization not found. Please create it first.")
             return
 
         print(f"\n[OK] Using Organization: {org.name} (ID: {org.id})")
 
-        # Get Assaggini site (Edinburgh or Glasgow)
-        site = db.query(Site).filter(Site.organization_id == org.id).first()
+        # Get Assaggini Edinburgh site
+        site = db.query(Site).filter(
+            Site.organization_id == org.id,
+            Site.name.ilike("%assaggini%")
+        ).first()
         if site:
             print(f"[OK] Using Site: {site.name} (ID: {site.id})")
         else:
-            print("[!] No site found for Assaggini, creating organization-global recipes")
+            print("[!] No Assaggini site found, creating organization-global recipes")
 
         # Get a user to be the creator (use first admin or super admin)
         creator = db.query(User).filter(
@@ -56,17 +59,15 @@ def populate_assaggini_recipes():
 
         print(f"[OK] Using Creator: {creator.email} (ID: {creator.id})")
 
-        # Get or create "Pasta" category
+        # Get or create "Pasta" category (categories are global, not per-organization)
         category = db.query(RecipeCategory).filter(
-            RecipeCategory.organization_id == org.id,
             RecipeCategory.name == "Pasta"
         ).first()
 
         if not category:
             category = RecipeCategory(
-                organization_id=org.id,
                 name="Pasta",
-                description="Fresh pasta dishes"
+                sort_order=0
             )
             db.add(category)
             db.commit()
