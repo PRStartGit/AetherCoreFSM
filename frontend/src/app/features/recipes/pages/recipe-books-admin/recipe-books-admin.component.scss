@@ -5,19 +5,64 @@
 }
 
 .header {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #e0e0e0;
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  .title-section {
+    flex: 1;
+  }
 
   h1 {
     margin: 0 0 8px 0;
-    font-size: 28px;
-    font-weight: 500;
-    color: #333;
+    font-size: 32px;
+    font-weight: 600;
+    color: #1a1a1a;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .subtitle {
     margin: 0;
-    color: #666;
-    font-size: 14px;
+    color: #6b7280;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .back-button {
+    flex-shrink: 0;
+    height: 42px;
+    padding: 0 20px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      transform: translateY(-1px);
+    }
+
+    mat-icon {
+      margin-right: 8px;
+    }
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
   }
 }
 
@@ -41,22 +86,34 @@
 .form-card,
 .table-card,
 .detail-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  }
+
   mat-card-header {
     padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
   }
 
   mat-card-title {
     font-size: 20px;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 4px;
+    color: #1f2937;
   }
 }
 
 .form-card {
+  background: linear-gradient(to bottom, #ffffff 0%, #fafafa 100%);
+
   form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
   }
 
   .full-width {
@@ -64,15 +121,34 @@
   }
 
   .checkbox-field {
-    margin: 8px 0;
+    margin: 12px 0;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 8px;
   }
 
   .form-actions {
     display: flex;
     gap: 12px;
-    margin-top: 8px;
+    margin-top: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
 
     button {
+      height: 44px;
+      font-weight: 500;
+      border-radius: 8px;
+
+      &[color="primary"] {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+
+        &:hover:not([disabled]) {
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+          transform: translateY(-1px);
+        }
+      }
+
       mat-icon {
         margin-right: 8px;
       }
@@ -83,32 +159,74 @@
 .recipe-books-table {
   width: 100%;
 
+  th {
+    font-weight: 600;
+    color: #374151;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: #f9fafb;
+  }
+
+  td {
+    padding: 16px 12px;
+  }
+
+  tr:hover {
+    background: #f9fafb;
+    transition: background-color 0.2s ease;
+  }
+
   .book-title {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 
     .book-description {
       font-size: 12px;
-      color: #666;
+      color: #6b7280;
       font-weight: normal;
+      line-height: 1.4;
     }
   }
 
   .site-chip {
     font-size: 12px;
-    min-height: 28px;
-    padding: 4px 12px;
+    min-height: 32px;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-weight: 500;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: white;
   }
 
   .active-chip {
-    background-color: #4caf50;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
+    font-weight: 500;
+    border-radius: 16px;
+    padding: 4px 12px;
   }
 
   .inactive-chip {
-    background-color: #9e9e9e;
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
     color: white;
+    font-weight: 500;
+    border-radius: 16px;
+    padding: 4px 12px;
+  }
+
+  button[mat-icon-button] {
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    &[color="warn"]:hover {
+      background: rgba(239, 68, 68, 0.1);
+    }
   }
 
   .no-data {
@@ -116,88 +234,148 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 40px;
-    color: #999;
+    padding: 60px 40px;
+    color: #9ca3af;
 
     mat-icon {
-      font-size: 48px;
-      width: 48px;
-      height: 48px;
-      margin-bottom: 16px;
-      opacity: 0.5;
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      margin-bottom: 20px;
+      opacity: 0.4;
+      color: #d1d5db;
     }
 
     p {
       margin: 0;
-      font-size: 14px;
+      font-size: 15px;
+      color: #6b7280;
     }
   }
 }
 
 .detail-card {
+  background: linear-gradient(to bottom, #ffffff 0%, #fafafa 100%);
+
   .detail-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+
+    button[mat-icon-button] {
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: rotate(90deg) scale(1.1);
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+      }
+    }
   }
 
   .book-info {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 10px;
+    border-left: 4px solid #10b981;
 
     p {
-      margin: 8px 0;
+      margin: 10px 0;
       font-size: 14px;
+      color: #374151;
 
       strong {
         display: inline-block;
-        min-width: 100px;
+        min-width: 120px;
+        font-weight: 600;
+        color: #1f2937;
       }
     }
 
     .active-chip,
     .inactive-chip {
       font-size: 11px;
-      min-height: 24px;
-      padding: 2px 8px;
+      min-height: 26px;
+      padding: 4px 10px;
       vertical-align: middle;
+      border-radius: 13px;
     }
   }
 
   mat-divider {
-    margin: 20px 0;
+    margin: 24px 0;
+    background: #e5e7eb;
+    height: 2px;
   }
 
   .recipes-section,
   .available-recipes-section {
-    margin-top: 20px;
+    margin-top: 24px;
 
     h3 {
-      font-size: 16px;
-      font-weight: 500;
-      margin: 0 0 16px 0;
-      color: #333;
+      font-size: 17px;
+      font-weight: 600;
+      margin: 0 0 18px 0;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 20px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border-radius: 2px;
+      }
     }
   }
 
   .recipes-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 4px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+
+      &:hover {
+        background: #94a3b8;
+      }
+    }
   }
 
   .recipe-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #fafafa;
-    transition: background-color 0.2s;
+    padding: 14px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    background: linear-gradient(to right, #ffffff 0%, #fefefe 100%);
+    transition: all 0.2s ease;
 
     &:hover {
-      background-color: #f5f5f5;
+      background: linear-gradient(to right, #f9fafb 0%, #f3f4f6 100%);
+      border-color: #10b981;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+      transform: translateX(4px);
     }
 
     .recipe-info {
@@ -207,8 +385,9 @@
       flex: 1;
 
       .recipe-icon {
-        color: #666;
+        color: #10b981;
         margin-top: 2px;
+        font-size: 20px;
       }
 
       .recipe-details {
@@ -216,17 +395,33 @@
 
         h4 {
           margin: 0 0 4px 0;
-          font-size: 14px;
-          font-weight: 500;
-          color: #333;
+          font-size: 15px;
+          font-weight: 600;
+          color: #1f2937;
         }
 
         p {
           margin: 0;
           font-size: 12px;
-          color: #666;
-          line-height: 1.4;
+          color: #6b7280;
+          line-height: 1.5;
         }
+      }
+    }
+
+    button[mat-icon-button] {
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: scale(1.15);
+      }
+
+      &[color="primary"]:hover {
+        background: rgba(16, 185, 129, 0.1);
+      }
+
+      &[color="warn"]:hover {
+        background: rgba(239, 68, 68, 0.1);
       }
     }
   }
@@ -235,23 +430,27 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 24px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    color: #999;
+    padding: 40px 24px;
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+    border-radius: 12px;
+    border: 2px dashed #d1d5db;
+    color: #9ca3af;
 
     mat-icon {
-      font-size: 36px;
-      width: 36px;
-      height: 36px;
-      margin-bottom: 12px;
-      opacity: 0.6;
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+      color: #cbd5e1;
     }
 
     p {
       margin: 0;
-      font-size: 13px;
+      font-size: 14px;
       text-align: center;
+      color: #6b7280;
+      line-height: 1.6;
     }
   }
 }
