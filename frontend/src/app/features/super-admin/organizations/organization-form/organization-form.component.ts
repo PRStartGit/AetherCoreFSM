@@ -62,6 +62,11 @@ export class OrganizationFormComponent implements OnInit {
       custom_price_per_site: [null, [Validators.min(0)]],
       subscription_end_date: [null],
       is_active: [true],
+      // Billing information
+      billing_email: ['', [Validators.email]],
+      billing_address: [''],
+      company_name: [''],
+      vat_number: [''],
       // Org-wide email reporting
       org_report_enabled: [false],
       org_report_day: [1],
@@ -96,6 +101,11 @@ export class OrganizationFormComponent implements OnInit {
           custom_price_per_site: org.custom_price_per_site,
           subscription_end_date: org.subscription_end_date ? org.subscription_end_date.split('T')[0] : null,
           is_active: org.is_active,
+          // Billing information
+          billing_email: (org as any).billing_email || '',
+          billing_address: (org as any).billing_address || '',
+          company_name: (org as any).company_name || '',
+          vat_number: (org as any).vat_number || '',
           // Org-wide email reporting
           org_report_enabled: org.org_report_enabled || false,
           org_report_day: org.org_report_day || 1,

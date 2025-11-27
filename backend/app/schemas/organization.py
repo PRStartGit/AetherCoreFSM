@@ -11,6 +11,11 @@ class OrganizationBase(BaseModel):
     contact_email: Optional[EmailStr] = None
     contact_phone: Optional[str] = None
     address: Optional[str] = None
+    # Billing information
+    billing_email: Optional[EmailStr] = None
+    billing_address: Optional[str] = None
+    company_name: Optional[str] = None
+    vat_number: Optional[str] = None
 
 
 class OrganizationCreate(OrganizationBase):
@@ -29,6 +34,11 @@ class OrganizationUpdate(BaseModel):
     is_active: Optional[bool] = None
     subscription_tier: Optional[str] = None
     custom_price_per_site: Optional[float] = None
+    # Billing information
+    billing_email: Optional[EmailStr] = None
+    billing_address: Optional[str] = None
+    company_name: Optional[str] = None
+    vat_number: Optional[str] = None
     # Organization-wide email reporting
     org_report_enabled: Optional[bool] = None
     org_report_day: Optional[int] = None

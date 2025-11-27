@@ -19,6 +19,12 @@ class Organization(Base):
     contact_phone = Column(String, nullable=True)
     address = Column(Text, nullable=True)
 
+    # Billing Information
+    billing_email = Column(String, nullable=True)  # Email for invoices/receipts
+    billing_address = Column(Text, nullable=True)  # Billing address for invoices
+    company_name = Column(String, nullable=True)  # Legal company name (if different from org name)
+    vat_number = Column(String, nullable=True)  # VAT registration number for B2B
+
     # Subscription
     subscription_tier = Column(String, default="basic")  # platform_admin, free, basic, professional, enterprise
     custom_price_per_site = Column(Float, nullable=True)  # Custom pricing if set by super admin
