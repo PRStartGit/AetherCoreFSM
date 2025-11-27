@@ -47,6 +47,7 @@ class RecipeBookResponse(BaseModel):
     created_by_user_id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
+    recipe_count: int = 0  # Number of recipes in the book
 
     class Config:
         from_attributes = True

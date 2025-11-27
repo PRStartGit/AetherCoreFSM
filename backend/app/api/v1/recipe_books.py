@@ -23,9 +23,16 @@ from app.schemas.recipe_book import (
 router = APIRouter()
 
 
-def _build_book_response(book: RecipeBook) -> RecipeBookResponse:
-    """Build RecipeBookResponse with sites info"""
+def _build_book_response(book: RecipeBook, db: Session = None) -> RecipeBookResponse:
+    """Build RecipeBookResponse with sites info and recipe count"""
     sites_info = [SiteInfo(id=site.id, name=site.name) for site in book.sites] if book.sites else []
+
+    # Get recipe count
+    recipe_count = 0
+    if db:
+        recipe_count = db.query(RecipeBookRecipe).filter(
+            RecipeBookRecipe.recipe_book_id == book.id
+        ).count()
 
     return RecipeBookResponse(
         id=book.id,
@@ -37,7 +44,8 @@ def _build_book_response(book: RecipeBook) -> RecipeBookResponse:
         is_active=book.is_active,
         created_by_user_id=book.created_by_user_id,
         created_at=book.created_at,
-        updated_at=book.updated_at
+        updated_at=book.updated_at,
+        recipe_count=recipe_count
     )
 
 
@@ -91,7 +99,7 @@ def create_recipe_book(
     db.refresh(new_book)
 
     # Build response with sites
-    return _build_book_response(new_book)
+    return _build_book_response(new_book, db)
 
 
 @router.get("", response_model=List[RecipeBookResponse])
@@ -143,7 +151,7 @@ def get_recipe_books(
         query = query.filter(RecipeBook.is_active == True)
 
     books = query.offset(skip).limit(limit).all()
-    return [_build_book_response(book) for book in books]
+    return [_build_book_response(book, db) for book in books]
 
 
 @router.get("/{book_id}", response_model=RecipeBookWithRecipes)
@@ -196,7 +204,7 @@ def get_recipe_book(
         ))
 
     # Build response with sites
-    book_response = _build_book_response(book)
+    book_response = _build_book_response(book, db)
     return RecipeBookWithRecipes(
         **book_response.model_dump(),
         recipes=recipes,
@@ -254,7 +262,7 @@ def update_recipe_book(
     db.commit()
     db.refresh(db_book)
 
-    return _build_book_response(db_book)
+    return _build_book_response(db_book, db)
 
 
 @router.delete("/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
