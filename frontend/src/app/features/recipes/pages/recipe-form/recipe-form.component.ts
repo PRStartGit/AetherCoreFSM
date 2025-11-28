@@ -179,7 +179,7 @@ export class RecipeFormComponent implements OnInit {
     if (this.isEditMode && this.recipeId) {
       this.recipeService.updateRecipe(this.recipeId, formValue).subscribe({
         next: () => {
-          this.router.navigate(['/recipes/list']);
+          this.router.navigate(['/recipes']);
         },
         error: (err) => {
           console.error('Failed to update recipe:', err);
@@ -190,7 +190,7 @@ export class RecipeFormComponent implements OnInit {
     } else {
       this.recipeService.createRecipe(formValue).subscribe({
         next: () => {
-          this.router.navigate(['/recipes/list']);
+          this.router.navigate(['/recipes']);
         },
         error: (err) => {
           console.error('Failed to create recipe:', err);
@@ -202,6 +202,6 @@ export class RecipeFormComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/recipes/list']);
+    this.router.navigate(['/recipes']);
   }
 }

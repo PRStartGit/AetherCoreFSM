@@ -112,7 +112,7 @@ export class RecipeDetailComponent implements OnInit {
     this.deleting = true;
     this.recipeService.deleteRecipe(this.recipe.id).subscribe({
       next: () => {
-        this.router.navigate(['/recipes/list']);
+        this.router.navigate(['/recipes']);
       },
       error: (err) => {
         console.error('Failed to delete recipe:', err);
@@ -124,7 +124,7 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   backToList(): void {
-    this.router.navigate(['/recipes/list']);
+    this.router.navigate(['/recipes']);
   }
 
   onImageError(event: Event): void {

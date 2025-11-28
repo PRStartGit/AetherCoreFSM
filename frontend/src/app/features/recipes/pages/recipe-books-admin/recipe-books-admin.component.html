@@ -10,8 +10,8 @@
     </div>
   </div>
 
-  <!-- Content Grid -->
-  <div class="content-grid">
+  <!-- Main Content - Three Column Layout -->
+  <div class="three-column-grid">
     <!-- Form Card -->
     <div class="form-card">
       <div class="card-header">
@@ -22,10 +22,8 @@
       <form [formGroup]="bookForm" (ngSubmit)="onSubmit()" class="admin-form">
         <div class="form-group">
           <label for="title">Title *</label>
-          <div class="input-wrapper">
-            <i class="fa-solid fa-book"></i>
-            <input type="text" id="title" formControlName="title" placeholder="E.g., Italian Pasta Collection">
-          </div>
+          <input type="text" id="title" formControlName="title"
+                 class="form-input" placeholder="E.g., Italian Pasta Collection">
           <span class="error-message" *ngIf="bookForm.get('title')?.touched && bookForm.get('title')?.invalid">
             Title is required
           </span>
@@ -34,18 +32,15 @@
         <div class="form-group">
           <label for="description">Description</label>
           <textarea id="description" formControlName="description" rows="3"
-                    placeholder="Brief description of this recipe book"></textarea>
+                    class="form-input" placeholder="Brief description of this recipe book"></textarea>
         </div>
 
         <div class="form-group">
           <label for="site_ids">Sites</label>
-          <div class="input-wrapper select-wrapper">
-            <i class="fa-solid fa-building"></i>
-            <select id="site_ids" formControlName="site_ids" multiple>
-              <option *ngFor="let site of sites" [value]="site.id">{{ site.name }}</option>
-            </select>
-          </div>
-          <span class="hint">Leave empty for all sites</span>
+          <select id="site_ids" formControlName="site_ids" multiple class="form-input">
+            <option *ngFor="let site of sites" [value]="site.id">{{ site.name }}</option>
+          </select>
+          <span class="hint">Hold Ctrl/Cmd to select multiple. Leave empty for all sites.</span>
         </div>
 
         <div class="form-group checkbox-group">
@@ -67,59 +62,126 @@
       </form>
     </div>
 
-    <!-- Table Card -->
-    <div class="table-card">
+    <!-- Books List Card -->
+    <div class="books-list-card">
       <div class="card-header">
         <div>
-          <i class="fa-solid fa-list"></i>
-          <h2>Existing Recipe Books</h2>
+          <i class="fa-solid fa-book-bookmark"></i>
+          <h2>Recipe Books</h2>
         </div>
         <span class="count-badge">{{ recipeBooks.length }}</span>
       </div>
 
-      <div class="table-wrapper" *ngIf="recipeBooks.length > 0">
-        <table>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Sites</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let book of recipeBooks">
-              <td>
-                <strong>{{ book.title }}</strong>
-                <span class="description" *ngIf="book.description">{{ book.description }}</span>
-              </td>
-              <td>
-                <span class="site-badge all" *ngIf="!book.sites || book.sites.length === 0">All Sites</span>
-                <span class="site-badge" *ngFor="let site of book.sites">{{ site.name }}</span>
-              </td>
-              <td>
-                <span class="status-badge" [class.active]="book.is_active" [class.inactive]="!book.is_active">
-                  {{ book.is_active ? 'Active' : 'Inactive' }}
-                </span>
-              </td>
-              <td>
-                <div class="action-buttons">
-                  <button class="action-btn edit" (click)="editBook(book)" title="Edit">
-                    <i class="fa-solid fa-edit"></i>
-                  </button>
-                  <button class="action-btn delete" (click)="deleteBook(book)" title="Delete">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="books-list" *ngIf="recipeBooks.length > 0">
+        <div *ngFor="let book of recipeBooks"
+             class="book-item"
+             [class.selected]="selectedBook?.id === book.id"
+             (click)="viewBook(book)">
+          <div class="book-info">
+            <div class="book-title">
+              <strong>{{ book.title }}</strong>
+              <span class="status-dot" [class.active]="book.is_active" [class.inactive]="!book.is_active"></span>
+            </div>
+            <p class="book-description" *ngIf="book.description">{{ book.description }}</p>
+            <div class="book-meta">
+              <span class="site-tags">
+                <i class="fa-solid fa-building"></i>
+                <span *ngIf="!book.sites || book.sites.length === 0">All Sites</span>
+                <span *ngIf="book.sites && book.sites.length > 0">{{ book.sites.length }} site(s)</span>
+              </span>
+            </div>
+          </div>
+          <div class="book-actions">
+            <button class="action-btn view" (click)="viewBook(book); $event.stopPropagation()" title="View Recipes">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+            <button class="action-btn edit" (click)="editBook(book); $event.stopPropagation()" title="Edit">
+              <i class="fa-solid fa-edit"></i>
+            </button>
+            <button class="action-btn delete" (click)="deleteBook(book); $event.stopPropagation()" title="Delete">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="empty-state" *ngIf="recipeBooks.length === 0">
         <i class="fa-solid fa-book-bookmark"></i>
-        <p>No recipe books found. Create your first recipe book using the form.</p>
+        <p>No recipe books found. Create your first recipe book.</p>
+      </div>
+    </div>
+
+    <!-- Recipes in Book Panel -->
+    <div class="recipes-panel" [class.active]="selectedBook">
+      <div *ngIf="!selectedBook" class="empty-panel">
+        <i class="fa-solid fa-utensils"></i>
+        <p>Select a recipe book to view its recipes</p>
+      </div>
+
+      <div *ngIf="selectedBook" class="panel-content">
+        <div class="panel-header">
+          <div>
+            <h3>{{ selectedBook.title }}</h3>
+            <p class="recipe-count">{{ selectedBook.recipe_count || selectedBook.recipes?.length || 0 }} recipes</p>
+          </div>
+          <button class="close-btn" (click)="closeBookView()">
+            <i class="fa-solid fa-times"></i>
+          </button>
+        </div>
+
+        <!-- Recipes in this book -->
+        <div class="recipes-section">
+          <h4><i class="fa-solid fa-list"></i> Recipes in this book</h4>
+
+          <div class="recipes-list" *ngIf="selectedBook.recipes && selectedBook.recipes.length > 0">
+            <div *ngFor="let recipe of selectedBook.recipes" class="recipe-item">
+              <div class="recipe-thumb" *ngIf="recipe.photo_url">
+                <img [src]="'/uploads/' + recipe.photo_url" [alt]="recipe.title"
+                     (error)="$any($event.target).style.display='none'">
+              </div>
+              <div class="recipe-thumb placeholder" *ngIf="!recipe.photo_url">
+                <i class="fa-solid fa-utensils"></i>
+              </div>
+              <div class="recipe-info">
+                <span class="recipe-title">{{ recipe.title }}</span>
+              </div>
+              <button class="remove-btn" (click)="removeRecipeFromBook(recipe.id)" title="Remove from book">
+                <i class="fa-solid fa-minus-circle"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="empty-recipes" *ngIf="!selectedBook.recipes || selectedBook.recipes.length === 0">
+            <p>No recipes in this book yet. Add some from below.</p>
+          </div>
+        </div>
+
+        <!-- Add recipes -->
+        <div class="add-recipes-section">
+          <h4><i class="fa-solid fa-plus-circle"></i> Add Recipes</h4>
+
+          <div class="available-recipes" *ngIf="availableRecipes.length > 0">
+            <div *ngFor="let recipe of availableRecipes" class="recipe-item available">
+              <div class="recipe-thumb" *ngIf="recipe.photo_url">
+                <img [src]="'/uploads/' + recipe.photo_url" [alt]="recipe.title"
+                     (error)="$any($event.target).style.display='none'">
+              </div>
+              <div class="recipe-thumb placeholder" *ngIf="!recipe.photo_url">
+                <i class="fa-solid fa-utensils"></i>
+              </div>
+              <div class="recipe-info">
+                <span class="recipe-title">{{ recipe.title }}</span>
+              </div>
+              <button class="add-btn" (click)="addRecipeToBook(recipe.id)" title="Add to book">
+                <i class="fa-solid fa-plus-circle"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="empty-recipes" *ngIf="availableRecipes.length === 0">
+            <p>All recipes are already in this book.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
