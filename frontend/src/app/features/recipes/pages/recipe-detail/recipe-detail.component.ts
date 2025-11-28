@@ -127,6 +127,11 @@ export class RecipeDetailComponent implements OnInit {
     this.router.navigate(['/recipes/list']);
   }
 
+  onImageError(event: Event): void {
+    // Hide the broken image
+    (event.target as HTMLImageElement).style.display = 'none';
+  }
+
   openAddToCollectionModal(): void {
     this.showAddToCollectionModal = true;
     this.loadRecipeBooks();

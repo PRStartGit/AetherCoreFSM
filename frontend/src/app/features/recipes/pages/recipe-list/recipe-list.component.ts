@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { RecipeService } from '../../services/recipe.service';
+import { RecipeBookService, RecipeBook } from '../../services/recipe-book.service';
 import { Recipe, RecipeCategory } from '../../models/recipe.models';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { User, UserRole } from '../../../../core/models';
@@ -14,6 +15,7 @@ import { User, UserRole } from '../../../../core/models';
 export class RecipeListComponent implements OnInit {
   recipes: Recipe[] = [];
   categories: RecipeCategory[] = [];
+  recipeBooks: RecipeBook[] = [];
   loading = true;
   error: string | null = null;
   currentUser: User | null = null;
@@ -21,6 +23,7 @@ export class RecipeListComponent implements OnInit {
   // Filters
   searchTerm: string = '';
   selectedCategoryId: number | null = null;
+  selectedBookId: number | null = null;
   selectedAllergen: string = '';
   showArchived: boolean = false;
 
@@ -33,6 +36,7 @@ export class RecipeListComponent implements OnInit {
 
   constructor(
     private recipeService: RecipeService,
+    private recipeBookService: RecipeBookService,
     private authService: AuthService,
     private router: Router,
     private location: Location
@@ -43,6 +47,7 @@ export class RecipeListComponent implements OnInit {
       this.currentUser = user;
     });
     this.loadCategories();
+    this.loadRecipeBooks();
     this.loadRecipes();
   }
 
@@ -55,6 +60,15 @@ export class RecipeListComponent implements OnInit {
     });
   }
 
+  loadRecipeBooks(): void {
+    this.recipeBookService.getAll({ include_inactive: false }).subscribe({
+      next: (books) => {
+        this.recipeBooks = books;
+      },
+      error: (err) => console.error('Failed to load recipe books:', err)
+    });
+  }
+
   loadRecipes(): void {
     this.loading = true;
     this.error = null;
@@ -62,6 +76,7 @@ export class RecipeListComponent implements OnInit {
     const filters = {
       search: this.searchTerm || undefined,
       category_id: this.selectedCategoryId || undefined,
+      recipe_book_id: this.selectedBookId || undefined,
       allergen: this.selectedAllergen || undefined,
       include_archived: this.showArchived
     };
@@ -86,6 +101,7 @@ export class RecipeListComponent implements OnInit {
   clearFilters(): void {
     this.searchTerm = '';
     this.selectedCategoryId = null;
+    this.selectedBookId = null;
     this.selectedAllergen = '';
     this.showArchived = false;
     this.loadRecipes();

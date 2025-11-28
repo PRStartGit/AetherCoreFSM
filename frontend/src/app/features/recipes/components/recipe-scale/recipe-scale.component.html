@@ -117,12 +117,12 @@
         </div>
 
         <!-- Instructions -->
-        <div *ngIf="scaledRecipe.instructions" class="mb-6">
+        <div *ngIf="scaledRecipe.method" class="mb-6">
           <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
             <i class="fa-solid fa-file-lines text-purple-600"></i>
             Instructions
           </h3>
-          <p class="whitespace-pre-line text-gray-700">{{ scaledRecipe.instructions }}</p>
+          <p class="whitespace-pre-line text-gray-700">{{ scaledRecipe.method }}</p>
         </div>
 
         <!-- Notes -->

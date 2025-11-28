@@ -28,7 +28,7 @@ export interface Recipe {
   category_id?: number;
   title: string;
   description?: string;
-  instructions?: string;
+  method?: string;  // Instructions/method from backend
   prep_time_minutes?: number;
   cook_time_minutes?: number;
   total_time_minutes?: number;
@@ -36,6 +36,7 @@ export interface Recipe {
   yield_unit?: string;
   cost_per_unit?: number;
   notes?: string;
+  photo_url?: string;  // Recipe photo
   is_archived: boolean;
   created_by_user_id: number;
   created_at: string;
@@ -67,13 +68,14 @@ export interface RecipeCreateRequest {
   category_id?: number;
   title: string;
   description?: string;
-  instructions?: string;
+  method?: string;
   prep_time_minutes?: number;
   cook_time_minutes?: number;
   yield_quantity?: number;
   yield_unit?: string;
   cost_per_unit?: number;
   notes?: string;
+  photo_url?: string;
   ingredients: RecipeIngredient[];
   allergens?: string[];
 }
@@ -84,6 +86,7 @@ export interface RecipeFilters {
   search?: string;
   category_id?: number;
   allergen?: string;
+  recipe_book_id?: number;
   include_archived?: boolean;
   skip?: number;
   limit?: number;

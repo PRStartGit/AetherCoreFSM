@@ -53,13 +53,14 @@ export class RecipeFormComponent implements OnInit {
       category_id: [null],
       title: ['', [Validators.required, Validators.maxLength(255)]],
       description: [''],
-      instructions: [''],
+      method: [''],
       prep_time_minutes: [null, [Validators.min(0)]],
       cook_time_minutes: [null, [Validators.min(0)]],
       yield_quantity: [null, [Validators.min(0)]],
       yield_unit: [''],
       cost_per_unit: [null, [Validators.min(0)]],
       notes: [''],
+      photo_url: [''],
       ingredients: this.fb.array([])
     });
   }
@@ -109,13 +110,14 @@ export class RecipeFormComponent implements OnInit {
           category_id: recipe.category_id,
           title: recipe.title,
           description: recipe.description,
-          instructions: recipe.instructions,
+          method: recipe.method,
           prep_time_minutes: recipe.prep_time_minutes,
           cook_time_minutes: recipe.cook_time_minutes,
           yield_quantity: recipe.yield_quantity,
           yield_unit: recipe.yield_unit,
           cost_per_unit: recipe.cost_per_unit,
-          notes: recipe.notes
+          notes: recipe.notes,
+          photo_url: recipe.photo_url
         });
 
         // Load ingredients

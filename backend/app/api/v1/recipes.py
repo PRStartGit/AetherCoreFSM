@@ -59,6 +59,7 @@ def create_recipe(
 def get_recipes(
     search: Optional[str] = Query(None, description="Search recipe titles"),
     category_id: Optional[int] = Query(None, description="Filter by category"),
+    recipe_book_id: Optional[int] = Query(None, description="Filter by recipe book"),
     allergen: Optional[str] = Query(None, description="Exclude recipes with this allergen"),
     include_archived: bool = Query(False, description="Include archived recipes"),
     organization_id: Optional[int] = Query(None, description="Filter by organization (super admin only)"),
@@ -95,6 +96,7 @@ def get_recipes(
         db,
         search=search,
         category_id=category_id,
+        recipe_book_id=recipe_book_id,
         allergen=allergen,
         include_archived=include_archived,
         skip=skip,

@@ -105,6 +105,13 @@
         </div>
       </div>
 
+      <!-- Recipe Photo -->
+      <div *ngIf="recipe.photo_url" class="mb-6">
+        <img [src]="'/uploads/' + recipe.photo_url" [alt]="recipe.title"
+             class="w-full max-w-md rounded-lg shadow-md object-cover"
+             (error)="onImageError($event)">
+      </div>
+
       <!-- Description -->
       <div *ngIf="recipe.description" class="mb-6">
         <p class="text-gray-700 text-lg">{{ recipe.description }}</p>
@@ -156,11 +163,11 @@
             Instructions
           </h2>
 
-          <div *ngIf="recipe.instructions" class="prose max-w-none">
-            <p class="whitespace-pre-line text-gray-700">{{ recipe.instructions }}</p>
+          <div *ngIf="recipe.method" class="prose max-w-none">
+            <p class="whitespace-pre-line text-gray-700">{{ recipe.method }}</p>
           </div>
 
-          <div *ngIf="!recipe.instructions" class="text-gray-500 italic">
+          <div *ngIf="!recipe.method" class="text-gray-500 italic">
             No instructions provided
           </div>
         </div>

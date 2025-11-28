@@ -26,6 +26,7 @@ export class RecipeService {
     if (filters) {
       if (filters.search) params = params.set('search', filters.search);
       if (filters.category_id !== undefined) params = params.set('category_id', filters.category_id.toString());
+      if (filters.recipe_book_id !== undefined) params = params.set('recipe_book_id', filters.recipe_book_id.toString());
       if (filters.allergen) params = params.set('allergen', filters.allergen);
       if (filters.include_archived !== undefined) params = params.set('include_archived', filters.include_archived.toString());
       if (filters.skip !== undefined) params = params.set('skip', filters.skip.toString());

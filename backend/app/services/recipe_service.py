@@ -84,6 +84,7 @@ class RecipeService:
         db: Session,
         search: Optional[str] = None,
         category_id: Optional[int] = None,
+        recipe_book_id: Optional[int] = None,
         allergen: Optional[str] = None,
         include_archived: bool = False,
         skip: int = 0,
@@ -97,6 +98,7 @@ class RecipeService:
             db: Database session
             search: Search term for recipe title
             category_id: Filter by category
+            recipe_book_id: Filter by recipe book
             allergen: Filter by allergen (exclude recipes with this allergen)
             include_archived: Include archived recipes
             skip: Pagination offset
@@ -119,6 +121,14 @@ class RecipeService:
 
         if category_id:
             query = query.filter(Recipe.category_id == category_id)
+
+        if recipe_book_id:
+            # Filter to recipes in this recipe book
+            from app.models.recipe_book import RecipeBookRecipe
+            recipes_in_book = db.query(RecipeBookRecipe.recipe_id).filter(
+                RecipeBookRecipe.recipe_book_id == recipe_book_id
+            ).subquery()
+            query = query.filter(Recipe.id.in_(recipes_in_book))
 
         if allergen:
             # Exclude recipes containing this allergen
