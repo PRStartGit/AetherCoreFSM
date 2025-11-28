@@ -1,1 +1,54 @@
 /* Recipe Form Component Styles */
+
+/* Improve form layout for better readability */
+.form-card {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Ensure labels don't overflow */
+label {
+  display: block;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Better input styling */
+input, select, textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Improve mobile layout */
+@media (max-width: 768px) {
+  .grid-cols-2,
+  .md\:grid-cols-2,
+  .md\:grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .md\:col-span-2 {
+    grid-column: span 1 !important;
+  }
+}
+
+/* Back button styling */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid #E5E7EB;
+  color: #6B7280;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: #F3F4F6;
+  color: #10B981;
+  border-color: #10B981;
+}

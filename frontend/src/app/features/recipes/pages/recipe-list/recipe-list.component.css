@@ -6,3 +6,31 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Back button */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid #E5E7EB;
+  color: #6B7280;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: #F3F4F6;
+  color: #10B981;
+  border-color: #10B981;
+}
