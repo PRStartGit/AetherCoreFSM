@@ -141,9 +141,20 @@
       <div *ngFor="let recipe of recipes"
            (click)="viewRecipe(recipe.id)"
            class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer border border-gray-200 overflow-hidden">
-        <div class="p-6">
-          <h3 class="text-xl font-bold text-gray-900 mb-2">{{ recipe.title }}</h3>
-          <p *ngIf="recipe.description" class="text-gray-600 text-sm mb-4 line-clamp-2">
+        <!-- Thumbnail -->
+        <div class="h-40 bg-gray-100 relative overflow-hidden">
+          <img *ngIf="recipe.photo_url"
+               [src]="'/uploads/' + recipe.photo_url"
+               [alt]="recipe.title"
+               class="w-full h-full object-cover"
+               (error)="onImageError($event)">
+          <div *ngIf="!recipe.photo_url" class="w-full h-full flex items-center justify-center">
+            <i class="fa-solid fa-utensils text-4xl text-gray-300"></i>
+          </div>
+        </div>
+        <div class="p-4">
+          <h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-1">{{ recipe.title }}</h3>
+          <p *ngIf="recipe.description" class="text-gray-600 text-sm mb-3 line-clamp-2">
             {{ recipe.description }}
           </p>
           <div class="flex items-center justify-between text-sm text-gray-500">

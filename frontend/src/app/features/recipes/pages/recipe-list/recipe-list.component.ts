@@ -135,4 +135,9 @@ export class RecipeListComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
+
+  onImageError(event: Event): void {
+    // Hide the broken image and show placeholder
+    (event.target as HTMLImageElement).style.display = 'none';
+  }
 }
