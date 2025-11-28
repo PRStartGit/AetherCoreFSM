@@ -102,10 +102,10 @@ export class OrganizationFormComponent implements OnInit {
           subscription_end_date: org.subscription_end_date ? org.subscription_end_date.split('T')[0] : null,
           is_active: org.is_active,
           // Billing information
-          billing_email: (org as any).billing_email || '',
-          billing_address: (org as any).billing_address || '',
-          company_name: (org as any).company_name || '',
-          vat_number: (org as any).vat_number || '',
+          billing_email: org.billing_email || '',
+          billing_address: org.billing_address || '',
+          company_name: org.company_name || '',
+          vat_number: org.vat_number || '',
           // Org-wide email reporting
           org_report_enabled: org.org_report_enabled || false,
           org_report_day: org.org_report_day || 1,

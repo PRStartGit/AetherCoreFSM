@@ -11,6 +11,11 @@ export interface Organization {
   subscription_end_date?: string;
   custom_price_per_site?: number;
   is_active: boolean;
+  // Billing information
+  billing_email?: string;
+  billing_address?: string;
+  company_name?: string;
+  vat_number?: string;
   // Organization-wide email reports
   org_report_enabled?: boolean;
   org_report_day?: number;
@@ -42,6 +47,11 @@ export interface OrganizationUpdate {
   subscription_end_date?: string;
   custom_price_per_site?: number;
   is_active?: boolean;
+  // Billing information
+  billing_email?: string;
+  billing_address?: string;
+  company_name?: string;
+  vat_number?: string;
   // Organization-wide email reports
   org_report_enabled?: boolean;
   org_report_day?: number;
