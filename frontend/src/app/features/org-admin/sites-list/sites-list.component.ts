@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SiteService } from '../../../core/services/site.service';
-import { Site } from '../../../core/models';
+import { OrganizationService } from '../../../core/services/organization.service';
+import { Site, Organization } from '../../../core/models';
 
 @Component({
   selector: 'app-sites-list',
@@ -10,17 +11,32 @@ import { Site } from '../../../core/models';
 })
 export class SitesListComponent implements OnInit {
   sites: Site[] = [];
+  organizations: Organization[] = [];
   loading = true;
   error: string | null = null;
   searchTerm = '';
+  selectedOrganizationId: number | null = null;
 
   constructor(
     private siteService: SiteService,
+    private organizationService: OrganizationService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.loadOrganizations();
     this.loadSites();
+  }
+
+  loadOrganizations(): void {
+    this.organizationService.getAll().subscribe({
+      next: (orgs) => {
+        this.organizations = orgs;
+      },
+      error: (err) => {
+        console.error('Error loading organizations:', err);
+      }
+    });
   }
 
   loadSites(): void {
@@ -41,15 +57,24 @@ export class SitesListComponent implements OnInit {
   }
 
   get filteredSites(): Site[] {
-    if (!this.searchTerm) {
-      return this.sites;
+    let filtered = this.sites;
+
+    // Filter by organization
+    if (this.selectedOrganizationId) {
+      filtered = filtered.filter(site => site.organization_id === this.selectedOrganizationId);
     }
-    const term = this.searchTerm.toLowerCase();
-    return this.sites.filter(site =>
-      site.name.toLowerCase().includes(term) ||
-      site.site_code.toLowerCase().includes(term) ||
-      site.city?.toLowerCase().includes(term)
-    );
+
+    // Filter by search term
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(site =>
+        site.name.toLowerCase().includes(term) ||
+        site.site_code.toLowerCase().includes(term) ||
+        site.city?.toLowerCase().includes(term)
+      );
+    }
+
+    return filtered;
   }
 
   createSite(): void {
