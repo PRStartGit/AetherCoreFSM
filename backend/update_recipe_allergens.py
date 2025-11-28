@@ -36,6 +36,12 @@ ALLERGEN_INGREDIENTS = {
         r'\bbechamel\b', r'\broux\b',
         # Breaded items
         r'\bbreaded\b', r'\bpanfried\b', r'\bcoated\b',
+        # Italian breaded/fried items (contain breadcrumbs)
+        r'\barancini\b', r'\bmozzarella\s*stick', r'\bfunghi\s*fritti\b',
+        r'\bfritti\b', r'\bfritto\b', r'\bmelanzane\s*fritte',
+        r'\bcalamari\b',  # Fried calamari is typically breaded
+        # Burger buns
+        r'\bburger\b', r'\bbun\b',
     ],
     "Milk": [
         # Cheese varieties
