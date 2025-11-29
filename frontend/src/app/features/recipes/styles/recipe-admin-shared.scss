@@ -245,14 +245,18 @@
 
     // Fix for MDC floating label overflow
     .mdc-floating-label {
-      max-width: calc(100% - 32px);
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
+      max-width: calc(100% - 32px) !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
     }
 
     .mdc-notched-outline__notch {
-      max-width: calc(100% - 28px);
+      max-width: calc(100% - 28px) !important;
+    }
+
+    .mat-mdc-floating-label {
+      max-width: 100% !important;
     }
 
     .mdc-text-field--outlined {

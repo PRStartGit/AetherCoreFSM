@@ -96,13 +96,41 @@ body {
 /* Angular Material MDC Form Field - Label Overflow Fix */
 .mat-mdc-form-field {
   .mdc-floating-label {
-    max-width: calc(100% - 32px);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+    max-width: calc(100% - 32px) !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
   }
 
   .mdc-notched-outline__notch {
-    max-width: calc(100% - 28px);
+    max-width: calc(100% - 28px) !important;
   }
+
+  // Fix for filled and outlined variants
+  .mdc-text-field--outlined .mdc-floating-label,
+  .mdc-text-field--filled .mdc-floating-label {
+    max-width: calc(100% - 32px) !important;
+  }
+
+  // Ensure label doesn't overlap input when floating
+  .mat-mdc-floating-label {
+    max-width: 100% !important;
+  }
+
+  // Fix notch width for outlined fields
+  .mdc-text-field--outlined .mdc-notched-outline__notch {
+    max-width: calc(100% - 28px) !important;
+  }
+}
+
+// Also fix at root level for broader coverage
+.mdc-floating-label {
+  max-width: calc(100% - 32px) !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+.mdc-notched-outline__notch {
+  max-width: calc(100% - 28px) !important;
 }
