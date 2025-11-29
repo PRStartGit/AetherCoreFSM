@@ -98,11 +98,16 @@
                 No keywords defined for this allergen
               </div>
               <div *ngIf="getKeywordCount(allergen) > 0" class="keywords-list">
-                <div *ngFor="let kw of groupedKeywords.get(allergen)" class="keyword-chip" (click)="editKeyword(kw)">
+                <div *ngFor="let kw of groupedKeywords.get(allergen)" class="keyword-chip">
                   <span>{{ kw.keyword }}</span>
-                  <button type="button" class="delete-chip" (click)="deleteKeyword(kw); $event.stopPropagation()">
-                    <i class="fa-solid fa-times"></i>
-                  </button>
+                  <div class="chip-actions">
+                    <button type="button" class="chip-btn edit" (click)="editKeyword(kw)" title="Edit">
+                      <i class="fa-solid fa-edit"></i>
+                    </button>
+                    <button type="button" class="chip-btn delete" (click)="deleteKeyword(kw)" title="Delete">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
