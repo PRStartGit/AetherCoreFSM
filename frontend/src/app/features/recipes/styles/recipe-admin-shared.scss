@@ -243,6 +243,18 @@
       background-color: #fff;
     }
 
+    // Fix for MDC floating label overflow
+    .mdc-floating-label {
+      max-width: calc(100% - 32px);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .mdc-notched-outline__notch {
+      max-width: calc(100% - 28px);
+    }
+
     .mdc-text-field--outlined {
       .mdc-notched-outline__leading,
       .mdc-notched-outline__notch,

@@ -26,6 +26,9 @@ export class ChecklistListComponent implements OnInit {
   selectedDate: string = '';
   statuses = Object.values(ChecklistStatus);
 
+  // Storage key for filter persistence
+  private readonly FILTER_STORAGE_KEY = 'checklist_filters';
+
   constructor(
     private checklistService: ChecklistService,
     private siteService: SiteService,
@@ -36,12 +39,53 @@ export class ChecklistListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Set default date to today
-    const today = new Date();
-    this.selectedDate = today.toISOString().split('T')[0];
+    // Restore filters from session storage
+    this.restoreFilters();
 
     this.loadSites();
     this.loadChecklists();
+  }
+
+  private restoreFilters(): void {
+    const savedFilters = sessionStorage.getItem(this.FILTER_STORAGE_KEY);
+    if (savedFilters) {
+      try {
+        const filters = JSON.parse(savedFilters);
+        this.selectedStatus = filters.status || 'all';
+        this.selectedSite = filters.site || 'all';
+        this.selectedDate = filters.date || new Date().toISOString().split('T')[0];
+      } catch {
+        // If parsing fails, use defaults
+        this.selectedDate = new Date().toISOString().split('T')[0];
+      }
+    } else {
+      // Set default date to today if no saved filters
+      this.selectedDate = new Date().toISOString().split('T')[0];
+    }
+  }
+
+  private saveFilters(): void {
+    const filters = {
+      status: this.selectedStatus,
+      site: this.selectedSite,
+      date: this.selectedDate
+    };
+    sessionStorage.setItem(this.FILTER_STORAGE_KEY, JSON.stringify(filters));
+  }
+
+  clearFilters(): void {
+    this.selectedStatus = 'all';
+    this.selectedSite = 'all';
+    this.selectedDate = new Date().toISOString().split('T')[0];
+    sessionStorage.removeItem(this.FILTER_STORAGE_KEY);
+    this.loadChecklists();
+  }
+
+  hasActiveFilters(): boolean {
+    const today = new Date().toISOString().split('T')[0];
+    return this.selectedStatus !== 'all' ||
+           this.selectedSite !== 'all' ||
+           this.selectedDate !== today;
   }
 
   loadSites(): void {
@@ -138,6 +182,7 @@ export class ChecklistListComponent implements OnInit {
   }
 
   onFilterChange(): void {
+    this.saveFilters();
     this.loadChecklists();
   }
 

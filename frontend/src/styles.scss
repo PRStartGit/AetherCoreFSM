@@ -92,3 +92,17 @@ body {
   padding: 4px 8px;
   border-radius: 4px;
 }
+
+/* Angular Material MDC Form Field - Label Overflow Fix */
+.mat-mdc-form-field {
+  .mdc-floating-label {
+    max-width: calc(100% - 32px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .mdc-notched-outline__notch {
+    max-width: calc(100% - 28px);
+  }
+}
