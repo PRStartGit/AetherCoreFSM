@@ -47,3 +47,7 @@ pytz==2023.3
 
 # Payment processing
 gocardless_pro==1.47.0
+
+# PDF generation
+weasyprint==62.3
+reportlab==4.2.5

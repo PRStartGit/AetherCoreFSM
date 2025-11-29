@@ -48,6 +48,9 @@ import { SubscriptionCancelledComponent } from './features/subscription/subscrip
 import { SubscriptionUpgradeComponent } from './features/subscription/subscription-upgrade/subscription-upgrade.component';
 import { SubscriptionManageComponent } from './features/subscription/subscription-manage/subscription-manage.component';
 
+// Reports
+import { ReportGeneratorComponent } from './features/reports/pages/report-generator/report-generator.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -221,6 +224,12 @@ const routes: Routes = [
       {
         path: 'checklists/:id/complete',
         component: ChecklistCompletionComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN, UserRole.SITE_USER] }
+      },
+      {
+        path: 'reports',
+        component: ReportGeneratorComponent,
         canActivate: [RoleGuard],
         data: { roles: [UserRole.SUPER_ADMIN, UserRole.ORG_ADMIN, UserRole.SITE_USER] }
       },

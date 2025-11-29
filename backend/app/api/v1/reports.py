@@ -1,9 +1,18 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import StreamingResponse
 from app.core.email import email_service
-from app.core.dependencies import get_current_super_admin
-from app.models.user import User
+from app.core.dependencies import get_current_super_admin, get_current_user
+from app.core.database import get_db
+from app.models.user import User, UserRole
 from app.models.checklist import ChecklistStatus
+from app.models.site import Site
+from app.models.organization import Organization
+from app.models.organization_module import OrganizationModule
+from sqlalchemy.orm import Session
 from datetime import date, timedelta
+from typing import List, Optional
+from io import BytesIO
+import zipfile
 import logging
 
 router = APIRouter()
@@ -531,7 +540,7 @@ def send_daily_report_for_site(
             "completion_rate": round(completion_rate, 1),
             "report_date": yesterday.strftime('%Y-%m-%d')
         }
-        
+
     except Exception as e:
         logger.error(f"Error sending daily report: {str(e)}", exc_info=True)
         return {
@@ -540,3 +549,176 @@ def send_daily_report_for_site(
         }
     finally:
         db.close()
+
+
+# ============================================
+# PDF Report Generation Endpoints
+# ============================================
+
+def check_reporting_module_enabled(db: Session, organization_id: int) -> bool:
+    """Check if the reporting module is enabled for an organization."""
+    module = db.query(OrganizationModule).filter(
+        OrganizationModule.organization_id == organization_id,
+        OrganizationModule.module_name == "reporting"
+    ).first()
+    return module.is_enabled if module else False
+
+
+@router.get("/reports/pdf/checklist")
+def generate_checklist_pdf(
+    site_id: int,
+    report_date: date,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Generate a PDF report for a single day's checklists at a site.
+
+    All user roles can access this endpoint for sites they have access to.
+    """
+    from app.services.pdf_service import pdf_service
+
+    # Get site and verify access
+    site = db.query(Site).filter(Site.id == site_id).first()
+    if not site:
+        raise HTTPException(status_code=404, detail="Site not found")
+
+    # Check user has access to this site
+    if current_user.role == UserRole.SITE_USER:
+        user_site_ids = [us.site_id for us in current_user.user_sites]
+        if site_id not in user_site_ids:
+            raise HTTPException(status_code=403, detail="You don't have access to this site")
+    elif current_user.role == UserRole.ORG_ADMIN:
+        if site.organization_id != current_user.organization_id:
+            raise HTTPException(status_code=403, detail="You don't have access to this site")
+
+    # Check if reporting module is enabled (skip for super admins)
+    if current_user.role != UserRole.SUPER_ADMIN:
+        if not check_reporting_module_enabled(db, site.organization_id):
+            raise HTTPException(
+                status_code=403,
+                detail="Reporting module is not enabled for your organization"
+            )
+
+    # Get organization name
+    organization = db.query(Organization).filter(Organization.id == site.organization_id).first()
+    org_name = organization.name if organization else "Unknown"
+
+    # Generate PDF
+    try:
+        pdf_buffer = pdf_service.generate_daily_checklist_report(
+            db=db,
+            site_id=site_id,
+            report_date=report_date,
+            organization_name=org_name,
+            site_name=site.name
+        )
+
+        filename = pdf_service.generate_filename(org_name, site.name, report_date)
+
+        return StreamingResponse(
+            pdf_buffer,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename={filename}"
+            }
+        )
+    except Exception as e:
+        logger.error(f"Error generating PDF report: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to generate PDF: {str(e)}")
+
+
+@router.get("/reports/pdf/checklist/range")
+def generate_checklist_pdf_range(
+    site_id: int,
+    start_date: date,
+    end_date: date,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Generate PDF reports for a date range (one PDF per day).
+
+    Returns a ZIP file containing all PDFs if multiple days,
+    or a single PDF if only one day.
+    """
+    from app.services.pdf_service import pdf_service
+
+    # Validate date range
+    if end_date < start_date:
+        raise HTTPException(status_code=400, detail="End date must be after start date")
+
+    if (end_date - start_date).days > 31:
+        raise HTTPException(status_code=400, detail="Date range cannot exceed 31 days")
+
+    # Get site and verify access
+    site = db.query(Site).filter(Site.id == site_id).first()
+    if not site:
+        raise HTTPException(status_code=404, detail="Site not found")
+
+    # Check user has access to this site
+    if current_user.role == UserRole.SITE_USER:
+        user_site_ids = [us.site_id for us in current_user.user_sites]
+        if site_id not in user_site_ids:
+            raise HTTPException(status_code=403, detail="You don't have access to this site")
+    elif current_user.role == UserRole.ORG_ADMIN:
+        if site.organization_id != current_user.organization_id:
+            raise HTTPException(status_code=403, detail="You don't have access to this site")
+
+    # Check if reporting module is enabled (skip for super admins)
+    if current_user.role != UserRole.SUPER_ADMIN:
+        if not check_reporting_module_enabled(db, site.organization_id):
+            raise HTTPException(
+                status_code=403,
+                detail="Reporting module is not enabled for your organization"
+            )
+
+    # Get organization name
+    organization = db.query(Organization).filter(Organization.id == site.organization_id).first()
+    org_name = organization.name if organization else "Unknown"
+
+    try:
+        # If single day, return single PDF
+        if start_date == end_date:
+            pdf_buffer = pdf_service.generate_daily_checklist_report(
+                db=db,
+                site_id=site_id,
+                report_date=start_date,
+                organization_name=org_name,
+                site_name=site.name
+            )
+            filename = pdf_service.generate_filename(org_name, site.name, start_date)
+            return StreamingResponse(
+                pdf_buffer,
+                media_type="application/pdf",
+                headers={"Content-Disposition": f"attachment; filename={filename}"}
+            )
+
+        # Multiple days - create ZIP file
+        zip_buffer = BytesIO()
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            current_date = start_date
+            while current_date <= end_date:
+                pdf_buffer = pdf_service.generate_daily_checklist_report(
+                    db=db,
+                    site_id=site_id,
+                    report_date=current_date,
+                    organization_name=org_name,
+                    site_name=site.name
+                )
+                filename = pdf_service.generate_filename(org_name, site.name, current_date)
+                zip_file.writestr(filename, pdf_buffer.getvalue())
+                current_date += timedelta(days=1)
+
+        zip_buffer.seek(0)
+        zip_filename = pdf_service.generate_filename(org_name, site.name, start_date, end_date).replace('.pdf', '.zip')
+
+        return StreamingResponse(
+            zip_buffer,
+            media_type="application/zip",
+            headers={"Content-Disposition": f"attachment; filename={zip_filename}"}
+        )
+
+    except Exception as e:
+        logger.error(f"Error generating PDF reports: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to generate PDFs: {str(e)}")
