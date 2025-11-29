@@ -35,6 +35,7 @@ from app.models.module import Module
 from app.models.subscription_package import SubscriptionPackage
 from app.models.package_module import PackageModule
 from app.models.organization_module_addon import OrganizationModuleAddon
+from app.models.blog_post import BlogPost
 
 __all__ = [
     "User",
@@ -76,4 +77,5 @@ __all__ = [
     "SubscriptionPackage",
     "PackageModule",
     "OrganizationModuleAddon",
+    "BlogPost",
 ]

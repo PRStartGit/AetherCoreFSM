@@ -2692,6 +2692,31 @@
     </a>
 </section>
 
+<!-- News Section -->
+<section class="news-section" *ngIf="blogPosts.length > 0">
+    <div class="container">
+        <div class="section-header">
+            <h2>Latest News & Updates</h2>
+            <p>Stay informed with the latest from Zynthio</p>
+        </div>
+        <div class="news-grid">
+            <article class="news-card" *ngFor="let post of blogPosts">
+                <div class="news-thumbnail" *ngIf="post.thumbnail_url">
+                    <img [src]="post.thumbnail_url" [alt]="post.title">
+                </div>
+                <div class="news-thumbnail placeholder" *ngIf="!post.thumbnail_url">
+                    <i class="fa-solid fa-newspaper"></i>
+                </div>
+                <div class="news-content">
+                    <span class="news-date">{{ formatBlogDate(post.published_at) }}</span>
+                    <h3>{{ post.title }}</h3>
+                    <p *ngIf="post.excerpt">{{ post.excerpt }}</p>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
 <!-- Footer -->
 <footer>
     <div class="footer-grid">

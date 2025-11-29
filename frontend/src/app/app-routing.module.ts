@@ -51,6 +51,9 @@ import { SubscriptionManageComponent } from './features/subscription/subscriptio
 // Reports
 import { ReportGeneratorComponent } from './features/reports/pages/report-generator/report-generator.component';
 
+// Blog
+import { BlogAdminComponent } from './features/blog/pages/blog-admin/blog-admin.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -188,6 +191,13 @@ const routes: Routes = [
       {
         path: 'super-admin/tickets',
         component: AdminTicketListComponent,
+        canActivate: [RoleGuard],
+        data: { roles: [UserRole.SUPER_ADMIN] }
+      },
+      // Blog/News Admin
+      {
+        path: 'news',
+        component: BlogAdminComponent,
         canActivate: [RoleGuard],
         data: { roles: [UserRole.SUPER_ADMIN] }
       },
