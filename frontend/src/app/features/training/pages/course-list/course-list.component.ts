@@ -85,6 +85,10 @@ export class CourseListComponent implements OnInit {
     this.router.navigate(['/training/courses', course.id]);
   }
 
+  previewCourse(course: Course): void {
+    this.router.navigate(['/training/play', course.id], { queryParams: { preview: true } });
+  }
+
   deleteCourse(course: Course): void {
     if (confirm(`Are you sure you want to delete "${course.title}"? This will also delete all modules. This action cannot be undone.`)) {
       this.trainingService.deleteCourse(course.id).subscribe({

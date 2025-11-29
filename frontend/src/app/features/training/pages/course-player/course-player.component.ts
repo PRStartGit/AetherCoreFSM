@@ -27,6 +27,10 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
   loading = true;
   error: string | null = null;
 
+  // Preview mode - for admins to preview courses without enrollment
+  isPreviewMode = false;
+  courseId: number | null = null;
+
   // Video player state
   videoElement: HTMLVideoElement | null = null;
   videoCurrentTime: number = 0;
@@ -42,9 +46,20 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.enrollmentId = Number(this.route.snapshot.paramMap.get('id'));
-    this.loadEnrollmentData();
-    this.setupProgressAutoSave();
+    // Check if this is preview mode
+    this.isPreviewMode = this.route.snapshot.queryParamMap.get('preview') === 'true';
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+
+    if (this.isPreviewMode) {
+      // In preview mode, the ID is the course ID
+      this.courseId = id;
+      this.loadCourseDirectly(id);
+    } else {
+      // Normal mode - ID is enrollment ID
+      this.enrollmentId = id;
+      this.loadEnrollmentData();
+      this.setupProgressAutoSave();
+    }
   }
 
   ngOnDestroy(): void {
@@ -52,7 +67,32 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
     this.progressSaveInterval$.next();
     this.progressSaveInterval$.complete();
-    this.saveCurrentProgress();
+    if (!this.isPreviewMode) {
+      this.saveCurrentProgress();
+    }
+  }
+
+  loadCourseDirectly(courseId: number): void {
+    this.loading = true;
+    this.error = null;
+
+    this.courseService.getCourse(courseId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (course: Course) => {
+          this.course = course;
+          this.modules = course.modules?.sort((a: CourseModule, b: CourseModule) => a.order_index - b.order_index) || [];
+          this.currentModuleIndex = 0;
+          this.currentModule = this.modules[0] || null;
+          this.loading = false;
+          this.startTime = Date.now();
+        },
+        error: (error: any) => {
+          console.error('Error loading course for preview:', error);
+          this.error = 'Failed to load course. You may not have permission to preview this course.';
+          this.loading = false;
+        }
+      });
   }
 
   loadEnrollmentData(): void {
@@ -123,7 +163,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
   }
 
   saveCurrentProgress(): void {
-    if (!this.currentModule) return;
+    // Skip saving in preview mode
+    if (this.isPreviewMode || !this.currentModule) return;
 
     const currentProgress = this.moduleProgress.get(this.currentModule.id);
     const lastPosition = this.videoElement?.currentTime || currentProgress?.last_position_seconds || 0;
@@ -167,6 +208,14 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
 
   completeCurrentModule(): void {
     if (!this.currentModule) return;
+
+    // In preview mode, just advance to next module without saving
+    if (this.isPreviewMode) {
+      if (this.hasNextModule()) {
+        setTimeout(() => this.nextModule(), 500);
+      }
+      return;
+    }
 
     const timeSpent = Math.floor((Date.now() - this.startTime) / 1000);
 
@@ -244,8 +293,12 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
   }
 
   exitCourse(): void {
-    this.saveCurrentProgress();
-    this.router.navigate(['/training/my-courses']);
+    if (this.isPreviewMode) {
+      this.router.navigate(['/training/courses']);
+    } else {
+      this.saveCurrentProgress();
+      this.router.navigate(['/training/my-courses']);
+    }
   }
 
   get completedModulesCount(): number {

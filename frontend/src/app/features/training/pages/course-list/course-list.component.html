@@ -123,15 +123,19 @@
 
           <!-- Actions -->
           <div *ngIf="isSuperAdmin" class="flex gap-2 pt-4 border-t border-gray-200">
+            <button (click)="previewCourse(course)"
+                    class="flex-1 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-semibold flex items-center justify-center gap-2">
+              <i class="fa-solid fa-play"></i>
+              Preview
+            </button>
             <button (click)="navigateToEdit(course)"
                     class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-semibold flex items-center justify-center gap-2">
               <i class="fa-solid fa-pen"></i>
               Edit
             </button>
             <button (click)="togglePublishStatus(course)"
-                    class="flex-1 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-semibold flex items-center justify-center gap-2">
+                    class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-semibold flex items-center justify-center gap-2">
               <i [class]="course.is_published ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
-              {{ course.is_published ? 'Unpublish' : 'Publish' }}
             </button>
             <button (click)="deleteCourse(course)"
                     class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
