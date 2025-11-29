@@ -6,7 +6,7 @@ import { ChecklistService } from '../../../core/services/checklist.service';
 import { SiteService } from '../../../core/services/site.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Checklist, ChecklistStatus } from '../../../core/models/monitoring.model';
-import { Site } from '../../../core/models';
+import { Site, UserRole } from '../../../core/models';
 import { ChecklistFormComponent } from '../checklist-form/checklist-form.component';
 
 @Component({
@@ -26,6 +26,9 @@ export class ChecklistListComponent implements OnInit {
   selectedDate: string = '';
   statuses = Object.values(ChecklistStatus);
 
+  // Storage key for filter persistence
+  private readonly FILTER_STORAGE_KEY = 'checklist_filters';
+
   constructor(
     private checklistService: ChecklistService,
     private siteService: SiteService,
@@ -36,18 +39,65 @@ export class ChecklistListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Set default date to today
-    const today = new Date();
-    this.selectedDate = today.toISOString().split('T')[0];
+    // Restore filters from session storage
+    this.restoreFilters();
 
     this.loadSites();
     this.loadChecklists();
   }
 
+  private restoreFilters(): void {
+    const savedFilters = sessionStorage.getItem(this.FILTER_STORAGE_KEY);
+    if (savedFilters) {
+      try {
+        const filters = JSON.parse(savedFilters);
+        this.selectedStatus = filters.status || 'all';
+        this.selectedSite = filters.site || 'all';
+        this.selectedDate = filters.date || new Date().toISOString().split('T')[0];
+      } catch {
+        // If parsing fails, use defaults
+        this.selectedDate = new Date().toISOString().split('T')[0];
+      }
+    } else {
+      // Set default date to today if no saved filters
+      this.selectedDate = new Date().toISOString().split('T')[0];
+    }
+  }
+
+  private saveFilters(): void {
+    const filters = {
+      status: this.selectedStatus,
+      site: this.selectedSite,
+      date: this.selectedDate
+    };
+    sessionStorage.setItem(this.FILTER_STORAGE_KEY, JSON.stringify(filters));
+  }
+
+  clearFilters(): void {
+    this.selectedStatus = 'all';
+    this.selectedSite = 'all';
+    this.selectedDate = new Date().toISOString().split('T')[0];
+    sessionStorage.removeItem(this.FILTER_STORAGE_KEY);
+    this.loadChecklists();
+  }
+
+  hasActiveFilters(): boolean {
+    const today = new Date().toISOString().split('T')[0];
+    return this.selectedStatus !== 'all' ||
+           this.selectedSite !== 'all' ||
+           this.selectedDate !== today;
+  }
+
   loadSites(): void {
     this.siteService.getAll().subscribe({
       next: (sites: any[]) => {
-        this.sites = sites;
+        // Filter sites based on user access for site users
+        const currentUser = this.authService.getUser();
+        if (currentUser?.role === UserRole.SITE_USER && currentUser.site_ids?.length) {
+          this.sites = sites.filter(site => currentUser.site_ids!.includes(site.id));
+        } else {
+          this.sites = sites;
+        }
       },
       error: (error: any) => {
         console.error('Error loading sites:', error);
@@ -138,6 +188,7 @@ export class ChecklistListComponent implements OnInit {
   }
 
   onFilterChange(): void {
+    this.saveFilters();
     this.loadChecklists();
   }
 

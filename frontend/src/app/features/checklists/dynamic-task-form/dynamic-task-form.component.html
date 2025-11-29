@@ -118,6 +118,17 @@
 
               <div class="instance-fields">
                 <div *ngFor="let template of field.validation_rules?.repeat_template" class="instance-field">
+                  <!-- Text/Name field -->
+                  <div *ngIf="template.type === 'text' || template.type === 'name'">
+                    <label class="instance-field-label">{{ template.label }}</label>
+                    <input
+                      type="text"
+                      [formControlName]="'field_' + field.id + '_' + i + '_' + template.type"
+                      class="form-input"
+                      [placeholder]="template.label"
+                    />
+                  </div>
+
                   <!-- Temperature field -->
                   <div *ngIf="template.type === 'temperature' || template.type === 'number'">
                     <label class="instance-field-label">{{ template.label }}</label>

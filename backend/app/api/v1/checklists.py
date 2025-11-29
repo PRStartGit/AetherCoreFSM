@@ -280,6 +280,12 @@ def list_checklists(
                     # Combine checklist date with closing time
                     closes_datetime = datetime.combine(checklist.checklist_date, checklist.category.closes_at)
 
+                    # Handle overnight time windows (e.g., opens 20:00, closes 03:00)
+                    # If closes_at is earlier than opens_at, it means the window spans midnight
+                    if checklist.category.opens_at and checklist.category.closes_at < checklist.category.opens_at:
+                        # Overnight window - closing time is on the next day
+                        closes_datetime = closes_datetime + timedelta(days=1)
+
                     # If current time has passed the closing time, mark as OVERDUE
                     if now > closes_datetime:
                         dynamic_status = ChecklistStatus.OVERDUE

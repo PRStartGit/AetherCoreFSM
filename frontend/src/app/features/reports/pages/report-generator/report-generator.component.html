@@ -1,0 +1,136 @@
+<div class="report-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Checklist Reports</h1>
+      <p class="subtitle">Generate PDF reports from completed checklists</p>
+    </div>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Report Configuration Card -->
+    <div class="config-card">
+      <div class="card-header">
+        <i class="fa-solid fa-file-pdf"></i>
+        <h2>Generate Report</h2>
+      </div>
+
+      <div class="card-body">
+        <!-- Site Selection -->
+        <div class="form-group">
+          <label for="site">Select Site</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-location-dot"></i>
+            <select id="site" [(ngModel)]="selectedSiteId" [disabled]="isLoading">
+              <option [ngValue]="null" disabled>-- Select a site --</option>
+              <option *ngFor="let site of sites" [value]="site.id">
+                {{ site.name }} ({{ site.site_code }})
+              </option>
+            </select>
+          </div>
+          <span class="hint" *ngIf="sites.length === 0 && !isLoading">No sites available</span>
+        </div>
+
+        <!-- Report Type Selection -->
+        <div class="form-group">
+          <label>Report Type</label>
+          <div class="type-buttons">
+            <button type="button"
+                    class="type-btn"
+                    [class.active]="reportType === 'single'"
+                    (click)="reportType = 'single'">
+              <i class="fa-solid fa-calendar-day"></i>
+              <span>Single Day</span>
+            </button>
+            <button type="button"
+                    class="type-btn"
+                    [class.active]="reportType === 'range'"
+                    (click)="reportType = 'range'">
+              <i class="fa-solid fa-calendar-week"></i>
+              <span>Date Range</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Single Date Selection -->
+        <div class="form-group" *ngIf="reportType === 'single'">
+          <label for="singleDate">Select Date</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-calendar"></i>
+            <input type="date" id="singleDate" [(ngModel)]="singleDate">
+          </div>
+          <span class="hint">Select the date you want to generate a report for</span>
+        </div>
+
+        <!-- Date Range Selection -->
+        <div class="date-range-group" *ngIf="reportType === 'range'">
+          <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-calendar"></i>
+              <input type="date" id="startDate" [(ngModel)]="startDate">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="endDate">End Date</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-calendar"></i>
+              <input type="date" id="endDate" [(ngModel)]="endDate" [min]="startDate">
+            </div>
+          </div>
+        </div>
+
+        <!-- Range Info -->
+        <div class="range-info" *ngIf="reportType === 'range' && startDate && endDate && getDayCount() > 0">
+          <i class="fa-solid fa-info-circle"></i>
+          <span>
+            {{ getDayCount() }} day{{ getDayCount() > 1 ? 's' : '' }} selected.
+            {{ getDayCount() > 1 ? 'A ZIP file containing ' + getDayCount() + ' PDFs will be generated.' : 'A single PDF will be generated.' }}
+          </span>
+        </div>
+
+        <!-- Generate Button -->
+        <div class="action-section">
+          <button type="button"
+                  class="btn-primary"
+                  [disabled]="!canGenerate() || isGenerating"
+                  (click)="generateReport()">
+            <i class="fa-solid" [ngClass]="isGenerating ? 'fa-spinner fa-spin' : 'fa-download'"></i>
+            <span>{{ isGenerating ? 'Generating...' : 'Generate & Download' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Panel -->
+    <div class="info-panel">
+      <div class="info-card">
+        <div class="info-icon">
+          <i class="fa-solid fa-circle-info"></i>
+        </div>
+        <h3>About Checklist Reports</h3>
+        <p>PDF reports include:</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> All completed tasks with responses</li>
+          <li><i class="fa-solid fa-check"></i> Missed tasks highlighted in red</li>
+          <li><i class="fa-solid fa-check"></i> Evidence photos attached</li>
+          <li><i class="fa-solid fa-check"></i> Completion statistics</li>
+          <li><i class="fa-solid fa-check"></i> Category breakdowns</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon warning">
+          <i class="fa-solid fa-lightbulb"></i>
+        </div>
+        <h3>Tips</h3>
+        <ul>
+          <li><i class="fa-solid fa-arrow-right"></i> Reports are generated per day</li>
+          <li><i class="fa-solid fa-arrow-right"></i> Date ranges create one PDF per day</li>
+          <li><i class="fa-solid fa-arrow-right"></i> Maximum 31 days per request</li>
+          <li><i class="fa-solid fa-arrow-right"></i> Files are named: org-site-date.pdf</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

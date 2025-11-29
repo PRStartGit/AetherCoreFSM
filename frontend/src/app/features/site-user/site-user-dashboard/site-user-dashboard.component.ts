@@ -322,11 +322,18 @@ export class SiteUserDashboardComponent implements OnInit {
       closesAtMinutes = hours * 60 + minutes;
     }
 
-    // Check if current time is within the window
+    // Handle overnight time windows (e.g., opens 20:00, closes 03:00)
+    // If closes_at < opens_at, the window spans midnight
+    if (closesAtMinutes < opensAtMinutes) {
+      // Overnight window: active if current time is >= opens OR <= closes
+      return currentTime >= opensAtMinutes || currentTime <= closesAtMinutes;
+    }
+
+    // Normal same-day window: check if current time is within the window
     return currentTime >= opensAtMinutes && currentTime <= closesAtMinutes;
   }
 
-  isChecklistMissed(closesAt: string | null | undefined): boolean {
+  isChecklistMissed(closesAt: string | null | undefined, opensAt?: string | null): boolean {
     // If no time restrictions, it can't be missed
     if (!closesAt) {
       return false;
@@ -336,10 +343,25 @@ export class SiteUserDashboardComponent implements OnInit {
     const currentTime = now.getHours() * 60 + now.getMinutes(); // Current time in minutes since midnight
 
     // Parse closes_at time (format: "HH:MM:SS")
-    const [hours, minutes] = closesAt.split(':').map(Number);
-    const closesAtMinutes = hours * 60 + minutes;
+    const [closeHours, closeMinutes] = closesAt.split(':').map(Number);
+    const closesAtMinutes = closeHours * 60 + closeMinutes;
 
-    // Check if current time is past the closing time
+    // Parse opens_at time if available (format: "HH:MM:SS")
+    let opensAtMinutes = 0;
+    if (opensAt) {
+      const [openHours, openMinutes] = opensAt.split(':').map(Number);
+      opensAtMinutes = openHours * 60 + openMinutes;
+    }
+
+    // Handle overnight time windows (e.g., opens 20:00, closes 03:00)
+    // If closes_at < opens_at, the window spans midnight
+    if (opensAt && closesAtMinutes < opensAtMinutes) {
+      // Overnight window: missed only if current time is AFTER closes_at but BEFORE opens_at
+      // e.g., for 20:00-03:00 window, missed if time is between 03:01 and 19:59
+      return currentTime > closesAtMinutes && currentTime < opensAtMinutes;
+    }
+
+    // Normal same-day window: missed if past closing time
     return currentTime > closesAtMinutes;
   }
 

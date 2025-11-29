@@ -119,6 +119,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       tickets: 'fa-solid fa-ticket',
       training: 'fa-solid fa-graduation-cap',
       recipes: 'fa-solid fa-book-open',
+      reports: 'fa-solid fa-file-pdf',
       // Section icons
       userMgmt: 'fa-solid fa-users-gear',
       orgSection: 'fa-solid fa-building',
@@ -162,7 +163,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
             items: [
               { label: 'Categories', icon: icons.category, route: '/categories' },
               { label: 'Tasks', icon: icons.tasks, route: '/tasks' },
-              { label: 'Checklists', icon: icons.checklist, route: '/checklists' }
+              { label: 'Checklists', icon: icons.checklist, route: '/checklists' },
+              { label: 'Reports', icon: icons.reports, route: '/reports' }
             ]
           },
           {
@@ -238,7 +240,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
             items: [
               { label: 'Categories', icon: icons.category, route: '/categories' },
               { label: 'Tasks', icon: icons.tasks, route: '/tasks' },
-              { label: 'Checklists', icon: icons.checklist, route: '/checklists' }
+              { label: 'Checklists', icon: icons.checklist, route: '/checklists' },
+              { label: 'Reports', icon: icons.reports, route: '/reports' }
             ]
           },
           {
@@ -278,7 +281,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
             icon: icons.fsm,
             expanded: false,
             items: [
-              { label: 'Checklists', icon: icons.checklist, route: '/checklists' }
+              { label: 'Checklists', icon: icons.checklist, route: '/checklists' },
+              { label: 'Reports', icon: icons.reports, route: '/reports' }
             ]
           },
           {

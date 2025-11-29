@@ -5,7 +5,7 @@ Handles recipe CRUD operations, scaling, and related logic
 from typing import List, Optional
 from decimal import Decimal
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from app.models.recipe import Recipe
 from app.models.recipe_ingredient import RecipeIngredient
 from app.models.recipe_category import RecipeCategory
@@ -88,7 +88,8 @@ class RecipeService:
         allergen: Optional[str] = None,
         include_archived: bool = False,
         skip: int = 0,
-        limit: int = 100
+        limit: int = 100,
+        user_site_ids: Optional[List[int]] = None
     ) -> List[Recipe]:
         """
         Get recipes for an organization with filters
@@ -103,6 +104,7 @@ class RecipeService:
             include_archived: Include archived recipes
             skip: Pagination offset
             limit: Pagination limit
+            user_site_ids: List of site IDs user has access to (for site user filtering)
 
         Returns:
             List of recipes
@@ -129,6 +131,42 @@ class RecipeService:
                 RecipeBookRecipe.recipe_book_id == recipe_book_id
             ).subquery()
             query = query.filter(Recipe.id.in_(recipes_in_book))
+
+        # Filter by user's sites - only show recipes from recipe books assigned to their sites
+        # or recipe books with no site assignment (available to all sites)
+        if user_site_ids is not None:
+            from app.models.recipe_book import RecipeBook, RecipeBookRecipe, recipe_book_sites
+
+            # Get recipe books that are either:
+            # 1. Assigned to one of the user's sites via junction table (recipe_book_sites)
+            # 2. Assigned to one of the user's sites via legacy site_id field
+            # 3. Have no site assignments at all (available to all sites in org)
+            books_for_user_sites = db.query(RecipeBook.id).outerjoin(
+                recipe_book_sites,
+                RecipeBook.id == recipe_book_sites.c.recipe_book_id
+            ).filter(
+                RecipeBook.organization_id == organization_id,
+                RecipeBook.is_active == True,
+                or_(
+                    # Check junction table site assignments
+                    recipe_book_sites.c.site_id.in_(user_site_ids),
+                    # Check legacy site_id field
+                    RecipeBook.site_id.in_(user_site_ids),
+                    # No site assignment at all = available to all sites
+                    # (both junction table empty AND legacy site_id is null)
+                    and_(
+                        recipe_book_sites.c.site_id == None,
+                        RecipeBook.site_id == None
+                    )
+                )
+            ).distinct().subquery()
+
+            # Get recipes in those books
+            recipes_in_user_books = db.query(RecipeBookRecipe.recipe_id).filter(
+                RecipeBookRecipe.recipe_book_id.in_(db.query(books_for_user_sites))
+            ).subquery()
+
+            query = query.filter(Recipe.id.in_(recipes_in_user_books))
 
         if allergen:
             # Exclude recipes containing this allergen

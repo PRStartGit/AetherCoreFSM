@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from app.models.user import User, UserRole
 from app.models.user_module_access import UserModuleAccess
+from app.models.organization_module import OrganizationModule
 
 
 class ModuleAccessService:
@@ -18,7 +19,8 @@ class ModuleAccessService:
 
         Rules:
         - Super admins automatically have access to all modules
-        - Other users must have explicit module access granted
+        - If organization has the module enabled, all users in that org have access
+        - Explicit user-level grants also provide access
         """
         # Get user
         user = db.query(User).filter(User.id == user_id).first()
@@ -28,6 +30,16 @@ class ModuleAccessService:
         # Super admins have access to everything
         if user.role == UserRole.SUPER_ADMIN:
             return True
+
+        # Check if organization has this module enabled (auto-access for all users)
+        if user.organization_id:
+            org_module = db.query(OrganizationModule).filter(
+                OrganizationModule.organization_id == user.organization_id,
+                OrganizationModule.module_name == module_name,
+                OrganizationModule.is_enabled == True
+            ).first()
+            if org_module:
+                return True
 
         # Check if user has explicit access to this module
         access = db.query(UserModuleAccess).filter(
@@ -103,14 +115,27 @@ class ModuleAccessService:
 
         # Super admins have access to all modules
         if user.role == UserRole.SUPER_ADMIN:
-            return ["TRAINING", "COSHH", "HACCP"]  # All available modules
+            return ["TRAINING", "COSHH", "HACCP", "RECIPE_BOOK"]  # All available modules
+
+        modules = set()
+
+        # Get modules enabled for the organization (auto-access)
+        if user.organization_id:
+            org_modules = db.query(OrganizationModule).filter(
+                OrganizationModule.organization_id == user.organization_id,
+                OrganizationModule.is_enabled == True
+            ).all()
+            for org_module in org_modules:
+                modules.add(org_module.module_name)
 
         # Get user's explicit access
         access_records = db.query(UserModuleAccess).filter(
             UserModuleAccess.user_id == user_id
         ).all()
+        for access in access_records:
+            modules.add(access.module_name)
 
-        return [access.module_name for access in access_records]
+        return list(modules)
 
 
 # Singleton instance
