@@ -6,7 +6,7 @@ import { ChecklistService } from '../../../core/services/checklist.service';
 import { SiteService } from '../../../core/services/site.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Checklist, ChecklistStatus } from '../../../core/models/monitoring.model';
-import { Site } from '../../../core/models';
+import { Site, UserRole } from '../../../core/models';
 import { ChecklistFormComponent } from '../checklist-form/checklist-form.component';
 
 @Component({
@@ -91,7 +91,13 @@ export class ChecklistListComponent implements OnInit {
   loadSites(): void {
     this.siteService.getAll().subscribe({
       next: (sites: any[]) => {
-        this.sites = sites;
+        // Filter sites based on user access for site users
+        const currentUser = this.authService.getUser();
+        if (currentUser?.role === UserRole.SITE_USER && currentUser.site_ids?.length) {
+          this.sites = sites.filter(site => currentUser.site_ids!.includes(site.id));
+        } else {
+          this.sites = sites;
+        }
       },
       error: (error: any) => {
         console.error('Error loading sites:', error);
