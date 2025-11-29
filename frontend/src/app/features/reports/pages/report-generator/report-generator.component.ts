@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ReportService } from '../../services/report.service';
 import { AuthService } from '../../../../core/auth/auth.service';
-import { User, UserRole } from '../../../../core/models';
+import { User } from '../../../../core/models';
 import { HttpClient } from '@angular/common/http';
 
 interface Site {
@@ -61,15 +61,10 @@ export class ReportGeneratorComponent implements OnInit {
 
   loadSites(): void {
     this.isLoading = true;
+    // Backend filters sites based on user role automatically
     this.http.get<Site[]>('/api/v1/sites').subscribe({
       next: (sites) => {
-        // Filter sites based on user role
-        if (this.currentUser?.role === UserRole.SITE_USER && this.currentUser.site_ids?.length) {
-          this.sites = sites.filter(site => this.currentUser!.site_ids!.includes(site.id));
-        } else {
-          this.sites = sites;
-        }
-
+        this.sites = sites;
         // Auto-select first site if only one
         if (this.sites.length === 1) {
           this.selectedSiteId = this.sites[0].id;
@@ -106,9 +101,8 @@ export class ReportGeneratorComponent implements OnInit {
 
     if (this.reportType === 'single') {
       this.reportService.downloadDailyReport(this.selectedSiteId, this.singleDate).subscribe({
-        next: (blob) => {
-          const filename = `checklist-report-${this.singleDate}.pdf`;
-          this.reportService.downloadFile(blob, filename);
+        next: (response) => {
+          this.reportService.downloadFromResponse(response, `checklist-report-${this.singleDate}.pdf`);
           this.snackBar.open('Report downloaded successfully', 'Close', { duration: 3000 });
           this.isGenerating = false;
         },
@@ -124,12 +118,11 @@ export class ReportGeneratorComponent implements OnInit {
       });
     } else {
       this.reportService.downloadRangeReport(this.selectedSiteId, this.startDate, this.endDate).subscribe({
-        next: (blob) => {
-          const isZip = this.startDate !== this.endDate;
-          const filename = isZip
+        next: (response) => {
+          const fallbackFilename = this.startDate !== this.endDate
             ? `checklist-reports-${this.startDate}-to-${this.endDate}.zip`
             : `checklist-report-${this.startDate}.pdf`;
-          this.reportService.downloadFile(blob, filename);
+          this.reportService.downloadFromResponse(response, fallbackFilename);
           this.snackBar.open('Report(s) downloaded successfully', 'Close', { duration: 3000 });
           this.isGenerating = false;
         },

@@ -79,15 +79,19 @@ def list_sites(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """List sites (filtered by organization for non-super-admins)."""
+    """List sites (filtered by organization for non-super-admins, by assigned sites for site users)."""
     query = db.query(Site).options(joinedload(Site.organization))
 
-    # Filter by organization
+    # Filter by role
     if current_user.role == UserRole.SUPER_ADMIN:
         if organization_id:
             query = query.filter(Site.organization_id == organization_id)
+    elif current_user.role == UserRole.SITE_USER:
+        # Site users can only see their assigned sites
+        user_site_ids = [us.site_id for us in current_user.user_sites]
+        query = query.filter(Site.id.in_(user_site_ids))
     else:
-        # Non-super-admins can only see their org's sites
+        # ORG_ADMINs can see all their org's sites
         query = query.filter(Site.organization_id == current_user.organization_id)
 
     sites = query.offset(skip).limit(limit).all()
