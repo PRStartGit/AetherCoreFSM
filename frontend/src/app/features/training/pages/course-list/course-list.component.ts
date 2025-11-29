@@ -86,7 +86,7 @@ export class CourseListComponent implements OnInit {
   }
 
   previewCourse(course: Course): void {
-    this.router.navigate(['/training/play', course.id], { queryParams: { preview: true } });
+    this.router.navigate(['/training/player', course.id], { queryParams: { preview: true } });
   }
 
   deleteCourse(course: Course): void {
