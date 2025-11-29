@@ -117,7 +117,7 @@
           {{ defect.status | uppercase }}
         </span>
         <span class="text-sm text-gray-600 px-2.5 py-1 bg-gray-100 rounded-lg">
-          Site #{{ defect.site_id }}
+          {{ getSiteName(defect.site_id) }}
         </span>
       </div>
 
@@ -182,7 +182,7 @@
               <div class="text-sm text-gray-500">{{ defect.description | slice:0:60 }}{{ defect.description.length > 60 ? '...' : '' }}</div>
             </td>
             <td class="px-6 py-4 text-gray-800">
-              <span class="text-sm">Site #{{ defect.site_id }}</span>
+              <span class="text-sm">{{ getSiteName(defect.site_id) }}</span>
             </td>
             <td class="px-6 py-4">
               <span class="inline-block px-3 py-1 rounded-lg text-xs font-semibold"

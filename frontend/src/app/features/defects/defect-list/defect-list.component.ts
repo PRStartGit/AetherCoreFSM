@@ -124,4 +124,9 @@ export class DefectListComponent implements OnInit {
       default: return 'bg-gray-100 text-gray-800';
     }
   }
+
+  getSiteName(siteId: number): string {
+    const site = this.sites.find(s => s.id === siteId);
+    return site?.name || `Site #${siteId}`;
+  }
 }
