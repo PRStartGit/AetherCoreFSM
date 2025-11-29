@@ -5,7 +5,7 @@ Handles recipe CRUD operations, scaling, and related logic
 from typing import List, Optional
 from decimal import Decimal
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from app.models.recipe import Recipe
 from app.models.recipe_ingredient import RecipeIngredient
 from app.models.recipe_category import RecipeCategory
@@ -138,8 +138,9 @@ class RecipeService:
             from app.models.recipe_book import RecipeBook, RecipeBookRecipe, recipe_book_sites
 
             # Get recipe books that are either:
-            # 1. Assigned to one of the user's sites
-            # 2. Have no site assignments (available to all sites in org)
+            # 1. Assigned to one of the user's sites via junction table (recipe_book_sites)
+            # 2. Assigned to one of the user's sites via legacy site_id field
+            # 3. Have no site assignments at all (available to all sites in org)
             books_for_user_sites = db.query(RecipeBook.id).outerjoin(
                 recipe_book_sites,
                 RecipeBook.id == recipe_book_sites.c.recipe_book_id
@@ -147,8 +148,16 @@ class RecipeService:
                 RecipeBook.organization_id == organization_id,
                 RecipeBook.is_active == True,
                 or_(
+                    # Check junction table site assignments
                     recipe_book_sites.c.site_id.in_(user_site_ids),
-                    recipe_book_sites.c.site_id == None  # No site assignment = all sites
+                    # Check legacy site_id field
+                    RecipeBook.site_id.in_(user_site_ids),
+                    # No site assignment at all = available to all sites
+                    # (both junction table empty AND legacy site_id is null)
+                    and_(
+                        recipe_book_sites.c.site_id == None,
+                        RecipeBook.site_id == None
+                    )
                 )
             ).distinct().subquery()
 
