@@ -1,114 +1,100 @@
-<div class="recipe-admin-container">
+<div class="admin-page">
   <!-- Header -->
-  <div class="admin-header">
-    <div class="header-content">
-      <div class="title-section">
-        <a routerLink="/recipes" class="back-btn">
-          <i class="fa-solid fa-arrow-left"></i>
-        </a>
-        <div>
-          <h1>Recipe Categories</h1>
-          <p class="subtitle">Manage categories for organizing recipes</p>
-        </div>
-      </div>
+  <div class="page-header">
+    <a routerLink="/recipes" class="back-btn">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div>
+      <h1>Recipe Categories</h1>
+      <p class="subtitle">Manage categories for organizing recipes</p>
     </div>
   </div>
 
   <div class="content-grid">
     <!-- Left Panel: Form -->
     <div class="left-panel">
-      <mat-card class="form-card">
-        <mat-card-header>
-          <mat-card-title>
-            <i class="fa-solid fa-plus-circle text-green-600 mr-2" *ngIf="!isEditing"></i>
-            <i class="fa-solid fa-edit text-green-600 mr-2" *ngIf="isEditing"></i>
-            {{ isEditing ? 'Edit Category' : 'Add New Category' }}
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Category Name</mat-label>
-              <input matInput formControlName="name" placeholder="e.g., Appetizers">
-              <mat-error *ngIf="categoryForm.get('name')?.hasError('required')">
-                Name is required
-              </mat-error>
-              <mat-error *ngIf="categoryForm.get('name')?.hasError('maxlength')">
-                Name must be 100 characters or less
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Sort Order</mat-label>
-              <input matInput type="number" formControlName="sort_order" placeholder="0">
-              <mat-hint>Lower numbers appear first</mat-hint>
-              <mat-error *ngIf="categoryForm.get('sort_order')?.hasError('required')">
-                Sort order is required
-              </mat-error>
-              <mat-error *ngIf="categoryForm.get('sort_order')?.hasError('min')">
-                Sort order must be 0 or greater
-              </mat-error>
-            </mat-form-field>
-
-            <div class="form-actions">
-              <button mat-raised-button color="primary" type="submit" [disabled]="categoryForm.invalid">
-                <i class="fa-solid" [ngClass]="isEditing ? 'fa-save' : 'fa-plus'"></i>
-                {{ isEditing ? 'Update' : 'Create' }} Category
-              </button>
-              <button mat-button type="button" (click)="resetForm()" *ngIf="isEditing">
-                Cancel
-              </button>
+      <div class="form-card">
+        <div class="card-header">
+          <i class="fa-solid" [ngClass]="isEditing ? 'fa-edit' : 'fa-plus-circle'"></i>
+          <h2>{{ isEditing ? 'Edit Category' : 'Add New Category' }}</h2>
+        </div>
+        <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" class="admin-form">
+          <div class="form-group">
+            <label for="name">Category Name</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-tag"></i>
+              <input type="text" id="name" formControlName="name" placeholder="e.g., Appetizers">
             </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
+            <span class="error-message" *ngIf="categoryForm.get('name')?.touched && categoryForm.get('name')?.hasError('required')">
+              Name is required
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="sort_order">Sort Order</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-sort"></i>
+              <input type="number" id="sort_order" formControlName="sort_order" placeholder="0">
+            </div>
+            <span class="hint">Lower numbers appear first</span>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" [disabled]="categoryForm.invalid">
+              <i class="fa-solid" [ngClass]="isEditing ? 'fa-save' : 'fa-plus'"></i>
+              {{ isEditing ? 'Update' : 'Create' }} Category
+            </button>
+            <button type="button" class="btn-secondary" (click)="resetForm()" *ngIf="isEditing">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- Right Panel: Table -->
     <div class="right-panel">
-      <mat-card class="table-card">
-        <mat-card-header>
-          <mat-card-title>Existing Categories</mat-card-title>
-          <mat-card-subtitle>{{ categories.length }} categories</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <table mat-table [dataSource]="categories" class="categories-table">
-            <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef>Name</th>
-              <td mat-cell *matCellDef="let category">
-                <span class="font-medium text-gray-900">{{ category.name }}</span>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="sort_order">
-              <th mat-header-cell *matHeaderCellDef>Sort Order</th>
-              <td mat-cell *matCellDef="let category" class="sort-order-cell">
-                {{ category.sort_order }}
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>Actions</th>
-              <td mat-cell *matCellDef="let category">
-                <button mat-icon-button class="edit-btn" (click)="editCategory(category)" matTooltip="Edit">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button class="delete-btn" color="warn" (click)="deleteCategory(category)" matTooltip="Delete">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <div class="table-card">
+        <div class="card-header">
+          <div>
+            <i class="fa-solid fa-tags"></i>
+            <h2>Existing Categories</h2>
+          </div>
+          <span class="count-badge">{{ categories.length }} categories</span>
+        </div>
+        <div class="table-wrapper">
+          <table *ngIf="categories.length > 0">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Sort Order</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let category of categories">
+                <td><strong>{{ category.name }}</strong></td>
+                <td class="text-center">{{ category.sort_order }}</td>
+                <td>
+                  <div class="action-buttons">
+                    <button type="button" class="action-btn edit" (click)="editCategory(category)" title="Edit">
+                      <i class="fa-solid fa-edit"></i>
+                    </button>
+                    <button type="button" class="action-btn delete" (click)="deleteCategory(category)" title="Delete">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
           </table>
 
-          <div class="no-data" *ngIf="categories.length === 0">
+          <div class="empty-state" *ngIf="categories.length === 0">
             <i class="fa-solid fa-tags"></i>
             <p>No categories found. Create your first category using the form.</p>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
     </div>
   </div>
 </div>
