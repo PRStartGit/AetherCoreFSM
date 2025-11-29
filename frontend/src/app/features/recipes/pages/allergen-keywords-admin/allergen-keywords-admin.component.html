@@ -1,16 +1,12 @@
-<div class="recipe-admin-container">
+<div class="admin-page">
   <!-- Header -->
-  <div class="admin-header">
-    <div class="header-content">
-      <div class="title-section">
-        <a routerLink="/recipes" class="back-btn">
-          <i class="fa-solid fa-arrow-left"></i>
-        </a>
-        <div>
-          <h1>Allergen Keywords</h1>
-          <p class="subtitle">Manage keywords for automatic allergen detection in recipes</p>
-        </div>
-      </div>
+  <div class="page-header">
+    <a routerLink="/recipes" class="back-btn">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div>
+      <h1>Allergen Keywords</h1>
+      <p class="subtitle">Manage keywords for automatic allergen detection in recipes</p>
     </div>
   </div>
 
@@ -18,117 +14,101 @@
     <!-- Left Panel: Form -->
     <div class="left-panel">
       <!-- Add/Edit Form -->
-      <mat-card class="form-card">
-        <mat-card-header>
-          <mat-card-title>
-            <i class="fa-solid fa-plus-circle text-green-600 mr-2" *ngIf="!isEditing"></i>
-            <i class="fa-solid fa-edit text-green-600 mr-2" *ngIf="isEditing"></i>
-            {{ isEditing ? 'Edit Keyword' : 'Add Keyword' }}
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="keywordForm" (ngSubmit)="onSubmit()">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Allergen</mat-label>
-              <mat-select formControlName="allergen">
-                <mat-option *ngFor="let allergen of allergens" [value]="allergen">
+      <div class="form-card">
+        <div class="card-header">
+          <i class="fa-solid" [ngClass]="isEditing ? 'fa-edit' : 'fa-plus-circle'"></i>
+          <h2>{{ isEditing ? 'Edit Keyword' : 'Add Keyword' }}</h2>
+        </div>
+        <form [formGroup]="keywordForm" (ngSubmit)="onSubmit()" class="admin-form">
+          <div class="form-group">
+            <label for="allergen">Allergen</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <select id="allergen" formControlName="allergen" class="form-select">
+                <option value="" disabled>Select an allergen</option>
+                <option *ngFor="let allergen of allergens" [value]="allergen">
                   {{ allergen }}
-                </mat-option>
-              </mat-select>
-              <mat-error *ngIf="keywordForm.get('allergen')?.hasError('required')">
-                Allergen is required
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Keyword</mat-label>
-              <input matInput formControlName="keyword" placeholder="e.g., milk, cream, butter">
-              <mat-hint>Enter ingredient keyword (lowercase)</mat-hint>
-              <mat-error *ngIf="keywordForm.get('keyword')?.hasError('required')">
-                Keyword is required
-              </mat-error>
-            </mat-form-field>
-
-            <div class="form-actions">
-              <button mat-raised-button color="primary" type="submit" [disabled]="keywordForm.invalid">
-                <i class="fa-solid" [ngClass]="isEditing ? 'fa-save' : 'fa-plus'"></i>
-                {{ isEditing ? 'Update' : 'Add Keyword' }}
-              </button>
-              <button *ngIf="isEditing" mat-button type="button" (click)="cancelEdit()">
-                Cancel
-              </button>
+                </option>
+              </select>
             </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
+            <span class="error-message" *ngIf="keywordForm.get('allergen')?.touched && keywordForm.get('allergen')?.hasError('required')">
+              Allergen is required
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="keyword">Keyword</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-tag"></i>
+              <input type="text" id="keyword" formControlName="keyword" placeholder="e.g., milk, cream, butter" class="form-input">
+            </div>
+            <span class="hint">Enter ingredient keyword (lowercase)</span>
+            <span class="error-message" *ngIf="keywordForm.get('keyword')?.touched && keywordForm.get('keyword')?.hasError('required')">
+              Keyword is required
+            </span>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" [disabled]="keywordForm.invalid">
+              <i class="fa-solid" [ngClass]="isEditing ? 'fa-save' : 'fa-plus'"></i>
+              {{ isEditing ? 'Update' : 'Add Keyword' }}
+            </button>
+            <button *ngIf="isEditing" type="button" class="btn-secondary" (click)="cancelEdit()">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
 
       <!-- Info Panel -->
-      <mat-card class="info-card">
-        <mat-card-header>
-          <mat-card-title>
-            <i class="fa-solid fa-info-circle text-blue-600 mr-2"></i>
-            About Keywords
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="info-content">
-            <p>
-              Keywords are used to automatically detect allergens in recipes based on ingredient names.
-            </p>
-            <p>
-              When a recipe's ingredient contains a keyword, the associated allergen is automatically flagged.
-            </p>
-            <p class="italic">
-              Example: Adding "butter" as a keyword for "Milk" allergen will flag any recipe containing butter as containing milk allergen.
-            </p>
-          </div>
-        </mat-card-content>
-      </mat-card>
+      <div class="info-card">
+        <div class="card-header">
+          <i class="fa-solid fa-info-circle text-blue-600"></i>
+          <h2>About Keywords</h2>
+        </div>
+        <div class="info-content">
+          <p>Keywords are used to automatically detect allergens in recipes based on ingredient names.</p>
+          <p>When a recipe's ingredient contains a keyword, the associated allergen is automatically flagged.</p>
+          <p class="example">Example: Adding "butter" as a keyword for "Milk" allergen will flag any recipe containing butter as containing milk allergen.</p>
+        </div>
+      </div>
     </div>
 
     <!-- Right Panel: Keywords List -->
     <div class="right-panel">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Keywords by Allergen</mat-card-title>
-          <mat-card-subtitle>
-            {{ keywords.length }} keywords across {{ groupedKeywords.size }} allergens
-          </mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <mat-accordion multi>
-            <mat-expansion-panel *ngFor="let allergen of allergens" [expanded]="getKeywordCount(allergen) > 0">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  <span class="font-medium">{{ allergen }}</span>
-                </mat-panel-title>
-                <mat-panel-description>
-                  <span class="allergen-count">
-                    {{ getKeywordCount(allergen) }} keywords
-                  </span>
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-
-              <div *ngIf="getKeywordCount(allergen) === 0" class="empty-allergen">
-                No keywords defined for this allergen. Add some keywords using the form.
+      <div class="table-card">
+        <div class="card-header">
+          <div>
+            <i class="fa-solid fa-list"></i>
+            <h2>Keywords by Allergen</h2>
+          </div>
+          <span class="count-badge">{{ keywords.length }} keywords</span>
+        </div>
+        <div class="keywords-container">
+          <div *ngFor="let allergen of allergens" class="allergen-section">
+            <div class="allergen-header" (click)="toggleAllergen(allergen)">
+              <div class="allergen-title">
+                <i class="fa-solid fa-chevron-right" [class.rotated]="expandedAllergens.has(allergen)"></i>
+                <span>{{ allergen }}</span>
               </div>
-
-              <div *ngIf="getKeywordCount(allergen) > 0" class="keyword-chips-container">
-                <mat-chip-listbox>
-                  <mat-chip *ngFor="let kw of groupedKeywords.get(allergen)"
-                            class="keyword-chip"
-                            (click)="editKeyword(kw)">
-                    {{ kw.keyword }}
-                    <button matChipRemove (click)="deleteKeyword(kw); $event.stopPropagation()">
-                      <mat-icon>cancel</mat-icon>
-                    </button>
-                  </mat-chip>
-                </mat-chip-listbox>
+              <span class="keyword-count">{{ getKeywordCount(allergen) }} keywords</span>
+            </div>
+            <div class="allergen-keywords" *ngIf="expandedAllergens.has(allergen)">
+              <div *ngIf="getKeywordCount(allergen) === 0" class="empty-state">
+                No keywords defined for this allergen
               </div>
-            </mat-expansion-panel>
-          </mat-accordion>
-        </mat-card-content>
-      </mat-card>
+              <div *ngIf="getKeywordCount(allergen) > 0" class="keywords-list">
+                <div *ngFor="let kw of groupedKeywords.get(allergen)" class="keyword-chip" (click)="editKeyword(kw)">
+                  <span>{{ kw.keyword }}</span>
+                  <button type="button" class="delete-chip" (click)="deleteKeyword(kw); $event.stopPropagation()">
+                    <i class="fa-solid fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

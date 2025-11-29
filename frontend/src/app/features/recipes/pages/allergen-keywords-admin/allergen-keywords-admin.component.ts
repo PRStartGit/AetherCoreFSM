@@ -1,18 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatSelectModule } from '@angular/material/select';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatExpansionModule } from '@angular/material/expansion';
 
 interface AllergenKeyword {
   id: number;
@@ -27,20 +18,10 @@ interface AllergenKeyword {
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatSelectModule,
-    MatChipsModule,
-    MatExpansionModule
+    MatSnackBarModule
   ],
   templateUrl: './allergen-keywords-admin.component.html',
-  styleUrls: ['./allergen-keywords-admin.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./allergen-keywords-admin.component.scss']
 })
 export class AllergenKeywordsAdminComponent implements OnInit {
   private apiUrl = '/api/v1/recipes/allergen-keywords';
@@ -50,6 +31,7 @@ export class AllergenKeywordsAdminComponent implements OnInit {
   keywordForm: FormGroup;
   isEditing = false;
   editingId: number | null = null;
+  expandedAllergens: Set<string> = new Set();
 
   // UK 14 Allergens
   allergens: string[] = [
@@ -163,5 +145,13 @@ export class AllergenKeywordsAdminComponent implements OnInit {
 
   getKeywordCount(allergen: string): number {
     return this.groupedKeywords.get(allergen)?.length || 0;
+  }
+
+  toggleAllergen(allergen: string): void {
+    if (this.expandedAllergens.has(allergen)) {
+      this.expandedAllergens.delete(allergen);
+    } else {
+      this.expandedAllergens.add(allergen);
+    }
   }
 }
