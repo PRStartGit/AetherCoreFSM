@@ -172,11 +172,11 @@ export class SubscriptionService {
   }
 
   updateModule(id: number, data: ModuleUpdate): Observable<Module> {
-    return this.http.put<Module>(`${this.API_URL}/modules/\${id}`, data);
+    return this.http.put<Module>(`${this.API_URL}/modules/${id}`, data);
   }
 
   deleteModule(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/modules/\${id}`);
+    return this.http.delete<void>(`${this.API_URL}/modules/${id}`);
   }
 
   // ============ Package Methods ============
@@ -190,11 +190,11 @@ export class SubscriptionService {
   }
 
   updatePackage(id: number, data: SubscriptionPackageUpdate): Observable<SubscriptionPackage> {
-    return this.http.put<SubscriptionPackage>(`${this.API_URL}/packages/\${id}`, data);
+    return this.http.put<SubscriptionPackage>(`${this.API_URL}/packages/${id}`, data);
   }
 
   deletePackage(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/packages/\${id}`);
+    return this.http.delete<void>(`${this.API_URL}/packages/${id}`);
   }
 
   // ============ Public Pricing ============

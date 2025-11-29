@@ -2422,8 +2422,9 @@
             <h3>{{ pricingPlans['starter'].name }}</h3>
             <div>
                 <span class="price">£{{ getPrice('starter') }}</span>
-                <span class="price-period"> per site/{{ isAnnual ? 'year' : 'month' }}</span>
+                <span class="price-period">/{{ isAnnual ? 'year' : 'month' }}</span>
             </div>
+            <p style="color: #10B981; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">{{ pricingPlans['starter'].siteRange }}</p>
             <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans['starter'].description }}</p>
 
             <ul class="pricing-features">
@@ -2441,8 +2442,9 @@
             <h3>{{ pricingPlans['professional'].name }}</h3>
             <div>
                 <span class="price">£{{ getPrice('professional') }}</span>
-                <span class="price-period"> per site/{{ isAnnual ? 'year' : 'month' }}</span>
+                <span class="price-period">/{{ isAnnual ? 'year' : 'month' }}</span>
             </div>
+            <p style="color: #10B981; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">{{ pricingPlans['professional'].siteRange }}</p>
             <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans['professional'].description }}</p>
 
             <ul class="pricing-features">
@@ -2459,8 +2461,9 @@
             <h3>{{ pricingPlans['enterprise'].name }}</h3>
             <div>
                 <span class="price">£{{ getPrice('enterprise') }}</span>
-                <span class="price-period"> per site/{{ isAnnual ? 'year' : 'month' }}</span>
+                <span class="price-period">/{{ isAnnual ? 'year' : 'month' }}</span>
             </div>
+            <p style="color: #10B981; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">{{ pricingPlans['enterprise'].siteRange }}</p>
             <p style="color: #6B7280; margin-bottom: 1.5rem; font-weight: 500;">{{ pricingPlans['enterprise'].description }}</p>
 
             <ul class="pricing-features">
