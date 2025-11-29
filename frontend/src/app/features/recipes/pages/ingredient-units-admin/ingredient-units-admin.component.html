@@ -1,159 +1,140 @@
-<div class="recipe-admin-container">
+<div class="admin-page">
   <!-- Header -->
-  <div class="admin-header">
-    <div class="header-content">
-      <div class="title-section">
-        <a routerLink="/recipes" class="back-btn">
-          <i class="fa-solid fa-arrow-left"></i>
-        </a>
-        <div>
-          <h1>Ingredient Units</h1>
-          <p class="subtitle">Manage measurement units for recipe ingredients</p>
-        </div>
-      </div>
+  <div class="page-header">
+    <a routerLink="/recipes" class="back-btn">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div>
+      <h1>Ingredient Units</h1>
+      <p class="subtitle">Manage measurement units for recipe ingredients</p>
     </div>
   </div>
 
   <div class="content-grid">
     <!-- Left Panel: Form -->
     <div class="left-panel">
-      <mat-card class="form-card">
-        <mat-card-header>
-          <mat-card-title>
-            <i class="fa-solid fa-plus-circle text-green-600 mr-2" *ngIf="!isEditing"></i>
-            <i class="fa-solid fa-edit text-green-600 mr-2" *ngIf="isEditing"></i>
-            {{ isEditing ? 'Edit Unit' : 'Add New Unit' }}
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="unitForm" (ngSubmit)="onSubmit()">
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Unit Code</mat-label>
-                <input matInput formControlName="name" placeholder="e.g., kg">
-                <mat-hint>Short code used internally</mat-hint>
-                <mat-error *ngIf="unitForm.get('name')?.hasError('required')">
-                  Code is required
-                </mat-error>
-                <mat-error *ngIf="unitForm.get('name')?.hasError('maxlength')">
-                  Code must be 50 characters or less
-                </mat-error>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Display Name</mat-label>
-                <input matInput formControlName="display_name" placeholder="e.g., Kilograms">
-                <mat-hint>Name shown to users</mat-hint>
-                <mat-error *ngIf="unitForm.get('display_name')?.hasError('required')">
-                  Display name is required
-                </mat-error>
-                <mat-error *ngIf="unitForm.get('display_name')?.hasError('maxlength')">
-                  Display name must be 50 characters or less
-                </mat-error>
-              </mat-form-field>
+      <div class="form-card">
+        <div class="card-header">
+          <i class="fa-solid" [ngClass]="isEditing ? 'fa-edit' : 'fa-plus-circle'"></i>
+          <h2>{{ isEditing ? 'Edit Unit' : 'Add New Unit' }}</h2>
+        </div>
+        <form [formGroup]="unitForm" (ngSubmit)="onSubmit()" class="admin-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Unit Code</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-code"></i>
+                <input type="text" id="name" formControlName="name" placeholder="e.g., kg">
+              </div>
+              <span class="hint">Short code used internally</span>
+              <span class="error-message" *ngIf="unitForm.get('name')?.touched && unitForm.get('name')?.hasError('required')">
+                Code is required
+              </span>
             </div>
 
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Category</mat-label>
-                <mat-select formControlName="category">
-                  <mat-option value="">None</mat-option>
-                  <mat-option *ngFor="let cat of categories" [value]="cat">
+            <div class="form-group">
+              <label for="display_name">Display Name</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-tag"></i>
+                <input type="text" id="display_name" formControlName="display_name" placeholder="e.g., Kilograms">
+              </div>
+              <span class="hint">Name shown to users</span>
+              <span class="error-message" *ngIf="unitForm.get('display_name')?.touched && unitForm.get('display_name')?.hasError('required')">
+                Display name is required
+              </span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="category">Category</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-folder"></i>
+                <select id="category" formControlName="category">
+                  <option value="">None</option>
+                  <option *ngFor="let cat of categories" [value]="cat">
                     {{ cat | titlecase }}
-                  </mat-option>
-                </mat-select>
-                <mat-hint>Group units by type</mat-hint>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Sort Order</mat-label>
-                <input matInput type="number" formControlName="sort_order" placeholder="0">
-                <mat-hint>Lower numbers appear first</mat-hint>
-                <mat-error *ngIf="unitForm.get('sort_order')?.hasError('required')">
-                  Sort order is required
-                </mat-error>
-                <mat-error *ngIf="unitForm.get('sort_order')?.hasError('min')">
-                  Sort order must be 0 or greater
-                </mat-error>
-              </mat-form-field>
+                  </option>
+                </select>
+              </div>
+              <span class="hint">Group units by type</span>
             </div>
 
-            <div class="form-actions">
-              <button mat-raised-button color="primary" type="submit" [disabled]="unitForm.invalid">
-                <i class="fa-solid" [ngClass]="isEditing ? 'fa-save' : 'fa-plus'"></i>
-                {{ isEditing ? 'Update' : 'Create' }} Unit
-              </button>
-              <button mat-button type="button" (click)="resetForm()" *ngIf="isEditing">
-                Cancel
-              </button>
+            <div class="form-group">
+              <label for="sort_order">Sort Order</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-sort"></i>
+                <input type="number" id="sort_order" formControlName="sort_order" placeholder="0">
+              </div>
+              <span class="hint">Lower numbers appear first</span>
             </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" [disabled]="unitForm.invalid">
+              <i class="fa-solid" [ngClass]="isEditing ? 'fa-save' : 'fa-plus'"></i>
+              {{ isEditing ? 'Update' : 'Create' }} Unit
+            </button>
+            <button type="button" class="btn-secondary" (click)="resetForm()" *ngIf="isEditing">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- Right Panel: Table -->
     <div class="right-panel">
-      <mat-card class="table-card">
-        <mat-card-header>
-          <mat-card-title>Existing Units</mat-card-title>
-          <mat-card-subtitle>{{ units.length }} units</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <table mat-table [dataSource]="units" class="units-table">
-            <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef>Code</th>
-              <td mat-cell *matCellDef="let unit">
-                <span class="name-cell">{{ unit.name }}</span>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="display_name">
-              <th mat-header-cell *matHeaderCellDef>Display Name</th>
-              <td mat-cell *matCellDef="let unit">
-                <span class="font-medium text-gray-900">{{ unit.display_name }}</span>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="category">
-              <th mat-header-cell *matHeaderCellDef>Category</th>
-              <td mat-cell *matCellDef="let unit">
-                <span *ngIf="unit.category" class="category-badge" [ngClass]="unit.category">
-                  {{ unit.category }}
-                </span>
-                <span *ngIf="!unit.category" class="text-gray-400">-</span>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="sort_order">
-              <th mat-header-cell *matHeaderCellDef>Order</th>
-              <td mat-cell *matCellDef="let unit" class="sort-order-cell">
-                {{ unit.sort_order }}
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>Actions</th>
-              <td mat-cell *matCellDef="let unit">
-                <button mat-icon-button class="edit-btn" (click)="editUnit(unit)" matTooltip="Edit">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button class="delete-btn" color="warn" (click)="deleteUnit(unit)" matTooltip="Delete">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <div class="table-card">
+        <div class="card-header">
+          <div>
+            <i class="fa-solid fa-balance-scale"></i>
+            <h2>Existing Units</h2>
+          </div>
+          <span class="count-badge">{{ units.length }} units</span>
+        </div>
+        <div class="table-wrapper">
+          <table *ngIf="units.length > 0">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Display Name</th>
+                <th>Category</th>
+                <th>Order</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let unit of units">
+                <td><span class="code-cell">{{ unit.name }}</span></td>
+                <td><strong>{{ unit.display_name }}</strong></td>
+                <td>
+                  <span *ngIf="unit.category" class="category-badge" [ngClass]="unit.category">
+                    {{ unit.category }}
+                  </span>
+                  <span *ngIf="!unit.category" class="text-muted">-</span>
+                </td>
+                <td class="text-center">{{ unit.sort_order }}</td>
+                <td>
+                  <div class="action-buttons">
+                    <button type="button" class="action-btn edit" (click)="editUnit(unit)" title="Edit">
+                      <i class="fa-solid fa-edit"></i>
+                    </button>
+                    <button type="button" class="action-btn delete" (click)="deleteUnit(unit)" title="Delete">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
           </table>
 
-          <div class="no-data" *ngIf="units.length === 0">
+          <div class="empty-state" *ngIf="units.length === 0">
             <i class="fa-solid fa-balance-scale"></i>
             <p>No units found. Create your first unit using the form.</p>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
     </div>
   </div>
 </div>

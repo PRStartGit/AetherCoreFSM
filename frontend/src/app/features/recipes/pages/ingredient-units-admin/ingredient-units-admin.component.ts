@@ -1,17 +1,8 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatCardModule } from '@angular/material/card';
-import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { RecipeService } from '../../services/recipe.service';
 import { IngredientUnit } from '../../models/recipe.models';
 
@@ -22,20 +13,10 @@ import { IngredientUnit } from '../../models/recipe.models';
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    MatSelectModule,
-    MatSnackBarModule,
-    MatTooltipModule
+    MatSnackBarModule
   ],
   templateUrl: './ingredient-units-admin.component.html',
-  styleUrls: ['./ingredient-units-admin.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./ingredient-units-admin.component.scss']
 })
 export class IngredientUnitsAdminComponent implements OnInit {
   units: IngredientUnit[] = [];
@@ -50,7 +31,6 @@ export class IngredientUnitsAdminComponent implements OnInit {
     private recipeService: RecipeService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog,
     private location: Location
   ) {
     this.unitForm = this.fb.group({
