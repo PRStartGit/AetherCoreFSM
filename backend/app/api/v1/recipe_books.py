@@ -114,6 +114,8 @@ def get_recipe_books(
 ):
     """Get recipe books for user's organization (super admin can see all)"""
     from app.models.user import UserRole
+    from app.models.recipe_book import recipe_book_sites
+    from sqlalchemy import or_, and_
 
     # Check access permission
     if not has_recipe_access(current_user, db):
@@ -129,8 +131,16 @@ def get_recipe_books(
         if organization_id is not None:
             query = query.filter(RecipeBook.organization_id == organization_id)
         # If no organization_id, show all
+    elif current_user.role == UserRole.ORG_ADMIN:
+        # Org admins can see all recipe books in their organization
+        if not current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User must belong to an organization"
+            )
+        query = query.filter(RecipeBook.organization_id == current_user.organization_id)
     else:
-        # Non-super admins can only see their own organization
+        # Site users can only see recipe books assigned to their sites
         if not current_user.organization_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -138,9 +148,29 @@ def get_recipe_books(
             )
         query = query.filter(RecipeBook.organization_id == current_user.organization_id)
 
+        # Filter by user's assigned sites
+        user_site_ids = current_user.site_ids or []
+        if user_site_ids:
+            # Use outerjoin to check junction table
+            query = query.outerjoin(
+                recipe_book_sites,
+                RecipeBook.id == recipe_book_sites.c.recipe_book_id
+            ).filter(
+                or_(
+                    # Check junction table site assignments
+                    recipe_book_sites.c.site_id.in_(user_site_ids),
+                    # Check legacy site_id field
+                    RecipeBook.site_id.in_(user_site_ids),
+                    # No site assignment = available to all sites
+                    and_(
+                        recipe_book_sites.c.site_id == None,
+                        RecipeBook.site_id == None
+                    )
+                )
+            ).distinct()
+
     # Filter by site if specified (check both legacy site_id and multi-site)
     if site_id is not None:
-        from app.models.recipe_book import recipe_book_sites
         query = query.filter(
             (RecipeBook.site_id == site_id) |
             RecipeBook.sites.any(Site.id == site_id)
