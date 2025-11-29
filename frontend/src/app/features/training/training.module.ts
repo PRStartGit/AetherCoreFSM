@@ -9,6 +9,7 @@ import { MyCoursesComponent } from './pages/my-courses/my-courses.component';
 import { CoursePlayerComponent } from './pages/course-player/course-player.component';
 import { VideoPlayerComponent } from './components/video-player/video-player.component';
 import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
+import { MarkdownPipe } from './pipes/markdown.pipe';
 import { TrainingService } from './services/training.service';
 import { TrainingAccessGuard } from './guards/training-access.guard';
 
@@ -20,7 +21,8 @@ import { TrainingAccessGuard } from './guards/training-access.guard';
     MyCoursesComponent,
     CoursePlayerComponent,
     VideoPlayerComponent,
-    PdfViewerComponent
+    PdfViewerComponent,
+    MarkdownPipe
   ],
   imports: [
     CommonModule,

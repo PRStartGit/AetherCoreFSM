@@ -95,8 +95,8 @@
         <!-- Text Content -->
         <div *ngIf="currentModule.text_content && !currentModule.video_url && !currentModule.pdf_url"
              class="flex-1 overflow-y-auto bg-white p-8">
-          <div class="max-w-4xl mx-auto prose prose-lg">
-            <div [innerHTML]="currentModule.text_content"></div>
+          <div class="max-w-4xl mx-auto prose prose-lg prose-headings:text-gray-800 prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-gray-700 prose-ul:text-gray-700 prose-li:marker:text-cyan-600 prose-strong:text-gray-900">
+            <div [innerHTML]="currentModule.text_content | markdown"></div>
           </div>
         </div>
 
