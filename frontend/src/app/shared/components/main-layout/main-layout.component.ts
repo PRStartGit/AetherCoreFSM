@@ -202,6 +202,14 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
             ]
           },
           {
+            label: 'Content',
+            icon: 'fa-solid fa-pen-to-square',
+            expanded: false,
+            items: [
+              { label: 'News & Blog', icon: 'fa-solid fa-newspaper', route: '/news' }
+            ]
+          },
+          {
             label: 'System',
             icon: icons.system,
             expanded: false,

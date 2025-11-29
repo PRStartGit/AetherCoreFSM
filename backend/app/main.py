@@ -59,7 +59,7 @@ async def health_check():
 
 
 # Import and include routers
-from app.api.v1 import auth, organizations, sites, users, categories, tasks, task_fields, checklists, defects, dashboards, reports, promotions, utils, system_messages, activity_logs, contact, tickets, ticket_settings, notifications, job_roles, module_access, courses, enrollments, module_progress, recipes, recipe_categories, recipe_books, ingredient_units, allergen_keywords, subscriptions, webhooks, billing
+from app.api.v1 import auth, organizations, sites, users, categories, tasks, task_fields, checklists, defects, dashboards, reports, promotions, utils, system_messages, activity_logs, contact, tickets, ticket_settings, notifications, job_roles, module_access, courses, enrollments, module_progress, recipes, recipe_categories, recipe_books, ingredient_units, allergen_keywords, subscriptions, webhooks, billing, blog
 
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX, tags=["Authentication"])
 app.include_router(organizations.router, prefix=settings.API_V1_PREFIX, tags=["Organizations"])
@@ -94,3 +94,4 @@ app.include_router(recipes.router, prefix=settings.API_V1_PREFIX + "/recipes", t
 app.include_router(subscriptions.router, prefix=settings.API_V1_PREFIX + "/subscriptions", tags=["Subscriptions"])
 app.include_router(webhooks.router, prefix=settings.API_V1_PREFIX + "/webhooks", tags=["Webhooks"])
 app.include_router(billing.router, prefix=settings.API_V1_PREFIX + "/billing", tags=["Billing"])
+app.include_router(blog.router, prefix=settings.API_V1_PREFIX, tags=["Blog"])

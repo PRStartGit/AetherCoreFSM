@@ -1,8 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../core/auth/auth.service';
 import { UserRole } from '../../core/models';
 import { SubscriptionService, PricingResponse, SubscriptionPackage } from '../../core/services/subscription.service';
+
+interface BlogPostPublic {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  thumbnail_url: string | null;
+  published_at: string;
+}
 
 interface PricingPlan {
   name: string;
@@ -26,6 +36,8 @@ export class LandingPageComponent implements OnInit {
   isMobileMenuOpen: boolean = false;
   openFaqIndex: number | null = null;
   pricingLoading: boolean = true;
+  blogPosts: BlogPostPublic[] = [];
+  blogLoading: boolean = false;
 
   pricingPlans: { [key: string]: PricingPlan } = {
     free: {
@@ -104,7 +116,8 @@ export class LandingPageComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private subscriptionService: SubscriptionService
+    private subscriptionService: SubscriptionService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -112,6 +125,30 @@ export class LandingPageComponent implements OnInit {
       this.isLoggedIn = state.isAuthenticated;
     });
     this.loadPricingData();
+    this.loadBlogPosts();
+  }
+
+  loadBlogPosts(): void {
+    this.blogLoading = true;
+    this.http.get<BlogPostPublic[]>('/api/v1/blog/public?limit=3').subscribe({
+      next: (posts) => {
+        this.blogPosts = posts;
+        this.blogLoading = false;
+      },
+      error: (error) => {
+        console.warn('Failed to load blog posts:', error);
+        this.blogLoading = false;
+      }
+    });
+  }
+
+  formatBlogDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
   }
 
   loadPricingData(): void {

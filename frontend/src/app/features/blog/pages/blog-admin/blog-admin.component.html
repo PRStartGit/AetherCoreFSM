@@ -1,0 +1,156 @@
+<div class="blog-admin">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="fa-solid fa-newspaper"></i>
+      </div>
+      <div>
+        <h1>News & Blog Management</h1>
+        <p class="subtitle">Create and manage news articles for the front page</p>
+      </div>
+    </div>
+    <button class="btn-primary" (click)="openNewPost()" *ngIf="!showEditor">
+      <i class="fa-solid fa-plus"></i>
+      <span>New Article</span>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading && !showEditor">
+    <div class="spinner"></div>
+    <span>Loading...</span>
+  </div>
+
+  <!-- Post List -->
+  <div class="posts-grid" *ngIf="!showEditor && !isLoading">
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="posts.length === 0">
+      <div class="empty-icon">
+        <i class="fa-solid fa-newspaper"></i>
+      </div>
+      <h3>No Articles Yet</h3>
+      <p>Create your first news article to display on the front page</p>
+      <button class="btn-primary" (click)="openNewPost()">
+        <i class="fa-solid fa-plus"></i>
+        <span>Create Article</span>
+      </button>
+    </div>
+
+    <!-- Post Cards -->
+    <div class="post-card" *ngFor="let post of posts">
+      <div class="post-thumbnail" *ngIf="post.thumbnail_url">
+        <img [src]="post.thumbnail_url" [alt]="post.title">
+      </div>
+      <div class="post-thumbnail placeholder" *ngIf="!post.thumbnail_url">
+        <i class="fa-solid fa-image"></i>
+      </div>
+      <div class="post-content">
+        <div class="post-header">
+          <h3 class="post-title">{{ post.title }}</h3>
+          <span class="post-status" [class.published]="post.is_published" [class.draft]="!post.is_published">
+            {{ post.is_published ? 'Published' : 'Draft' }}
+          </span>
+        </div>
+        <p class="post-excerpt" *ngIf="post.excerpt">{{ post.excerpt }}</p>
+        <div class="post-meta">
+          <span class="post-date">
+            <i class="fa-solid fa-calendar"></i>
+            {{ formatDate(post.created_at) }}
+          </span>
+          <span class="post-date" *ngIf="post.published_at">
+            <i class="fa-solid fa-globe"></i>
+            {{ formatDate(post.published_at) }}
+          </span>
+        </div>
+        <div class="post-actions">
+          <button class="btn-action edit" (click)="editPost(post)" title="Edit">
+            <i class="fa-solid fa-edit"></i>
+          </button>
+          <button class="btn-action" [class.publish]="!post.is_published" [class.unpublish]="post.is_published"
+                  (click)="togglePublish(post)" [title]="post.is_published ? 'Unpublish' : 'Publish'">
+            <i class="fa-solid" [class.fa-eye]="!post.is_published" [class.fa-eye-slash]="post.is_published"></i>
+          </button>
+          <button class="btn-action delete" (click)="deletePost(post)" title="Delete">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Editor Modal -->
+  <div class="editor-overlay" *ngIf="showEditor" (click)="closeEditor()"></div>
+  <div class="editor-panel" *ngIf="showEditor">
+    <div class="editor-header">
+      <h2>{{ isEditing ? 'Edit Article' : 'New Article' }}</h2>
+      <button class="btn-close" (click)="closeEditor()">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+
+    <div class="editor-body">
+      <!-- Title -->
+      <div class="form-group">
+        <label for="title">Title *</label>
+        <input type="text" id="title" [(ngModel)]="postTitle" placeholder="Article title" class="form-input">
+      </div>
+
+      <!-- Excerpt -->
+      <div class="form-group">
+        <label for="excerpt">Excerpt</label>
+        <textarea id="excerpt" [(ngModel)]="postExcerpt" placeholder="Short description for card preview"
+                  class="form-textarea" rows="2"></textarea>
+      </div>
+
+      <!-- Thumbnail -->
+      <div class="form-group">
+        <label>Thumbnail Image</label>
+        <div class="thumbnail-upload">
+          <div class="thumbnail-preview" *ngIf="postThumbnailUrl">
+            <img [src]="postThumbnailUrl" alt="Thumbnail preview">
+            <button class="remove-thumbnail" (click)="postThumbnailUrl = ''">
+              <i class="fa-solid fa-times"></i>
+            </button>
+          </div>
+          <div class="upload-area" *ngIf="!postThumbnailUrl">
+            <input type="file" id="thumbnail" accept="image/*" (change)="uploadImage($event)" hidden>
+            <label for="thumbnail" class="upload-label">
+              <i class="fa-solid fa-cloud-upload-alt"></i>
+              <span>Click to upload image</span>
+            </label>
+          </div>
+        </div>
+        <input type="text" [(ngModel)]="postThumbnailUrl" placeholder="Or paste image URL" class="form-input url-input">
+      </div>
+
+      <!-- Content (HTML) -->
+      <div class="form-group content-group">
+        <label for="content">Content (HTML) *</label>
+        <textarea id="content" [(ngModel)]="postContent" placeholder="Article content (HTML supported)"
+                  class="form-textarea content-editor" rows="15"></textarea>
+        <div class="html-hint">
+          <i class="fa-solid fa-info-circle"></i>
+          <span>HTML tags are supported. Use &lt;p&gt;, &lt;h2&gt;, &lt;ul&gt;, &lt;img&gt; etc.</span>
+        </div>
+      </div>
+
+      <!-- Publish Status -->
+      <div class="form-group checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="postIsPublished">
+          <span class="checkmark"></span>
+          <span>Publish immediately</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="editor-footer">
+      <button class="btn-secondary" (click)="closeEditor()">Cancel</button>
+      <button class="btn-primary" (click)="savePost()" [disabled]="isLoading">
+        <i class="fa-solid" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading" [class.fa-save]="!isLoading"></i>
+        <span>{{ isLoading ? 'Saving...' : 'Save Article' }}</span>
+      </button>
+    </div>
+  </div>
+</div>

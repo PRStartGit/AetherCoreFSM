@@ -99,3 +99,129 @@
     }
   }
 }
+
+// News Section
+.news-section {
+  padding: 5rem 2rem;
+  background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1F2937;
+      margin: 0 0 0.75rem;
+
+      @media (max-width: 768px) {
+        font-size: 2rem;
+      }
+    }
+
+    p {
+      font-size: 1.125rem;
+      color: #6B7280;
+      margin: 0;
+    }
+  }
+
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .news-card {
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .news-thumbnail {
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+      background: #E5E7EB;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      &.placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        i {
+          font-size: 3rem;
+          color: #9CA3AF;
+        }
+      }
+    }
+
+    &:hover .news-thumbnail img {
+      transform: scale(1.05);
+    }
+
+    .news-content {
+      padding: 1.5rem;
+
+      .news-date {
+        display: block;
+        font-size: 0.8125rem;
+        color: #0EA5E9;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1F2937;
+        margin: 0 0 0.75rem;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      p {
+        font-size: 0.9375rem;
+        color: #6B7280;
+        margin: 0;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+  }
+}
