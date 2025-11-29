@@ -79,17 +79,27 @@ def get_recipes(
         )
 
     # Super admin can see all recipes or filter by organization
+    site_ids = None
     if current_user.role == UserRole.SUPER_ADMIN:
         # If organization_id specified, filter by that; otherwise get all
         org_filter = organization_id
-    else:
-        # Non-super admins can only see their own organization
+    elif current_user.role == UserRole.ORG_ADMIN:
+        # Org admins can see all recipes in their organization
         if not current_user.organization_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="User must belong to an organization"
             )
         org_filter = current_user.organization_id
+    else:
+        # Site users can only see recipes from recipe books assigned to their sites
+        if not current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User must belong to an organization"
+            )
+        org_filter = current_user.organization_id
+        site_ids = current_user.site_ids  # Filter by user's sites
 
     return RecipeService.get_recipes(
         org_filter,
@@ -100,7 +110,8 @@ def get_recipes(
         allergen=allergen,
         include_archived=include_archived,
         skip=skip,
-        limit=limit
+        limit=limit,
+        user_site_ids=site_ids
     )
 
 

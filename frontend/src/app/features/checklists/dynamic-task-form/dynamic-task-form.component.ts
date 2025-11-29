@@ -159,6 +159,9 @@ export class DynamicTaskFormComponent implements OnInit {
               } else if (template.type === 'photo') {
                 instanceData[template.type] = value || null;
                 console.log('[DEBUG] Photo value for submission:', value);
+              } else if (template.type === 'text' || template.type === 'name') {
+                instanceData[template.type] = value || '';
+                console.log('[DEBUG] Name/text value for submission:', value);
               } else {
                 instanceData[template.type] = value || null;
               }
@@ -335,10 +338,13 @@ export class DynamicTaskFormComponent implements OnInit {
             }
 
             // Add new control with appropriate validators
-            // Temperature/number fields are required, photos are optional
+            // Temperature/number fields and name fields are required, photos are optional
             const validators = [];
             if (template.type === 'temperature' || template.type === 'number') {
               // Temperature fields are always required in repeating groups
+              validators.push(Validators.required);
+            } else if (template.type === 'text' || template.type === 'name') {
+              // Name/text fields are required in repeating groups
               validators.push(Validators.required);
             }
             // Photo fields are always optional (no validators)
