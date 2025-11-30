@@ -213,6 +213,9 @@ def send_daily_reports():
                 # Count total items and completed items
                 total_items = sum(len(c.items) for c in checklists)
                 completed_items = sum(len([item for item in c.items if item.is_completed]) for c in checklists)
+
+                # Calculate item completion rate
+                item_completion_rate = (completed_items / total_items * 100) if total_items > 0 else 0
                 
                 # Get yesterday's defects
                 defects = db.query(Defect).filter(
@@ -250,6 +253,7 @@ def send_daily_reports():
                     'total_tasks': total_checklists,
                     'items_completed': completed_items,
                     'total_items': total_items,
+                    'item_completion_rate': round(item_completion_rate, 1),
                     'defects': defects_data,
                     'category_stats': category_stats,
                     'recommendations': [],
@@ -261,12 +265,12 @@ def send_daily_reports():
                 
                 for recipient in recipients:
                     try:
-                        success = email_service.send_weekly_performance_email(
+                        success = email_service.send_daily_report_email(
                             recipient_email=recipient,
                             recipient_name=recipient.split('@')[0],
                             organization_name=site.organization.name if site.organization else "Organization",
-                            week_start=str(yesterday),
-                            week_end=str(yesterday),
+                            site_name=site.name,
+                            report_date=str(yesterday),
                             report_data=report_data
                         )
                         
@@ -375,6 +379,9 @@ def send_weekly_reports():
                 total_items = sum(len(c.items) for c in checklists)
                 completed_items = sum(len([item for item in c.items if item.is_completed]) for c in checklists)
 
+                # Calculate item completion rate
+                item_completion_rate = (completed_items / total_items * 100) if total_items > 0 else 0
+
                 # Get week's defects
                 defects = db.query(Defect).filter(
                     Defect.site_id == site.id,
@@ -422,10 +429,11 @@ def send_weekly_reports():
 
                 for recipient in recipients:
                     try:
-                        success = email_service.send_weekly_performance_email(
+                        success = email_service.send_weekly_report_email(
                             recipient_email=recipient,
                             recipient_name=recipient.split('@')[0],
                             organization_name=site.organization.name if site.organization else "Organization",
+                            site_name=site.name,
                             week_start=str(start_date),
                             week_end=str(end_date),
                             report_data=report_data

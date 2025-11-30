@@ -283,6 +283,81 @@ class EmailService:
             to_name=recipient_name
         )
 
+    def send_daily_report_email(
+        self,
+        recipient_email: str,
+        recipient_name: str,
+        organization_name: str,
+        site_name: str,
+        report_date: str,
+        report_data: Dict[str, Any]
+    ) -> bool:
+        """Send daily performance report email with site name"""
+        from datetime import datetime
+
+        # Format the date nicely
+        date_obj = datetime.strptime(report_date, '%Y-%m-%d')
+        day_suffix = lambda d: 'th' if 11<=d<=13 else {1:'st',2:'nd',3:'rd'}.get(d%10, 'th')
+        day = date_obj.day
+        formatted_date = date_obj.strftime(f'%A, {day}{day_suffix(day)} %B %Y')
+        subject = f"Daily Report: {site_name} - {formatted_date}"
+
+        context = {
+            'recipient_name': recipient_name,
+            'organization_name': organization_name,
+            'site_name': site_name,
+            'report_date': report_date,
+            'formatted_date': formatted_date,
+            'is_daily': True,
+            **report_data
+        }
+
+        return self.send_template_email(
+            to_email=recipient_email,
+            subject=subject,
+            template_name='daily_report',
+            context=context,
+            to_name=recipient_name
+        )
+
+    def send_weekly_report_email(
+        self,
+        recipient_email: str,
+        recipient_name: str,
+        organization_name: str,
+        site_name: str,
+        week_start: str,
+        week_end: str,
+        report_data: Dict[str, Any]
+    ) -> bool:
+        """Send weekly performance report email with site name"""
+        from datetime import datetime
+
+        # Format dates
+        start_obj = datetime.strptime(week_start, '%Y-%m-%d')
+        end_obj = datetime.strptime(week_end, '%Y-%m-%d')
+        formatted_range = f"{start_obj.strftime('%d %b')} - {end_obj.strftime('%d %b %Y')}"
+        subject = f"Weekly Report: {site_name} - {formatted_range}"
+
+        context = {
+            'recipient_name': recipient_name,
+            'organization_name': organization_name,
+            'site_name': site_name,
+            'week_start': week_start,
+            'week_end': week_end,
+            'formatted_range': formatted_range,
+            'is_daily': False,
+            **report_data
+        }
+
+        return self.send_template_email(
+            to_email=recipient_email,
+            subject=subject,
+            template_name='daily_report',
+            context=context,
+            to_name=recipient_name
+        )
+
     def send_defect_report_email(
         self,
         recipient_email: str,
@@ -400,3 +475,13 @@ def send_defect_report_email(*args, **kwargs):
 def send_super_admin_welcome_email(*args, **kwargs):
     """Send super admin welcome email"""
     return email_service.send_super_admin_welcome_email(*args, **kwargs)
+
+
+def send_daily_report_email(*args, **kwargs):
+    """Send daily report email"""
+    return email_service.send_daily_report_email(*args, **kwargs)
+
+
+def send_weekly_report_email(*args, **kwargs):
+    """Send weekly report email"""
+    return email_service.send_weekly_report_email(*args, **kwargs)

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if is_daily %}Daily{% else %}Weekly{% endif %} Performance Report</title>
+</head>
+<body style="margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:#f3f4f6;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3f4f6;padding:40px 20px;">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+
+<!-- Header with Gradient -->
+<tr>
+<td style="background:linear-gradient(135deg,#10b981 0%,#059669 50%,#047857 100%);padding:40px 30px;text-align:center;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr><td align="center" style="padding-bottom:16px;">
+            <div style="background-color:rgba(255,255,255,0.2);display:inline-block;padding:10px 28px;border-radius:8px;">
+                <span style="color:#ffffff;font-size:28px;font-weight:bold;letter-spacing:2px;">ZYNTHIO</span>
+            </div>
+        </td></tr>
+    </table>
+
+    <!-- Site Name Badge -->
+    <div style="background-color:rgba(255,255,255,0.95);display:inline-block;padding:12px 32px;border-radius:25px;margin:16px 0;">
+        <span style="color:#059669;font-size:22px;font-weight:700;">{{ site_name }}</span>
+    </div>
+
+    <p style="margin:12px 0 0 0;color:rgba(255,255,255,0.9);font-size:14px;">{{ organization_name }}</p>
+
+    {% if is_daily %}
+    <p style="margin:8px 0 0 0;color:#ffffff;font-size:16px;font-weight:500;">{{ formatted_date }}</p>
+    {% else %}
+    <p style="margin:8px 0 0 0;color:#ffffff;font-size:16px;font-weight:500;">{{ formatted_range }}</p>
+    {% endif %}
+</td>
+</tr>
+
+<!-- Main Content -->
+<tr><td style="padding:32px 30px;">
+
+<!-- Completion Rate Card -->
+{% set completion = completion_rate | float %}
+{% if completion < 80 %}
+    {% set rate_bg = '#fef2f2' %}
+    {% set rate_border = '#ef4444' %}
+    {% set rate_text = '#991b1b' %}
+    {% set rate_icon = '!' %}
+{% elif completion < 100 %}
+    {% set rate_bg = '#fffbeb' %}
+    {% set rate_border = '#f59e0b' %}
+    {% set rate_text = '#92400e' %}
+    {% set rate_icon = '~' %}
+{% else %}
+    {% set rate_bg = '#ecfdf5' %}
+    {% set rate_border = '#10b981' %}
+    {% set rate_text = '#065f46' %}
+    {% set rate_icon = '!' %}
+{% endif %}
+
+<table width="100%" cellpadding="28" cellspacing="0" border="0" style="background-color:{{rate_bg}};border:3px solid {{rate_border}};border-radius:12px;margin-bottom:24px;">
+<tr><td style="text-align:center;">
+    <div style="font-size:13px;color:{{rate_text}};font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">
+        {% if is_daily %}Daily{% else %}Weekly{% endif %} Completion Rate
+    </div>
+    <div style="font-size:56px;font-weight:700;color:{{rate_text}};margin:8px 0;">{{completion_rate}}%</div>
+    <div style="font-size:15px;color:{{rate_text}};font-weight:500;">
+        {{tasks_completed}} of {{total_tasks}} checklists completed
+    </div>
+</td></tr>
+</table>
+
+<!-- Progress Bar -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:28px;">
+<tr><td style="background-color:#e5e7eb;height:12px;border-radius:6px;">
+    <table cellpadding="0" cellspacing="0" border="0" width="{{completion_rate}}%" style="background:linear-gradient(90deg,#10b981 0%,#059669 100%);height:12px;border-radius:6px;">
+    <tr><td></td></tr>
+    </table>
+</td></tr>
+</table>
+
+<!-- Stats Grid -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:28px;">
+<tr>
+    <!-- Checklists Completed -->
+    <td width="32%" style="padding:20px;background-color:#f9fafb;border-radius:10px;border:2px solid #e5e7eb;">
+        <div style="text-align:center;">
+            <div style="font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Checklists</div>
+            <div style="font-size:32px;font-weight:700;color:#10b981;">{{tasks_completed}}/{{total_tasks}}</div>
+        </div>
+    </td>
+    <td width="2%"></td>
+    <!-- Items Completed -->
+    <td width="32%" style="padding:20px;background-color:#f9fafb;border-radius:10px;border:2px solid #e5e7eb;">
+        <div style="text-align:center;">
+            <div style="font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Tasks Done</div>
+            <div style="font-size:32px;font-weight:700;color:#2563eb;">{{items_completed}}/{{total_items}}</div>
+            {% if item_completion_rate is defined %}
+            <div style="font-size:11px;color:#6b7280;margin-top:4px;">({{item_completion_rate}}%)</div>
+            {% endif %}
+        </div>
+    </td>
+    <td width="2%"></td>
+    <!-- Defects -->
+    <td width="32%" style="padding:20px;background-color:#f9fafb;border-radius:10px;border:2px solid #e5e7eb;">
+        <div style="text-align:center;">
+            <div style="font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;margin-bottom:8px;">Defects</div>
+            <div style="font-size:32px;font-weight:700;color:{% if defects|length > 0 %}#ef4444{% else %}#6b7280{% endif %};">{{defects|length}}</div>
+        </div>
+    </td>
+</tr>
+</table>
+
+<!-- Category Performance -->
+{% if category_stats %}
+<h2 style="font-size:18px;font-weight:700;color:#111827;margin:28px 0 16px 0;padding-bottom:12px;border-bottom:2px solid #e5e7eb;">
+    Category Performance
+</h2>
+{% for stat in category_stats %}
+<table width="100%" cellpadding="14" cellspacing="0" border="0" style="background-color:#f9fafb;border-left:4px solid #10b981;margin-bottom:10px;border-radius:0 8px 8px 0;">
+<tr>
+    <td style="font-weight:600;color:#111827;font-size:14px;width:70%;">{{stat.category_name}}</td>
+    <td style="text-align:right;width:30%;">
+        <span style="display:inline-block;padding:4px 12px;background-color:{% if stat.completion_rate >= 100 %}#d1fae5{% elif stat.completion_rate >= 80 %}#fef3c7{% else %}#fee2e2{% endif %};color:{% if stat.completion_rate >= 100 %}#065f46{% elif stat.completion_rate >= 80 %}#92400e{% else %}#991b1b{% endif %};font-size:13px;font-weight:700;border-radius:20px;">
+            {{stat.completion_rate}}%
+        </span>
+    </td>
+</tr>
+</table>
+{% endfor %}
+{% endif %}
+
+<!-- Defects Section -->
+{% if defects %}
+<h2 style="font-size:18px;font-weight:700;color:#111827;margin:28px 0 16px 0;padding-bottom:12px;border-bottom:2px solid #e5e7eb;">
+    Defects Reported
+</h2>
+{% for defect in defects[:5] %}
+<table width="100%" cellpadding="14" cellspacing="0" border="0" style="background-color:#fef2f2;border-left:4px solid #ef4444;margin-bottom:10px;border-radius:0 8px 8px 0;">
+<tr>
+    <td style="width:75%;">
+        <div style="font-weight:600;color:#991b1b;font-size:14px;margin-bottom:4px;">{{defect.title}}</div>
+        {% if defect.description %}
+        <div style="color:#7f1d1d;font-size:12px;line-height:1.4;">{{defect.description[:100]}}{% if defect.description|length > 100 %}...{% endif %}</div>
+        {% endif %}
+    </td>
+    <td style="width:25%;text-align:right;vertical-align:top;">
+        <span style="display:inline-block;padding:5px 10px;background-color:{% if defect.severity == 'critical' %}#dc2626{% elif defect.severity == 'high' %}#ea580c{% elif defect.severity == 'medium' %}#d97706{% else %}#65a30d{% endif %};color:#ffffff;font-size:10px;font-weight:700;text-transform:uppercase;border-radius:4px;">
+            {{defect.severity}}
+        </span>
+    </td>
+</tr>
+</table>
+{% endfor %}
+{% if defects|length > 5 %}
+<p style="text-align:center;color:#6b7280;font-size:13px;margin-top:12px;">
+    + {{defects|length - 5}} more defects
+</p>
+{% endif %}
+{% endif %}
+
+<!-- No Defects Message -->
+{% if not defects %}
+<table width="100%" cellpadding="20" cellspacing="0" border="0" style="background-color:#ecfdf5;border-radius:10px;margin-top:20px;border:2px solid #10b981;">
+<tr><td style="text-align:center;">
+    <div style="font-size:24px;margin-bottom:8px;">&#10003;</div>
+    <div style="color:#065f46;font-weight:600;font-size:14px;">No defects reported {% if is_daily %}today{% else %}this week{% endif %}</div>
+</td></tr>
+</table>
+{% endif %}
+
+<!-- Recommendations -->
+{% if recommendations %}
+<table width="100%" cellpadding="20" cellspacing="0" border="0" style="background-color:#eff6ff;margin-top:24px;border-radius:10px;border:2px solid #3b82f6;">
+<tr><td>
+    <h3 style="font-size:15px;font-weight:700;color:#1e40af;margin:0 0 12px 0;">Key Insights</h3>
+    {% for rec in recommendations %}
+    <div style="color:#1e40af;font-size:13px;line-height:1.6;margin-bottom:6px;">• {{rec}}</div>
+    {% endfor %}
+</td></tr>
+</table>
+{% endif %}
+
+</td></tr>
+
+<!-- Footer -->
+<tr>
+<td style="background-color:#f9fafb;padding:24px 30px;text-align:center;border-top:1px solid #e5e7eb;">
+    <p style="margin:0 0 8px 0;color:#4b5563;font-size:13px;font-weight:600;">
+        {% if is_daily %}Daily{% else %}Weekly{% endif %} Report for {{site_name}}
+    </p>
+    <p style="margin:0 0 12px 0;color:#6b7280;font-size:12px;">
+        This is an automated report from Zynthio Site Monitoring
+    </p>
+    <p style="margin:0;color:#9ca3af;font-size:11px;">
+        &copy; 2025 Zynthio. All rights reserved.
+    </p>
+</td>
+</tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>
